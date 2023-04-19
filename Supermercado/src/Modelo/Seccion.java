@@ -17,9 +17,12 @@ public class Seccion {
 
 	
 	
+
+
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(arrayArticulos, codigoSeccion, nombreSeccion);
+		return Objects.hash(codigoSeccion);
 	}
 	@Override
 	public boolean equals(Object obj) {
@@ -30,10 +33,12 @@ public class Seccion {
 		if (getClass() != obj.getClass())
 			return false;
 		Seccion other = (Seccion) obj;
-		return Objects.equals(arrayArticulos, other.arrayArticulos)
-				&& Objects.equals(codigoSeccion, other.codigoSeccion)
-				&& Objects.equals(nombreSeccion, other.nombreSeccion);
+		return Objects.equals(codigoSeccion, other.codigoSeccion);
 	}
+
+
+
+
 
 
 	@Override

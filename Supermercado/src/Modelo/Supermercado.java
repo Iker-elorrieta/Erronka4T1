@@ -7,14 +7,14 @@ public class Supermercado {
 	//El POJO tiene los tipos de datos correctos, implementa Serializable, tiene Getters&Setters, HasCode, Compare y ToString
 	//1-const 2-he 3-ToStr 4-GyS
 private String codigoSuper;
-private int direccion;
-private String metrosCuadrados;
+private String direccion;
+private float metrosCuadrados;
 private int numEmpleados;
 private String horario;
 private ArrayList<Seccion> arraySecciones;
 
 
-public Supermercado(String codigoSuper, int direccion, String metrosCuadrados, int numEmpleados, String horario,
+public Supermercado(String codigoSuper, String direccion, float metrosCuadrados, int numEmpleados, String horario,
 		ArrayList<Seccion> arraySecciones) {
 	this.codigoSuper = codigoSuper;
 	this.direccion = direccion;
@@ -68,16 +68,16 @@ public String getCodigoSuper() {
 public void setCodigoSuper(String codigoSuper) {
 	this.codigoSuper = codigoSuper;
 }
-public int getDireccion() {
+public String getDireccion() {
 	return direccion;
 }
-public void setDireccion(int direccion) {
+public void setDireccion(String direccion) {
 	this.direccion = direccion;
 }
-public String getMetrosCuadrados() {
+public float getMetrosCuadrados() {
 	return metrosCuadrados;
 }
-public void setMetrosCuadrados(String metrosCuadrados) {
+public void setMetrosCuadrados(float metrosCuadrados) {
 	this.metrosCuadrados = metrosCuadrados;
 }
 public int getNumEmpleados() {
