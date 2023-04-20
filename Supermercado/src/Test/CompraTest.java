@@ -10,37 +10,38 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import Modelo.Articulo;
+import Modelo.Compra;
 import Modelo.Jefe;
-import Modelo.Seccion;
 
-class SeccionTest {
-
+class CompraTest {
 	ArrayList<Articulo> arrayArticulos = new ArrayList<Articulo>();
-Seccion obj = new Seccion(null, null, null);
+Compra obj = new Compra(212, arrayArticulos, 12313, Date.valueOf("2034-02-03"));
 	
 	@Test
 	void test_GettersSetters() {
 		obj.setArrayArticulos(arrayArticulos);
-		obj.setCodigoSeccion("HDGHAGS");
-		obj.setNombreSeccion("Videojuegos");
+		obj.setCodigoCompra(212);
+		obj.setFecha(Date.valueOf("2034-02-03"));
+		obj.setPrecioTotal(64.2);
 		
 		assertEquals(obj.getArrayArticulos(),arrayArticulos);
-		assertEquals(obj.getCodigoSeccion(),"HDGHAGS");
-		assertEquals(obj.getNombreSeccion(),"Videojuegos");
+		assertEquals(obj.getCodigoCompra(),212);
+		assertEquals(obj.getFecha(),Date.valueOf("2034-02-03"));
+		assertEquals(Double.valueOf(obj.getPrecioTotal()),64.2);
 	}
 	
 	@Test
 	void test_equals() {
-		Seccion obj1 = new Seccion(null, null, null);
-		Seccion obj2 = new Seccion(null, null, null);
+		Compra obj1 = new Compra(0, arrayArticulos, 0, null);
+		Compra obj2 = new Compra(0, arrayArticulos, 0, null);
 		
-		obj1.setCodigoSeccion("HDGHAGS");
-		obj2.setCodigoSeccion("HDGHAGS");
+		obj1.setCodigoCompra(2131232);
+		obj2.setCodigoCompra(2131232);
 	boolean resultado = obj1.equals(obj2);
 	assertTrue(resultado);
 	
-	obj1.setCodigoSeccion("HDGHAGS");
-	obj2.setCodigoSeccion("GDSSDSD");
+	obj1.setCodigoCompra(234342);
+	obj2.setCodigoCompra(11122);
 	boolean resultado2 = obj1.equals(obj2);
 	assertFalse(resultado2);
 	
@@ -48,8 +49,8 @@ Seccion obj = new Seccion(null, null, null);
 	boolean resultado3 = obj1.equals(notAObject);
 	assertFalse(resultado3);
 	
-	obj1.setCodigoSeccion("HDGHAGS");
-	obj2.setCodigoSeccion(null);
+	obj1.setCodigoCompra(23656723);
+	obj2.setCodigoCompra(0);
 	boolean resultado4 = obj1.equals(obj2);
 	assertFalse(resultado4);
 	
@@ -64,7 +65,7 @@ Seccion obj = new Seccion(null, null, null);
 	
 	@Test
 	void test_toString() {
-		assertEquals(obj.toString(),"Seccion [codigoSeccion=null, nombreSeccion=null]");
+		assertEquals(obj.toString(),"Compra [codigoCompra=212, precioTotal=12313.0, fecha=2034-02-03]");
 	}
 
 }

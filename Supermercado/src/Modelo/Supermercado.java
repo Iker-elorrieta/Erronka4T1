@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Supermercado {
-	//El POJO tiene los tipos de datos correctos, implementa Serializable, tiene Getters&Setters, HasCode, Compare y ToString
 	//1-const 2-he 3-ToStr 4-GyS
 private String codigoSuper;
 private String direccion;
