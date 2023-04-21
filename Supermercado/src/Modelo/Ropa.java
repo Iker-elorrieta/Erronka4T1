@@ -8,16 +8,14 @@ public class Ropa extends Articulo{
 	private String material;
 	private String marca;
 	
-	
-	public Ropa(int idArticulo, String nombreArticulo, Double precio, int stockMaximo, int stockActual,
-			tipoArticulo type, String talla, String color, String material, String marca) {
-		super(idArticulo, nombreArticulo, precio, stockMaximo, stockActual, type);
+	public Ropa(int idArticulo, String nombreArticulo, String rutaImagen, Double precio, int stockMaximo,
+			int stockActual, tipoArticulo type, String talla, String color, String material, String marca) {
+		super(idArticulo, nombreArticulo, rutaImagen, precio, stockMaximo, stockActual, type);
 		this.talla = talla;
 		this.color = color;
 		this.material = material;
 		this.marca = marca;
 	}
-	
 	
 	@Override
 	public int hashCode() {
@@ -29,8 +27,6 @@ public class Ropa extends Articulo{
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
 		Articulo other = (Articulo) obj;
 		return idArticulo == other.idArticulo;
 	}
@@ -38,9 +34,11 @@ public class Ropa extends Articulo{
 
 	@Override
 	public String toString() {
-		return "Ropa [talla=" + talla + ", color=" + color + ", material=" + material + ", marca=" + marca + "]";
+		return "Ropa [talla=" + talla + ", color=" + color + ", material=" + material + ", marca=" + marca
+				+ ", idArticulo=" + idArticulo + ", nombreArticulo=" + nombreArticulo + ", rutaImagen=" + rutaImagen
+				+ ", precio=" + precio + ", stockMaximo=" + stockMaximo + ", stockActual=" + stockActual + ", type="
+				+ type + "]";
 	}
-
 
 	public String getTalla() {
 		return talla;

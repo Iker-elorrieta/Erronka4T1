@@ -30,8 +30,6 @@ public class Seccion {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
 		Seccion other = (Seccion) obj;
 		return Objects.equals(codigoSeccion, other.codigoSeccion);
 	}

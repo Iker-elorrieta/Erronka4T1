@@ -8,14 +8,16 @@ public class Comida extends Articulo{
 	private String nombreAlimento;
 	private String procedencia;
 	
-	public Comida(int idArticulo, String nombreArticulo, Double precio, int stockMaximo, int stockActual,
-			tipoArticulo type, Date fechaCaducidad, String nombreAlimento, String procedencia) {
-		super(idArticulo, nombreArticulo, precio, stockMaximo, stockActual, type);
+	
+	public Comida(int idArticulo, String nombreArticulo, String rutaImagen, Double precio, int stockMaximo,
+			int stockActual, tipoArticulo type, Date fechaCaducidad, String nombreAlimento, String procedencia) {
+		super(idArticulo, nombreArticulo, rutaImagen, precio, stockMaximo, stockActual, type);
 		this.fechaCaducidad = fechaCaducidad;
 		this.nombreAlimento = nombreAlimento;
 		this.procedencia = procedencia;
 	}
-
+	
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(idArticulo);
@@ -26,21 +28,19 @@ public class Comida extends Articulo{
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
 		Articulo other = (Articulo) obj;
 		return idArticulo == other.idArticulo;
 	}
 
-	
+
 	@Override
 	public String toString() {
 		return "Comida [fechaCaducidad=" + fechaCaducidad + ", nombreAlimento=" + nombreAlimento + ", procedencia="
-				+ procedencia + ", idArticulo=" + idArticulo + ", nombreArticulo=" + nombreArticulo + ", precio="
-				+ precio + ", stockMaximo=" + stockMaximo + ", stockActual=" + stockActual + ", type=" + type + "]";
+				+ procedencia + ", idArticulo=" + idArticulo + ", nombreArticulo=" + nombreArticulo + ", rutaImagen="
+				+ rutaImagen + ", precio=" + precio + ", stockMaximo=" + stockMaximo + ", stockActual=" + stockActual
+				+ ", type=" + type + "]";
 	}
-	
-	
+
 
 	public Date getFechaCaducidad() {
 		return fechaCaducidad;

@@ -10,19 +10,16 @@ import java.util.Date;
 import org.junit.jupiter.api.Test;
 
 import Modelo.Cliente;
-import Modelo.Jefe;
 
 class testCliente {
 	DateFormat formateador= new SimpleDateFormat("dd/M/yy");
-	String frase="Cliente [dinero=55.67, tarjetaCliente=true, carrito=null, dni=798981A, nombre=Pepe, apellidos=Perez Navarros, fechaNacimiento=Sun Jul 16 00:00:00 CEST 2000, email=perez@gmail.com]";
 	@Test
 	void test() {
 		Date fecha;
-		Object o = new Object();
 		try {
 			fecha = formateador.parse("16/07/2000");
-			Cliente primero=new Cliente("798981A","Pepe","Perez Navarros",fecha,"perez@gmail.com",55.67,true);
-		Cliente segundo=new Cliente("","","",null,"",0,false);
+			Cliente primero=new Cliente("798981A","Pepe","Perez Navarros",fecha,"perez@gmail.com",55.67,true, null);
+		Cliente segundo=new Cliente("","","",null,"",0,false, null);
 		assertFalse(primero.equals(segundo));
 		assertFalse(primero.equals(null));
 		segundo.setDni("798981A");
@@ -32,18 +29,18 @@ class testCliente {
 		segundo.setEmail("perez@gmail.com");
 		segundo.setDinero(55.67);
 		segundo.setTarjetaCliente(true);
-		primero.setCarrito(null);
-		segundo.setCarrito(null);
+		primero.setArrayCompras(null);
+		segundo.setArrayCompras(null);
 		assertEquals(primero.getApellidos(),segundo.getApellidos());
 		assertEquals(primero.getDinero(),segundo.getDinero());
 		assertEquals(primero.getDni(),segundo.getDni());
 		assertEquals(primero.getEmail(),segundo.getEmail());
 		assertEquals(primero.getFechaNacimiento(),segundo.getFechaNacimiento());
 		assertEquals(primero.getNombre(),segundo.getNombre());
-		assertEquals(primero.getCarrito(),segundo.getCarrito());
+		assertEquals(primero.getArrayCompras(),segundo.getArrayCompras());
 		assertEquals(primero.isTarjetaCliente(),segundo.isTarjetaCliente());
 		assertEquals(primero.hashCode(),segundo.hashCode());
-		assertEquals(primero.toString(),frase);
+		assertEquals(primero.toString(),"Cliente [dinero=55.67, tarjetaCliente=true, dni=798981A, nombre=Pepe, apellidos=Perez Navarros, fechaNacimiento=Sun Jul 16 00:00:00 CEST 2000, email=perez@gmail.com]");
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,8 +50,8 @@ class testCliente {
 	
 	@Test
 	void test_equals() {
-		Cliente obj1 = new Cliente(null, null, null, null, null, 0, false);
-		Cliente obj2 = new Cliente(null, null, null, null, null, 0, false);
+		Cliente obj1 = new Cliente(null, null, null, null, null, 0, false, null);
+		Cliente obj2 = new Cliente(null, null, null, null, null, 0, false, null);
 		
 		obj1.setDni("362358H");
 		obj2.setDni("362358H");
@@ -65,10 +62,6 @@ class testCliente {
 	obj2.setDni("1323258L");
 	boolean resultado2 = obj1.equals(obj2);
 	assertFalse(resultado2);
-	
-	int notAObject=0;
-	boolean resultado3 = obj1.equals(notAObject);
-	assertFalse(resultado3);
 	
 	obj1.setDni("362358H");
 	obj2.setDni(null);

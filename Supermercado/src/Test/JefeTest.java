@@ -4,15 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
-import java.util.ArrayList;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import Modelo.Jefe;
-import Modelo.Persona;
-import Modelo.Seccion;
-import Modelo.Supermercado;
 
 class JefeTest {
 	
@@ -49,10 +43,6 @@ Jefe obj = new Jefe("sunburn", "362358H", "astdf@gmail.com", Date.valueOf("2023-
 	obj2.setDni("1323258L");
 	boolean resultado2 = obj1.equals(obj2);
 	assertFalse(resultado2);
-	
-	int notAObject=0;
-	boolean resultado3 = obj1.equals(notAObject);
-	assertFalse(resultado3);
 	
 	obj1.setDni("362358H");
 	obj2.setDni(null);

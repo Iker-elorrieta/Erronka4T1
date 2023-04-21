@@ -1,7 +1,6 @@
 package Modelo;
 
 import java.util.Date;
-import java.util.Objects;
 
 public abstract class Persona implements Comprador{
 	protected String dni;

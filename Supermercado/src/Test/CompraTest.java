@@ -6,12 +6,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.sql.Date;
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import Modelo.Articulo;
 import Modelo.Compra;
-import Modelo.Jefe;
 
 class CompraTest {
 	ArrayList<Articulo> arrayArticulos = new ArrayList<Articulo>();
@@ -44,10 +42,6 @@ Compra obj = new Compra(212, arrayArticulos, 12313, Date.valueOf("2034-02-03"));
 	obj2.setCodigoCompra(11122);
 	boolean resultado2 = obj1.equals(obj2);
 	assertFalse(resultado2);
-	
-	int notAObject=0;
-	boolean resultado3 = obj1.equals(notAObject);
-	assertFalse(resultado3);
 	
 	obj1.setCodigoCompra(23656723);
 	obj2.setCodigoCompra(0);

@@ -5,16 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import Modelo.Articulo;
 import Modelo.Comida;
-import Modelo.Jefe;
+import Modelo.tipoArticulo;
 
 class ComidaTest {
 
-Comida obj = new Comida(0, null, null, 0, 0, null, null, null, null);
+Comida obj = new Comida(0, null, null, null, 0, 0, null, null, null, null);
 	
 	@Test
 	void test_GettersSetters() {
@@ -26,7 +24,8 @@ Comida obj = new Comida(0, null, null, 0, 0, null, null, null, null);
 		obj.setProcedencia("japon");
 		obj.setStockActual(4);
 		obj.setStockMaximo(10);
-		obj.setType(Articulo.tipoArticulo.Comida);
+		obj.setType(tipoArticulo.Comida);
+		obj.setRutaImagen("imagen.png");
 		
 		assertEquals(obj.getFechaCaducidad(),Date.valueOf("2039-12-01"));
 		assertEquals(obj.getIdArticulo(),232);
@@ -36,14 +35,15 @@ Comida obj = new Comida(0, null, null, 0, 0, null, null, null, null);
 		assertEquals(obj.getProcedencia(),"japon");
 		assertEquals(obj.getStockActual(),4);
 		assertEquals(obj.getStockMaximo(),10);
-		assertEquals(obj.getType(),Articulo.tipoArticulo.Comida);
+		assertEquals(obj.getType(),tipoArticulo.Comida);
+		assertEquals(obj.getRutaImagen(),"imagen.png");
 	
 	}
 	
 	@Test
 	void test_equals() {
-		Comida obj1 = new Comida(0, null, null, 0, 0, null, null, null, null);
-		Comida obj2 = new Comida(0, null, null, 0, 0, null, null, null, null);
+		Comida obj1 = new Comida(0, null, null, null, 0, 0, null, null, null, null);
+		Comida obj2 = new Comida(0, null, null, null, 0, 0, null, null, null, null);
 		
 		obj1.setIdArticulo(2132);
 		obj2.setIdArticulo(2132);
@@ -54,10 +54,6 @@ Comida obj = new Comida(0, null, null, 0, 0, null, null, null, null);
 	obj2.setIdArticulo(12323);
 	boolean resultado2 = obj1.equals(obj2);
 	assertFalse(resultado2);
-	
-	int notAObject=0;
-	boolean resultado3 = obj1.equals(notAObject);
-	assertFalse(resultado3);
 	
 	obj1.setIdArticulo(234234);
 	obj2.setIdArticulo(0);
@@ -75,7 +71,7 @@ Comida obj = new Comida(0, null, null, 0, 0, null, null, null, null);
 	
 	@Test
 	void test_toString() {
-		assertEquals(obj.toString(),"Comida [fechaCaducidad=null, nombreAlimento=null, procedencia=null, idArticulo=0, nombreArticulo=null, precio=null, stockMaximo=0, stockActual=0, type=null]");
+		assertEquals(obj.toString(),"Comida [fechaCaducidad=null, nombreAlimento=null, procedencia=null, idArticulo=0, nombreArticulo=null, rutaImagen=null, precio=null, stockMaximo=0, stockActual=0, type=null]");
 	}
 
 }

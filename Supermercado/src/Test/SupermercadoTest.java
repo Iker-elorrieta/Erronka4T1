@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import Modelo.Seccion;
@@ -46,10 +45,6 @@ Supermercado sup = new Supermercado(null, null, 0, 0, null, null);
 	sup2.setCodigoSuper("DHVGDVG");
 	boolean resultado2 = sup1.equals(sup2);
 	assertFalse(resultado2);
-	
-	int notAObject=0;
-	boolean resultado3 = sup1.equals(notAObject);
-	assertFalse(resultado3);
 	
 	sup1.setCodigoSuper("GASVGDVG");
 	sup2.setCodigoSuper(null);

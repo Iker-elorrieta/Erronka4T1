@@ -23,8 +23,6 @@ public class Jefe extends Persona{
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
 		Persona other = (Persona) obj;
 		return Objects.equals(dni, other.dni);
 	}

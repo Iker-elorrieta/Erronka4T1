@@ -1,23 +1,22 @@
 package Modelo;
 
-import java.util.Objects;
-
 public abstract class Articulo {
-	public enum tipoArticulo {
-		Herramienta, Ropa, Comida;
-	}
 	protected int idArticulo;
 	protected String nombreArticulo;
+	protected String rutaImagen;
 	protected Double precio;
 	protected int stockMaximo;
 	protected int stockActual;
 	protected tipoArticulo type;
 	
-	public Articulo(int idArticulo, String nombreArticulo, Double precio, int stockMaximo, int stockActual,
-			tipoArticulo type) {
+
+
+	public Articulo(int idArticulo, String nombreArticulo, String rutaImagen, Double precio, int stockMaximo,
+			int stockActual, tipoArticulo type) {
 		super();
 		this.idArticulo = idArticulo;
 		this.nombreArticulo = nombreArticulo;
+		this.rutaImagen = rutaImagen;
 		this.precio = precio;
 		this.stockMaximo = stockMaximo;
 		this.stockActual = stockActual;
@@ -33,15 +32,14 @@ public abstract class Articulo {
 	
 	
 	
-	
-	
-	
-	
 	public int getIdArticulo() {
 		return idArticulo;
 	}
 	public String getNombreArticulo() {
 		return nombreArticulo;
+	}
+	public String getRutaImagen() {
+		return rutaImagen;
 	}
 	public Double getPrecio() {
 		return precio;
@@ -61,6 +59,9 @@ public abstract class Articulo {
 	public void setNombreArticulo(String nombreArticulo) {
 		this.nombreArticulo = nombreArticulo;
 	}
+	public void setRutaImagen(String rutaImagen) {
+		this.rutaImagen = rutaImagen;
+	}
 	public void setPrecio(Double precio) {
 		this.precio = precio;
 	}
@@ -73,6 +74,8 @@ public abstract class Articulo {
 	public void setType(tipoArticulo type) {
 		this.type = type;
 	}
+	
+	
 	
 	
 }
