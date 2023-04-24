@@ -4,6 +4,6 @@ import java.util.ArrayList;
 
 public interface Comprador {
 
-	void comprarArticulos(ArrayList<Object> carrito);
+	void comprarArticulos(ArrayList<Articulo> carrito);
 
 }

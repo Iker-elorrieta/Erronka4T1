@@ -70,7 +70,7 @@ public class Cliente extends Persona {
 
 
 	@Override
-	public void comprarArticulos(ArrayList<Object> carrito) {
+	public void comprarArticulos(ArrayList<Articulo> carrito) {
 		// TODO Auto-generated method stub
 		
 	}
