@@ -34,10 +34,21 @@ public boolean equals(Object obj) {
 	return codigoCompra == other.codigoCompra;
 }
 
+
 @Override
 public String toString() {
 	return "Compra [codigoCompra=" + codigoCompra + ", precioTotal=" + precioTotal + ", fecha=" + fecha + "]";
 }
+
+
+
+
+
+
+
+
+
+
 
 public int getCodigoCompra() {
 	return codigoCompra;

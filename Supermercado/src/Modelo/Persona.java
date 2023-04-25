@@ -8,14 +8,16 @@ public abstract class Persona implements Comprador{
 	protected String apellidos;
 	protected Date fechaNacimiento;
 	protected String email;
+	protected String contrasena;
 	
-	public Persona(String dni, String nombre, String apellidos, Date fechaNacimiento, String email) {
+	public Persona(String dni, String nombre, String apellidos, Date fechaNacimiento, String email,String contrasena) {
 		super();
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.fechaNacimiento = fechaNacimiento;
 		this.email = email;
+		this.contrasena=contrasena;
 	}
 	public String getDni() {
 		return dni;
@@ -46,6 +48,12 @@ public abstract class Persona implements Comprador{
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getContrasena() {
+		return contrasena;
+	}
+	public void setContrasena(String contrasena) {
+		this.contrasena = contrasena;
 	}
 	
 

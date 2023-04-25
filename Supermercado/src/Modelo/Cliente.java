@@ -10,12 +10,12 @@ public class Cliente extends Persona {
 	private boolean tarjetaCliente;
 	private ArrayList<Compra> arrayCompras;
 	
-	public Cliente(String dni, String nombre, String apellidos, Date fechaNacimiento, String email, double dinero,
-			boolean tarjetaCliente, ArrayList<Compra> arrayCompras) {
-		super(dni, nombre, apellidos, fechaNacimiento, email);
+	public Cliente(String dni, String nombre, String apellidos, Date fechaNacimiento, String email,String contrasena, double dinero,
+			boolean tarjetaCliente) {
+		super(dni, nombre, apellidos, fechaNacimiento, email, contrasena);
 		this.dinero = dinero;
 		this.tarjetaCliente = tarjetaCliente;
-		this.arrayCompras = arrayCompras;
+		arrayCompras=new ArrayList<Compra>();
 	}
 
 	
@@ -26,10 +26,6 @@ public class Cliente extends Persona {
 				+ nombre + ", apellidos=" + apellidos + ", fechaNacimiento=" + fechaNacimiento + ", email=" + email
 				+ "]";
 	}
-
-
-
-
 
 	@Override
 	public int hashCode() {
@@ -70,7 +66,7 @@ public class Cliente extends Persona {
 
 
 	@Override
-	public void comprarArticulos(ArrayList<Articulo> carrito) {
+	public void comprarArticulos(ArrayList<Object> carrito) {
 		// TODO Auto-generated method stub
 		
 	}
