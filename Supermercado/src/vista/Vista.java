@@ -19,12 +19,14 @@ import org.jdatepicker.impl.UtilDateModel;
 import Controlador.ErroresDeLogin;
 import Controlador.ErroresDeRegistro;
 import Controlador.Metodos;
+import Modelo.Cliente;
 import Modelo.DateLabelFormatter;
 import Modelo.Persona;
 
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.awt.event.ActionEvent;
@@ -251,14 +253,20 @@ public class Vista {
 					mc.comprobarNacimiento(datePicker.getJFormattedTextField().getText());
 					mc.comprobarEmail(textMail.getText());
 					mc.comprobarDNI(textDNI.getText());
+					Cliente cli;
 					try {
-						mc.registrarse(textNombre.getText(),textApellidos.getText(),
-						String.valueOf(contrasenaRegi.getPassword()), textDNI.getText()
-						, datePicker.getJFormattedTextField().getText(), textMail.getText());
+						cli = new Cliente(textDNI.getText(),textNombre.getText(),textApellidos.getText(),
+						 mc.deStringADate(datePicker.getJFormattedTextField().getText()), textMail.getText(),
+						 String.valueOf(contrasenaRegi.getPassword()),0,false,false);
+						mc.registrarse(cli);
+					} catch (ParseException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
-						JOptionPane.showMessageDialog(null, e1.getMessage());
-					}
+						e1.printStackTrace();
+					}	
+			
 					
 					usuarios=mc.cargarPersonas();
 					

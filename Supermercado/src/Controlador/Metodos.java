@@ -8,9 +8,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,7 +20,9 @@ import Modelo.*;
 
 public class Metodos {
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-	
+	public Date deStringADate(String fecha) throws ParseException {
+		return formatter.parse(fecha);
+	}
 	public Connection conectarBaseDatos() throws SQLException {
 		Connection conexion = (Connection) DriverManager.getConnection(Conexion.URL, Conexion.USER, Conexion.PASS);
 		return conexion;
