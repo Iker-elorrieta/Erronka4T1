@@ -1,5 +1,8 @@
 package Controlador;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -130,10 +133,11 @@ public class Metodos {
 		}
 		return lista;
 	}
-	public void registrarse(String nombre,String apellidos, String contrasena,String DNI,String fechaNa,String email) throws ErroresDeRegistro, SQLException {
+	public void registrarse(Cliente cli) throws ErroresDeRegistro, SQLException {
 			Statement comando = (Statement) conectarBaseDatos().createStatement();
-			comando.executeUpdate("INSERT INTO "+Tablas.Cliente+" VALUES ('"+DNI+"','"+nombre+"','"+apellidos+"',"
-									+ "'"+fechaNa+"','"+email+"','"+0+"','"+0+"','"+contrasena+"')");		
+			comando.executeUpdate("INSERT INTO "+Tablas.Cliente+" VALUES ('"+cli.getDni()+"','"+cli.getNombre()+"','"+cli.getApellidos()+"',"
+									+ "'"+cli.getFechaNacimiento()+"','"+cli.getEmail()+"','"+cli.getDinero()+"','"+cli.isTarjetaCliente()+"',"
+									+ "'"+cli.getContrasena()+"','"+cli.isBloqueado()+"')");		
 }
 	public void registrarseJefe(Jefe jefe) throws ErroresDeRegistro, SQLException {
 		Statement comando = (Statement) conectarBaseDatos().createStatement();
@@ -142,6 +146,121 @@ public class Metodos {
 				+ "'"+jefe.getTitulo()+"','"+jefe.getContrasena()+"','"+jefe.getFechaAdquisicion()+"',"
 						+ "'"+jefe.getPorcentajeEmpresa()+"','"+jefe.isDios()+"')");		
 }	
+	public void insertarSupermercado(Jefe jefe,Supermercado su) throws SQLException {
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("INSERT INTO "+Tablas.Supermercado+" VALUES ('"+jefe.getDni()+"','"+su.getCodigoSuper()+"',"
+				+ "'"+su.getDireccion()+"','"+su.getMetrosCuadrados()+"','"+su.getNumEmpleados()+"','"+su.getHorario()+"')");
+	}
+	public void insertarSeccion(Supermercado su,Seccion se) throws SQLException {
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("INSERT INTO "+Tablas.Seccion+" VALUES ('"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"',"
+				+ "'"+su.getCodigoSuper()+"')");
+	}
+	public void insertarCompra(Cliente cli,Compra com) throws SQLException {
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("INSERT INTO "+Tablas.Compras+" VALUES ('"+cli.getDni()+"','"+com.getCodigoCompra()+"',"
+				+ "'"+com.getPrecioTotal()+"','"+com.getFechaCompra()+"')");
+	}
+	public void insertarArticuloComprado(Compra com,ArticulosComprados arc) throws SQLException {
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("INSERT INTO "+Tablas.ArticulosComprados+" VALUES ('"+com.getCodigoCompra()+"',"
+				+ "'"+arc.getIdArticulo()+"','"+arc.getCantidad()+"','"+arc.getPrecioArt()+"')");
+	}
+	public void insertarArticulo(Seccion se,Articulo ar) throws SQLException {
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("INSERT INTO "+Tablas.Articulo+" "
+				+ "("+Tablas.IdArticulo+","+Tablas.CodigoSeccion+","+Tablas.NombreArticulo+","
+				+ ""+Tablas.RutaImagen+","+Tablas.Descripcion+","+Tablas.Precio+","
+				+ ""+Tablas.StockMaximo+","+Tablas.StockActual+","+Tablas.Tipo+") "
+				+ "VALUES ('"+ar.getIdArticulo()+"','"+se.getCodigoSeccion()+"','"+ar.getNombreArticulo()+"',"
+				+ "'"+ar.getRutaImagen()+"','"+ar.getDescripcion()+"','"+ar.getPrecio()+"','"+ar.getStockMaximo()+"',"
+				+ "'"+ar.getStockActual()+"','"+ar.getPrecio()+"','"+ar.gettipo()+"')");
+		if (ar instanceof Comida){
+			Comida co=(Comida) ar;
+			comando.executeUpdate("UPDATE "+Tablas.Articulo+" SET "+Tablas.FechaCaducidad+"='"+co.getFechaCaducidad()+"',"
+					+ " "+Tablas.Procedencia+"='"+co.getProcedencia()+"' WHERE "+Tablas.IdArticulo+"='"+co.getIdArticulo()+"'");
+		}else if(ar instanceof Herramienta) {
+			Herramienta he=(Herramienta) ar;
+			comando.executeUpdate("UPDATE "+Tablas.Articulo+" SET "+Tablas.Electrica+"='"+he.getElectrica()+"',"
+					+ " "+Tablas.Garantia+"='"+he.getGarantia()+"' WHERE "+Tablas.IdArticulo+"='"+he.getIdArticulo()+"'");
+		}else {
+			 Ropa ro=(Ropa) ar;
+			comando.executeUpdate("UPDATE "+Tablas.Articulo+" SET "+Tablas.Talla+"='"+ro.getTalla()+"',"
+					+ " "+Tablas.Color+"='"+ro.getColor()+"', "+Tablas.Material+"='"+ro.getMaterial()+"',"
+					+ " "+Tablas.Marca+"='"+ro.getMarca()+"' WHERE "+Tablas.IdArticulo+"='"+ro.getIdArticulo()+"'");
+		}
+	}
+	public void cambiarPerfilCliente(Cliente cli) throws SQLException {
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("UPDATE "+Tablas.Cliente+" SET "+Tablas.DNI+"='"+cli.getDni()+"',"
+				+ " "+Tablas.Nombre+"='"+cli.getNombre()+"', "+Tablas.Apellidos+"='"+cli.getApellidos()+"',"
+				+ " "+Tablas.FechaNacimineto+"='"+cli.getFechaNacimiento()+"', "+Tablas.Email+"='"+cli.getEmail()+"',"
+				+ " "+Tablas.Dinero+"='"+cli.getDinero()+"', "+Tablas.TarjetaCliente+"='"+cli.isTarjetaCliente()+"',"
+				+ " "+Tablas.Contrasena+"='"+cli.getContrasena()+"', "+Tablas.bloqueado+"='"+cli.isBloqueado()+"'"
+				+ " WHERE "+Tablas.IdArticulo+"='"+cli.getDni()+"'");
+	}
+	public void cambiarPerfilJefe(Jefe je) throws SQLException {
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("UPDATE "+Tablas.Jefe+" SET "+Tablas.DNI+"='"+je.getDni()+"',"
+				+ " "+Tablas.Nombre+"='"+je.getNombre()+"', "+Tablas.Apellidos+"='"+je.getApellidos()+"',"
+				+ " "+Tablas.FechaNacimineto+"='"+je.getFechaNacimiento()+"', "+Tablas.Email+"='"+je.getEmail()+"',"
+				+ " "+Tablas.Titulo+"='"+je.getTitulo()+"', "+Tablas.fechaAdquisicion+"='"+je.getFechaAdquisicion()+"',"
+				+ " "+Tablas.Contrasena+"='"+je.getContrasena()+"', "+Tablas.porcentajeEmpresa+"='"+je.getPorcentajeEmpresa()+"'"
+				+ " "+Tablas.dios+"='"+je.isDios()+"' WHERE "+Tablas.IdArticulo+"='"+je.getDni()+"'");
+	}
+	public void cambiarSupermercado(Jefe je,Supermercado su) throws SQLException {
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("UPDATE "+Tablas.Supermercado+" SET "+Tablas.CodigoSuper+"='"+su.getCodigoSuper()+"',"
+				+ " "+Tablas.Direccion+"='"+su.getDireccion()+"', "+Tablas.MetrosCuadrados+"='"+su.getMetrosCuadrados()+"',"
+				+ " "+Tablas.NumeroEmpleados+"='"+su.getNumEmpleados()+"', "+Tablas.Horario+"='"+su.getHorario()+"',"
+				+ " "+Tablas.DNIJEFE+"='"+je.getDni()+"' WHERE "+Tablas.CodigoSuper+"='"+su.getCodigoSuper()+"'");
+	}
+	public void cambiarSeccion(Supermercado su,Seccion se) throws SQLException {
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("UPDATE "+Tablas.Seccion+" SET "+Tablas.CodigoSuper+"='"+su.getCodigoSuper()+"',"
+				+ " "+Tablas.CodigoSeccion+"='"+se.getCodigoSeccion()+"', "+Tablas.NombreSeccion+"='"+se.getNombreSeccion()+"',"
+				+ " WHERE "+Tablas.CodigoSeccion+"='"+se.getCodigoSeccion()+"'");
+	}
+	public void cambiarCompra(Cliente cli, Compra com) throws SQLException {
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("UPDATE "+Tablas.Compras+" SET "+Tablas.DNI+"='"+cli.getDni()+"',"
+				+ " "+Tablas.codigoCompra+"='"+com.getCodigoCompra()+"', "+Tablas.precioFinal+"='"+com.getPrecioTotal()+"',"
+				+ " "+Tablas.fechaCompra+"='"+com.getFechaCompra()+"' WHERE "+Tablas.codigoCompra+"='"+com.getCodigoCompra()+"'");
+	}
+	public void cambiarArticuloComprado(ArticulosComprados arc) throws SQLException {
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("UPDATE "+Tablas.ArticulosComprados+" SET "+Tablas.codigoCompra+"='"+arc.getCodigoCompra()+"',"
+				+ " "+Tablas.IdArticulo+"='"+arc.getIdArticulo()+"', "+Tablas.Cantidad+"='"+arc.getCantidad()+"',"
+				+ " "+Tablas.PrecioArt+"='"+arc.getPrecioArt()+"' WHERE "+Tablas.codigoCompra+"='"+arc.getCodigoCompra()+"'"
+				+ " AND "+Tablas.IdArticulo+"='"+arc.getIdArticulo()+"'");
+	}
+	public void cambiarArticulo(Seccion se, Articulo ar) throws SQLException {
+		Ropa ro=null;
+		Comida co=null;
+		Herramienta he=null;
+		Statement comando = (Statement) conectarBaseDatos().createStatement();
+		comando.executeUpdate("UPDATE "+Tablas.Articulo+" SET "+Tablas.IdArticulo+"='"+ar.getIdArticulo()+"',"
+				+ " "+Tablas.CodigoSeccion+"='"+se.getCodigoSeccion()+"', "+Tablas.NombreArticulo+"='"+ar.getNombreArticulo()+"',"
+				+ " "+Tablas.RutaImagen+"='"+ar.getRutaImagen()+"', "+Tablas.Descripcion+"='"+ar.getDescripcion()+"',"
+				+ " "+Tablas.Precio+"='"+ar.getPrecio()+"', "+Tablas.StockMaximo+"='"+ar.getStockMaximo()+"',"
+				+ " "+Tablas.StockActual+"='"+ar.getStockActual()+"', "+Tablas.Tipo+"='"+ar.gettipo()+"'"
+				+ " WHERE "+Tablas.IdArticulo+"='"+ar.getIdArticulo()+"'");
+		if(ar instanceof Ropa) {
+			ro=(Ropa) ar;
+			comando.executeUpdate("UPDATE "+Tablas.Articulo+" SET "+Tablas.Talla+"='"+ro.getTalla()+"',"
+					+ " "+Tablas.Color+"='"+ro.getColor()+"', "+Tablas.Material+"='"+ro.getMaterial()+"',"
+					+ " "+Tablas.Material+"='"+ro.getMaterial()+"', "+Tablas.Marca+"='"+ro.getMarca()+"' "
+					+ " WHERE "+Tablas.IdArticulo+"='"+ro.getIdArticulo()+"'");
+		}else if( ar instanceof Herramienta) {
+			he=(Herramienta) ar;
+			comando.executeUpdate("UPDATE "+Tablas.Articulo+" SET "+Tablas.Electrica+"='"+he.getElectrica()+"',"
+					+ " "+Tablas.Garantia+"='"+he.getGarantia()+" WHERE "+Tablas.IdArticulo+"='"+he.getIdArticulo()+"'");
+		}else {
+			co=(Comida) ar;
+			comando.executeUpdate("UPDATE "+Tablas.Articulo+" SET "+Tablas.FechaCaducidad+"='"+co.getFechaCaducidad()+"',"
+					+ " "+Tablas.Procedencia+"='"+co.getProcedencia()+" WHERE "+Tablas.IdArticulo+"='"+co.getIdArticulo()+"'");
+		}
+	}
 	public void darseBajaCliente(Cliente cliente) throws SQLException {
 		Statement comando;
 			comando = (Statement) conectarBaseDatos().createStatement();
@@ -207,7 +326,14 @@ public class Metodos {
 	}
 	return listaPersonas;
 }
-	
+	public void guardarInventario(ArrayList<Articulo> lista) throws IOException {
+			FileWriter fich = new FileWriter(".\\Inventario.txt");
+			BufferedWriter buf=new BufferedWriter(fich);
+			for(Articulo ar: lista) {
+				buf.write(ar.toString());
+			}
+			buf.close();
+	}
 	public void comprobarCampos(String nombre,String apellidos, String contrasena,String DNI,String fechaNa,String email) throws ErroresDeRegistro {
 		if(nombre.equals("")|apellidos.equals("")|contrasena.equals("")|DNI.equals("")|fechaNa.equals("")|email.equals("")) {
 			throw new ErroresDeRegistro("Alguno de los campos esta vacio");
@@ -254,11 +380,11 @@ public class Metodos {
 			e.printStackTrace();
 		}
 	}
-	public void bloquearUsuario(Cliente cliente,boolean orden) {
+	public void bloquearUsuario(Cliente cliente) {
 		Statement comando;
 		try {
 			comando = (Statement) conectarBaseDatos().createStatement();
-			comando.executeUpdate("UPDATE "+Tablas.Cliente+" SET "+Tablas.bloqueado+"='"+orden+"'");
+			comando.executeUpdate("UPDATE "+Tablas.Cliente+" SET "+Tablas.bloqueado+"='"+false+"'");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -53,7 +53,8 @@ public class Tablas {
 	public final static String CodigoSeccion="codigoSeccion";
 	public final static String NombreSeccion="nombreSeccion";
 	
-	public final static String Supermercado="superercados";
+	public final static String Supermercado="supemercados";
+	public final static String DNIJEFE="dniJefe";
 	public final static String CodigoSuper="codigoSuper";
 	public final static String Direccion="direccion";
 	public final static String MetrosCuadrados="metrosCuadrados";

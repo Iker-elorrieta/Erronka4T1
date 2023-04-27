@@ -1,0 +1,1 @@
+Ropa [talla=XL, color=Rojo, material=Algodon, marca=Nike, idArticulo=1, nombreArticulo=Leggin, rutaImagen=ruta, precio=16.89, stockMaximo=250, stockActual=75, tipo=Ropa]
