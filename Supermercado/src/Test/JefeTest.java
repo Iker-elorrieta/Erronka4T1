@@ -10,7 +10,7 @@ import Modelo.Jefe;
 
 class JefeTest {
 	
-Jefe obj = new Jefe("sunburn", "362358H", "astdf@gmail.com", Date.valueOf("2023-01-01"), "james","contrasena", "fotografo");
+Jefe obj = new Jefe(null, null, null, null, null, null, null, null, 0, false);
 	
 	@Test
 	void test_GettersSetters() {
@@ -20,6 +20,11 @@ Jefe obj = new Jefe("sunburn", "362358H", "astdf@gmail.com", Date.valueOf("2023-
 		obj.setFechaNacimiento(Date.valueOf("2023-01-01"));
 		obj.setNombre("james");
 		obj.setTitulo("fotografo");
+		obj.setContrasena("1234");
+		
+		obj.setDios(false);
+		obj.setFechaAdquisicion(Date.valueOf("2023-01-01"));
+		obj.setPorcentajeEmpresa(54);
 		
 		assertEquals(obj.getApellidos(),"sunburn");
 		assertEquals(obj.getDni(),"362358H");
@@ -27,12 +32,19 @@ Jefe obj = new Jefe("sunburn", "362358H", "astdf@gmail.com", Date.valueOf("2023-
 		assertEquals(obj.getFechaNacimiento(),Date.valueOf("2023-01-01"));
 		assertEquals(obj.getNombre(),"james");
 		assertEquals(obj.getTitulo(),"fotografo");
+		assertEquals(obj.getContrasena(),"1234");
+		
+		assertEquals(obj.isDios(),false);
+		assertEquals(obj.getFechaAdquisicion(),Date.valueOf("2023-01-01"));
+		assertEquals(Float.valueOf(obj.getPorcentajeEmpresa()),54);
+		
+		
 	}
 	
 	@Test
 	void test_equals() {
-		Jefe obj1 = new Jefe(null, null, null, null, null, null,null);
-		Jefe obj2 = new Jefe(null, null, null, null, null, null,null);
+		Jefe obj1 = new Jefe(null, null, null, null, null, null, null, null, 0, false);
+		Jefe obj2 = new Jefe(null, null, null, null, null, null, null, null, 0, false);
 		
 		obj1.setDni("362358H");
 		obj2.setDni("362358H");
@@ -56,11 +68,12 @@ Jefe obj = new Jefe("sunburn", "362358H", "astdf@gmail.com", Date.valueOf("2023-
 	assertFalse(resultado6);
 	
 	obj1.hashCode();
+	obj1.comprarArticulos(null, null);
 	}
 	
 	@Test
 	void test_toString() {
-		assertEquals(obj.toString(),"Jefe [titulo=fotografo, dni=sunburn, nombre=362358H, apellidos=astdf@gmail.com, fechaNacimiento=2023-01-01, email=james]");
+		assertEquals(obj.toString(),"Jefe [titulo=null, dni=null, nombre=null, apellidos=null, fechaNacimiento=null, email=null]");
 	}
 
 

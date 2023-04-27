@@ -9,24 +9,27 @@ import Modelo.ArticulosComprados;
 
 class ArticulosCompradosTest {
 
-ArticulosComprados obj = new ArticulosComprados(0, 0, 0);
+ArticulosComprados obj = new ArticulosComprados(0, 0, 0, 0);
 	
 	@Test
 	void test_GettersSetters() {
-		obj.setCantidad(3);;
-		obj.setCodigoCompra(2);;
-		obj.setIdArticulo(1);;
+		obj.setCantidad(3);
+		obj.setCodigoCompra(2);
+		obj.setIdArticulo(1);
+		obj.setPrecioArt(7);
 		
 		assertEquals(obj.getCantidad(),3);
 		assertEquals(obj.getCodigoCompra(),2);
 		assertEquals(obj.getIdArticulo(),1);
+		assertEquals(Float.valueOf(obj.getPrecioArt()),7);
+		
 	
 	}
 	
 	@Test
 	void test_equals() {
-		ArticulosComprados obj1 = new ArticulosComprados(0, 0, 0);
-		ArticulosComprados obj2 = new ArticulosComprados(0, 0, 0);
+		ArticulosComprados obj1 = new ArticulosComprados(0, 0, 0, 0);
+		ArticulosComprados obj2 = new ArticulosComprados(0, 0, 0, 0);
 		
 		obj1.setIdArticulo(2132);
 		obj2.setIdArticulo(2132);

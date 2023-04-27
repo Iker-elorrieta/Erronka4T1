@@ -10,7 +10,7 @@ import Modelo.tipoArticulo;
 
 class HerramientaTest {
 
-Herramienta obj = new Herramienta(0, null, null, null, 0, 0, null, null, 0);
+Herramienta obj = new Herramienta(0, null, null, null, null, 0, 0, null, null, 0);
 	
 	@Test
 	void test_GettersSetters() {
@@ -22,8 +22,9 @@ Herramienta obj = new Herramienta(0, null, null, null, 0, 0, null, null, 0);
 		obj.setPrecio(23.1);
 		obj.setStockActual(4);
 		obj.setStockMaximo(10);
-		obj.setType(tipoArticulo.Comida);
+		obj.settipo(tipoArticulo.Comida);
 		obj.setRutaImagen("imagen.png");
+		obj.setDescripcion("des");
 		
 		assertEquals(obj.getElectrica(),true);
 		assertEquals(obj.getGarantia(),45);
@@ -33,15 +34,16 @@ Herramienta obj = new Herramienta(0, null, null, null, 0, 0, null, null, 0);
 		assertEquals(obj.getPrecio(),23.1);
 		assertEquals(obj.getStockActual(),4);
 		assertEquals(obj.getStockMaximo(),10);
-		assertEquals(obj.getType(),tipoArticulo.Comida);
+		assertEquals(obj.gettipo(),tipoArticulo.Comida);
 		assertEquals(obj.getRutaImagen(),"imagen.png");
+		assertEquals(obj.getDescripcion(),"des");
 	
 	}
 	
 	@Test
 	void test_equals() {
-		Herramienta obj1 = new Herramienta(0, null, null, null, 0, 0, null, null, 0);
-		Herramienta obj2 = new Herramienta(0, null, null, null, 0, 0, null, null, 0);
+		Herramienta obj1 = new Herramienta(0, null, null, null, null, 0, 0, null, null, 0);
+		Herramienta obj2 = new Herramienta(0, null, null, null, null, 0, 0, null, null, 0);
 		
 		obj1.setIdArticulo(2132);
 		obj2.setIdArticulo(2132);
@@ -69,7 +71,7 @@ Herramienta obj = new Herramienta(0, null, null, null, 0, 0, null, null, 0);
 	
 	@Test
 	void test_toString() {
-		assertEquals(obj.toString(),"Herramienta [electrica=null, garantia=0, idArticulo=0, nombreArticulo=null, rutaImagen=null, precio=null, stockMaximo=0, stockActual=0, type=null]");
+		assertEquals(obj.toString(),"Herramienta [electrica=null, garantia=0, idArticulo=0, nombreArticulo=null, rutaImagen=null, precio=null, stockMaximo=0, stockActual=0, tipo=null]");
 	}
 
 }

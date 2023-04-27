@@ -2,10 +2,10 @@ package Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.Date;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+
 
 import org.junit.jupiter.api.Test;
 
@@ -15,22 +15,24 @@ class testCliente {
 	DateFormat formateador= new SimpleDateFormat("dd/M/yy");
 	@Test
 	void test() {
-		Date fecha;
-		try {
-			fecha = formateador.parse("16/07/2000");
-			Cliente primero=new Cliente("798981A","Pepe","Perez Navarros",fecha,"perez@gmail.com","contrasena",55.67,true);
-		Cliente segundo=new Cliente("","","",null,"","",0,false);
+		
+			Cliente primero=new Cliente("798981A","Pepe","Perez Navarros",Date.valueOf("2343-01-02"),"perez@gmail.com","contrasena",55.67,true, false);
+		Cliente segundo=new Cliente("","","",null,"","",0,false, false);
 		assertFalse(primero.equals(segundo));
 		assertFalse(primero.equals(null));
 		segundo.setDni("798981A");
 		segundo.setNombre("Pepe");
 		segundo.setApellidos("Perez Navarros");
-		segundo.setFechaNacimiento(fecha);
+		segundo.setFechaNacimiento(Date.valueOf("2343-01-02"));
 		segundo.setEmail("perez@gmail.com");
 		segundo.setDinero(55.67);
 		segundo.setTarjetaCliente(true);
 		primero.setArrayCompras(null);
 		segundo.setArrayCompras(null);
+		primero.setContrasena("1234");
+		primero.setBloqueado(false);
+		assertEquals(primero.getContrasena(),"1234");
+		assertEquals(primero.isBloqueado(),false);
 		assertEquals(primero.getApellidos(),segundo.getApellidos());
 		assertEquals(primero.getDinero(),segundo.getDinero());
 		assertEquals(primero.getDni(),segundo.getDni());
@@ -40,18 +42,15 @@ class testCliente {
 		assertEquals(primero.getArrayCompras(),segundo.getArrayCompras());
 		assertEquals(primero.isTarjetaCliente(),segundo.isTarjetaCliente());
 		assertEquals(primero.hashCode(),segundo.hashCode());
-		assertEquals(primero.toString(),"Cliente [dinero=55.67, tarjetaCliente=true, dni=798981A, nombre=Pepe, apellidos=Perez Navarros, fechaNacimiento=Sun Jul 16 00:00:00 CEST 2000, email=perez@gmail.com]");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		assertEquals(primero.toString(),"Cliente [dinero=55.67, tarjetaCliente=true, dni=798981A, nombre=Pepe, apellidos=Perez Navarros, fechaNacimiento=2343-01-02, email=perez@gmail.com]");
+	
 		
 	}
 	
 	@Test
 	void test_equals() {
-		Cliente obj1 = new Cliente(null, null, null, null, null,"", 0, false);
-		Cliente obj2 = new Cliente(null, null, null, null, null,"",0, false);
+		Cliente obj1 = new Cliente(null, null, null, null, null,"", 0, false, false);
+		Cliente obj2 = new Cliente(null, null, null, null, null,"",0, false, false);
 		
 		obj1.setDni("362358H");
 		obj2.setDni("362358H");
@@ -75,6 +74,7 @@ class testCliente {
 	assertFalse(resultado6);
 	
 	obj1.hashCode();
+	obj1.comprarArticulos(null, null);
 	}
 	
 	
