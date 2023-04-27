@@ -6,8 +6,9 @@ public class ArticulosComprados {
 	private int codigoCompra;
 	private int idArticulo;
 	private int cantidad;
+	private float precioArt;
 	
-	public ArticulosComprados(int codigoCompra, int idArticulo, int cantidad) {
+	public ArticulosComprados(int codigoCompra, int idArticulo, int cantidad,float precioArt) {
 		super();
 		this.codigoCompra = codigoCompra;
 		this.idArticulo = idArticulo;
@@ -30,21 +31,11 @@ public class ArticulosComprados {
 		return idArticulo == other.idArticulo;
 	}
 
-
-
 	@Override
 	public String toString() {
 		return "ArticulosComprados [codigoCompra=" + codigoCompra + ", idArticulo=" + idArticulo + ", cantidad="
 				+ cantidad + "]";
 	}
-
-
-
-	
-	
-	
-	
-	
 	public int getCodigoCompra() {
 		return codigoCompra;
 	}
@@ -62,6 +53,18 @@ public class ArticulosComprados {
 	}
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
+	}
+
+
+
+	public float getPrecioArt() {
+		return precioArt;
+	}
+
+
+
+	public void setPrecioArt(float precioArt) {
+		this.precioArt = precioArt;
 	}
 	
 

@@ -24,6 +24,7 @@ import Modelo.Persona;
 
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.awt.event.ActionEvent;
@@ -250,9 +251,14 @@ public class Vista {
 					mc.comprobarNacimiento(datePicker.getJFormattedTextField().getText());
 					mc.comprobarEmail(textMail.getText());
 					mc.comprobarDNI(textDNI.getText());
-					mc.registrarse(textNombre.getText(),textApellidos.getText(),
-					String.valueOf(contrasenaRegi.getPassword()), textDNI.getText()
-					, datePicker.getJFormattedTextField().getText(), textMail.getText());
+					try {
+						mc.registrarse(textNombre.getText(),textApellidos.getText(),
+						String.valueOf(contrasenaRegi.getPassword()), textDNI.getText()
+						, datePicker.getJFormattedTextField().getText(), textMail.getText());
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(null, e1.getMessage());
+					}
 					
 					usuarios=mc.cargarPersonas();
 					

@@ -11,14 +11,13 @@ private double precioTotal;
 private Date fecha;
 
 
-public Compra(int codigoCompra, ArrayList<Articulo> arrayArticulos, double precioTotal, Date fecha) {
+public Compra(int codigoCompra, double precioTotal, Date fecha) {
 	super();
 	this.codigoCompra = codigoCompra;
-	this.arrayArticulos = arrayArticulos;
 	this.precioTotal = precioTotal;
 	this.fecha = fecha;
+	arrayArticulos = new ArrayList<Articulo>();
 }
-
 
 @Override
 public int hashCode() {
@@ -34,21 +33,10 @@ public boolean equals(Object obj) {
 	return codigoCompra == other.codigoCompra;
 }
 
-
 @Override
 public String toString() {
 	return "Compra [codigoCompra=" + codigoCompra + ", precioTotal=" + precioTotal + ", fecha=" + fecha + "]";
 }
-
-
-
-
-
-
-
-
-
-
 
 public int getCodigoCompra() {
 	return codigoCompra;
@@ -74,15 +62,8 @@ public void setPrecioTotal(double precioTotal) {
 public void setFecha(Date fecha) {
 	this.fecha = fecha;
 }
-	
-
-
-
-
-
-
-
-
-
+public void anadirArticulo(Articulo ar) {
+	arrayArticulos.add(ar);
+}
 
 }

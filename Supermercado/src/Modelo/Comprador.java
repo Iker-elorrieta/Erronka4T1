@@ -3,7 +3,6 @@ package Modelo;
 import java.util.ArrayList;
 
 public interface Comprador {
-
-	void comprarArticulos(ArrayList<Object> carrito);
+	void comprarArticulos(Compra compra,ArrayList<ArticulosComprados> lista);
 
 }

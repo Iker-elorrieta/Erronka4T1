@@ -1,5 +1,6 @@
 package Modelo;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public abstract class Persona implements Comprador{
@@ -54,6 +55,10 @@ public abstract class Persona implements Comprador{
 	}
 	public void setContrasena(String contrasena) {
 		this.contrasena = contrasena;
+	}
+	public void comprarArticulos(Compra compra, ArrayList<ArticulosComprados> lista) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 
