@@ -27,7 +27,7 @@ public class Tablas {
 	public final static String Cantidad="cantidad";
 	public final static String PrecioArt="precioArt";
 	
-	public final static String Articulo="articulo";
+	public final static String Articulo="articulos";
 	public final static String IdArticulo="idArticulo";
 	public final static String NombreArticulo="nombreArticulo";
 	public final static String RutaImagen="rutaImagen";
@@ -53,7 +53,7 @@ public class Tablas {
 	public final static String CodigoSeccion="codigoSeccion";
 	public final static String NombreSeccion="nombreSeccion";
 	
-	public final static String Supermercado="supemercados";
+	public final static String Supermercado="supermercados";
 	public final static String DNIJEFE="dniJefe";
 	public final static String CodigoSuper="codigoSuper";
 	public final static String Direccion="direccion";

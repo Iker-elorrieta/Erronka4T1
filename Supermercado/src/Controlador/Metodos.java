@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import Modelo.*;
 
 public class Metodos {
+	
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	public Date deStringADate(String fecha) throws ParseException {
 		return formatter.parse(fecha);
@@ -137,18 +138,29 @@ public class Metodos {
 		}
 		return lista;
 	}
+	
+	public int pasarBoolean(Boolean statement) {
+		int resul= 0;
+		if(statement) {
+			resul=1;
+		}
+		return resul;
+		
+	}
+	
 	public void registrarse(Cliente cli) throws ErroresDeRegistro, SQLException {
 			Statement comando = (Statement) conectarBaseDatos().createStatement();
 			comando.executeUpdate("INSERT INTO "+Tablas.Cliente+" VALUES ('"+cli.getDni()+"','"+cli.getNombre()+"','"+cli.getApellidos()+"',"
-									+ "'"+cli.getFechaNacimiento()+"','"+cli.getEmail()+"','"+cli.getDinero()+"','"+cli.isTarjetaCliente()+"',"
-									+ "'"+cli.getContrasena()+"','"+cli.isBloqueado()+"')");		
+									+ "'"+cli.getFechaNacimiento()+"','"+cli.getEmail()+"','"+cli.getDinero()+"','"+pasarBoolean(cli.isTarjetaCliente())+"',"
+									+ "'"+cli.getContrasena()+"','"+pasarBoolean(cli.isBloqueado())+"')");		
 }
 	public void registrarseJefe(Jefe jefe) throws ErroresDeRegistro, SQLException {
 		Statement comando = (Statement) conectarBaseDatos().createStatement();
 		comando.executeUpdate("INSERT INTO "+Tablas.Jefe+" VALUES ('"+jefe.getDni()+"','"+jefe.getNombre()+"',"
 				+ "'"+jefe.getApellidos()+"','"+jefe.getFechaNacimiento()+"','"+jefe.getEmail()+"',"
 				+ "'"+jefe.getTitulo()+"','"+jefe.getContrasena()+"','"+jefe.getFechaAdquisicion()+"',"
-						+ "'"+jefe.getPorcentajeEmpresa()+"','"+jefe.isDios()+"')");		
+						+ "'"+jefe.getPorcentajeEmpresa()+"','"+pasarBoolean(jefe.isDios())+"')");
+		
 }	
 	public void insertarSupermercado(Jefe jefe,Supermercado su) throws SQLException {
 		Statement comando = (Statement) conectarBaseDatos().createStatement();
@@ -165,10 +177,10 @@ public class Metodos {
 		comando.executeUpdate("INSERT INTO "+Tablas.Compras+" VALUES ('"+cli.getDni()+"','"+com.getCodigoCompra()+"',"
 				+ "'"+com.getPrecioTotal()+"','"+com.getFechaCompra()+"')");
 	}
-	public void insertarArticuloComprado(Compra com,ArticulosComprados arc) throws SQLException {
+	public void insertarArticuloComprado(Compra com,Articulo art,ArticulosComprados arc) throws SQLException {
 		Statement comando = (Statement) conectarBaseDatos().createStatement();
 		comando.executeUpdate("INSERT INTO "+Tablas.ArticulosComprados+" VALUES ('"+com.getCodigoCompra()+"',"
-				+ "'"+arc.getIdArticulo()+"','"+arc.getCantidad()+"','"+arc.getPrecioArt()+"')");
+				+ "'"+art.getIdArticulo()+"','"+arc.getCantidad()+"','"+arc.getPrecioArt()+"')");
 	}
 	public void insertarArticulo(Seccion se,Articulo ar) throws SQLException {
 		Statement comando = (Statement) conectarBaseDatos().createStatement();
@@ -210,7 +222,8 @@ public class Metodos {
 				+ " "+Tablas.FechaNacimineto+"='"+je.getFechaNacimiento()+"', "+Tablas.Email+"='"+je.getEmail()+"',"
 				+ " "+Tablas.Titulo+"='"+je.getTitulo()+"', "+Tablas.fechaAdquisicion+"='"+je.getFechaAdquisicion()+"',"
 				+ " "+Tablas.Contrasena+"='"+je.getContrasena()+"', "+Tablas.porcentajeEmpresa+"='"+je.getPorcentajeEmpresa()+"'"
-				+ " "+Tablas.dios+"='"+je.isDios()+"' WHERE "+Tablas.IdArticulo+"='"+je.getDni()+"'");
+				+ " "+Tablas.dios+"="+pasarBoolean(je.isDios())+" WHERE "+Tablas.DNI+"='"+je.getDni()+"'");
+		
 	}
 	public void cambiarSupermercado(Jefe je,Supermercado su) throws SQLException {
 		Statement comando = (Statement) conectarBaseDatos().createStatement();
@@ -388,7 +401,7 @@ public class Metodos {
 		Statement comando;
 		try {
 			comando = (Statement) conectarBaseDatos().createStatement();
-			comando.executeUpdate("UPDATE "+Tablas.Cliente+" SET "+Tablas.bloqueado+"='"+false+"'");
+			comando.executeUpdate("UPDATE "+Tablas.Cliente+" SET "+Tablas.bloqueado+"='"+true+"'");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
