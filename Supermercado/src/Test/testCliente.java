@@ -3,21 +3,11 @@ package Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.Test;
 
-import Controlador.Metodos;
-import Controlador.Tablas;
-import Modelo.ArticulosComprados;
 import Modelo.Cliente;
-import Modelo.Compra;
 
 class testCliente {
 	DateFormat formateador= new SimpleDateFormat("dd/M/yy");

@@ -3,18 +3,12 @@ package Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import Modelo.Articulo;
-import Modelo.ArticulosComprados;
-import Modelo.Jefe;
-import Modelo.Ropa;
 import Modelo.Seccion;
 import Modelo.Supermercado;
-import Modelo.tipoArticulo;
 
 class SupermercadoTest {
 	ArrayList<Seccion> arraySecciones = new ArrayList<Seccion>();

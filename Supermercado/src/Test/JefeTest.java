@@ -4,15 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.Test;
 
-import Controlador.Metodos;
-import Modelo.ArticulosComprados;
-import Modelo.Compra;
 import Modelo.Jefe;
 
 class JefeTest {
