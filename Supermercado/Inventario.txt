@@ -1,0 +1,1 @@
+Comida [fechaCaducidad=2015-02-02, procedencia=japon, idArticulo=4, nombreArticulo=burger, rutaImagen=sgd, precio=20.0, stockMaximo=10, stockActual=8, tipo=Comida]

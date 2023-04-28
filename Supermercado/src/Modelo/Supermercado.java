@@ -1,7 +1,13 @@
 package Modelo;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import com.mysql.jdbc.Statement;
+
+import Controlador.Metodos;
+import Controlador.Tablas;
 
 public class Supermercado {
 	
@@ -12,7 +18,6 @@ private int numEmpleados;
 private String horario;
 private ArrayList<Seccion> arraySecciones;
 
-
 public Supermercado(String codigoSuper, String direccion, float metrosCuadrados, int numEmpleados, String horario,
 		ArrayList<Seccion> arraySecciones) {
 	this.codigoSuper = codigoSuper;
@@ -22,13 +27,6 @@ public Supermercado(String codigoSuper, String direccion, float metrosCuadrados,
 	this.horario = horario;
 	this.arraySecciones = arraySecciones;
 }
-
-
-
-
-
-
-
 @Override
 public int hashCode() {
 	return Objects.hash(codigoSuper);
@@ -42,23 +40,11 @@ public boolean equals(Object obj) {
 	Supermercado other = (Supermercado) obj;
 	return Objects.equals(codigoSuper, other.codigoSuper);
 }
-
-
-
-
-
 @Override
 public String toString() {
 	return "Supermercado [codigoSuper=" + codigoSuper + ", direccion=" + direccion + ", metrosCuadrados="
 			+ metrosCuadrados + ", numEmpleados=" + numEmpleados + ", horario=" + horario + "]";
 }
-
-
-
-
-
-
-
 public String getCodigoSuper() {
 	return codigoSuper;
 }
@@ -95,9 +81,18 @@ public ArrayList<Seccion> getArraySecciones() {
 public void setArraySecciones(ArrayList<Seccion> arraySecciones) {
 	this.arraySecciones = arraySecciones;
 }
-	
 
-	
-	
-	
+public void emergenciaSanitaria(Jefe je,ArrayList<Seccion> listaSecciones,ArrayList<ArticulosComprados> listaArtComprados) throws SQLException {
+	Metodos mc=new Metodos();
+	Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+	for(Seccion se: listaSecciones) {
+		for(Articulo ar:se.getArrayArticulos()) {
+	comando.executeUpdate("UPDATE "+Tablas.Articulo+" SET "+Tablas.StockActual+"=0 WHERE "+Tablas.IdArticulo+"='"+ar.getIdArticulo()+"'");
+	for(ArticulosComprados arc: listaArtComprados) {
+		comando.executeUpdate("DELETE FROM "+Tablas.ArticulosComprados+" WHERE "+Tablas.IdArticulo+"='"+arc.getIdArticulo()+"' AND "+Tablas.codigoCompra+"='"+arc.getCodigoCompra()+"'");
+		comando.executeUpdate("UPDATE "+Tablas.Compras+" SET "+Tablas.precioFinal+"=("+Tablas.precioFinal+"-"+(arc.getCantidad()*arc.getPrecioArt())+") WHERE "+Tablas.codigoCompra+"='"+arc.getCodigoCompra()+"'");
+			}	
+		}
+	}
+}
 }

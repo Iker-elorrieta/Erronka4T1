@@ -3,12 +3,18 @@ package Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
+import Modelo.Articulo;
+import Modelo.ArticulosComprados;
+import Modelo.Jefe;
+import Modelo.Ropa;
 import Modelo.Seccion;
 import Modelo.Supermercado;
+import Modelo.tipoArticulo;
 
 class SupermercadoTest {
 	ArrayList<Seccion> arraySecciones = new ArrayList<Seccion>();
@@ -64,5 +70,25 @@ Supermercado sup = new Supermercado(null, null, 0, 0, null, null);
 	void test_toString() {
 		assertEquals(sup.toString(),"Supermercado [codigoSuper=null, direccion=null, metrosCuadrados=0.0, numEmpleados=0, horario=null]");
 	}
-
+	@Test
+	void testMetodos() {
+//		Jefe je=new Jefe("154352K", null, null, null, null, null, null, null, 0, false);
+//		ArrayList<Seccion> listaSec=new ArrayList<Seccion>();
+//		Seccion se=new Seccion("DHYH","Deportes",null);
+//		listaSec.add(se);
+//		Supermercado sup1 = new Supermercado(null, null, 0, 0, null, listaSec);
+//		Ropa ro=new Ropa(1,"zapatillas de correr","dgfftfgfg.png","incredible 10/10",23.0,10,90,tipoArticulo.Ropa,"S","morado","cuero","nike");
+//		ArrayList<Articulo> listaAr=new ArrayList<Articulo>();
+//		listaAr.add(ro);
+//		ArticulosComprados ar=new ArticulosComprados(1,1,2,23);
+//		ArrayList<ArticulosComprados> listaArc=new ArrayList<ArticulosComprados>();
+//		listaArc.add(ar);
+//		se.setArrayArticulos(listaAr);
+//		try {
+//			sup1.emergenciaSanitaria(je, listaSec, listaArc);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+}
 }

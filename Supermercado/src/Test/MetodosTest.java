@@ -9,8 +9,10 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
+import Controlador.ErroresDeLogin;
 import Controlador.ErroresDeRegistro;
 import Controlador.Metodos;
+import Controlador.controladorVista;
 import Modelo.Articulo;
 import Modelo.ArticulosComprados;
 import Modelo.Cliente;
@@ -18,6 +20,7 @@ import Modelo.Comida;
 import Modelo.Compra;
 import Modelo.Herramienta;
 import Modelo.Jefe;
+import Modelo.Persona;
 import Modelo.Ropa;
 import Modelo.Seccion;
 import Modelo.Supermercado;
@@ -239,8 +242,8 @@ Seccion sec = new Seccion("WRSS", "reparaciones", null);
 	@Test
 	void test_cambiarPerfilCliente(){
 		try {
-			Cliente cli0 = new Cliente("575464V", "Arthur", "Morgan", Date.valueOf("2001-01-21"), "clill@gmail.com", "1234", 10, false, false);
-			Cliente cli1 = new Cliente("575464V", "ash", "jast", Date.valueOf("2001-01-21"), "hkhkhk@gmail.com", "1234", 10, false, false);
+			Cliente cli0 = new Cliente("575464V", "Arthur", "Morgan", Date.valueOf("2001-01-21"), "clill@gmail.com", "1234", 1000, false, false);
+			Cliente cli1 = new Cliente("575464V", "ash", "jast", Date.valueOf("2001-01-21"), "hkhkhk@gmail.com", "1234", 1000, false, false);
 			
 			mts.cambiarPerfilCliente(cli1);
 			assertEquals(mts.cargarClientes().get(0).getNombre(),"ash");
@@ -558,7 +561,51 @@ Seccion sec = new Seccion("WRSS", "reparaciones", null);
 	
 	@Test
 	void test_iniciarSesion(){
-		
+		ArrayList<Persona> listaUser=null;
+		listaUser=mts.cargarPersonas();
+		Jefe je=null;
+		try {
+			je=(Jefe) mts.iniciarSesion(listaUser, "sbdbhsd@gmail.com", "1234");
+		} catch (ErroresDeLogin e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(je.getDni(),"154352K");
+		Cliente cli=null;
+		try {
+			cli=(Cliente) mts.iniciarSesion(listaUser, "clill@gmail.com", "1234");
+		} catch (ErroresDeLogin e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(cli.getDni(),"575464V");
+		try {
+			mts.iniciarSesion(listaUser, "", "");
+		} catch (ErroresDeLogin e) {
+			// TODO Auto-generated catch block
+			
+		}
+		try {
+			mts.iniciarSesion(listaUser, "falloseguro@gmail.com", "fallo");
+		} catch (ErroresDeLogin e) {
+			// TODO Auto-generated catch block
+			
+		}
+	}
+	
+	@Test
+	void test_TablaArt(){
+		controladorVista cv = new controladorVista();
+		ArrayList<Articulo> listaArticulos = new ArrayList<Articulo>();
+		try {
+			cv.cargarTabla(listaArticulos).getModel();
+			int columnas = cv.cargarTabla(listaArticulos).getModel().getRowCount();
+			assertEquals(columnas,mts.cargarArticulos().size());
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	

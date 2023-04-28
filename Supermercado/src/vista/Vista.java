@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.JTextField;
-
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
@@ -19,11 +18,15 @@ import org.jdatepicker.impl.UtilDateModel;
 import Controlador.ErroresDeLogin;
 import Controlador.ErroresDeRegistro;
 import Controlador.Metodos;
+import Controlador.controladorVista;
+import Modelo.Articulo;
 import Modelo.Cliente;
 import Modelo.DateLabelFormatter;
 import Modelo.Persona;
 
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
+
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -45,6 +48,9 @@ public class Vista {
 	private JDatePickerImpl datePicker;
 	private ArrayList<Persona> usuarios;
 	private Persona login;
+	Metodos mts = new Metodos();
+	controladorVista cv = new controladorVista();
+	private ArrayList<Articulo> listaArticulos;
 	/**
 	 * Launch the application.
 	 */
@@ -297,5 +303,31 @@ public class Vista {
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Cuarta", null, panel_1, null);
 		panel_1.setLayout(null);
+		
+		
+		JButton btnNewButton = new JButton("Ver Articulos");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				JScrollPane scrollPane = new JScrollPane();
+				scrollPane.setBounds(10, 48, 618, 163);
+				panel_1.add(scrollPane);
+				
+				try {
+			
+				scrollPane.setViewportView(cv.cargarTabla(listaArticulos));
+				
+				} catch (SQLException ex1) {
+					// TODO Auto-generated catch block
+					ex1.printStackTrace();
+				} catch (Exception ex3) {
+					// TODO Auto-generated catch block
+					ex3.printStackTrace();
+				}
+				
+			}
+		});
+		btnNewButton.setBounds(35, 22, 101, 23);
+		panel_1.add(btnNewButton);
 	}
 }

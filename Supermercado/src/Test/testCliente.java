@@ -3,13 +3,21 @@ package Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
+import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
+import Controlador.Metodos;
+import Controlador.Tablas;
+import Modelo.ArticulosComprados;
 import Modelo.Cliente;
+import Modelo.Compra;
 
 class testCliente {
 	DateFormat formateador= new SimpleDateFormat("dd/M/yy");
@@ -74,7 +82,73 @@ class testCliente {
 	assertFalse(resultado6);
 	
 	obj1.hashCode();
-	obj1.comprarArticulos(null, null);
+	}
+	@Test
+	void testMetodos() {
+//		Cliente cli = new Cliente("575464V", null, null, null, null,"", 0, false, false);
+//	Metodos mc=new Metodos();
+//	Compra com=null;
+//	try {
+//		com=new Compra(0,98.1,mc.deStringADate("2019-07-09"));
+//	} catch (ParseException e1) {
+//		// TODO Auto-generated catch block
+//		e1.printStackTrace();
+//	}
+//	ArticulosComprados ar=new ArticulosComprados(13, 1, 3, 23);
+//	ArrayList<ArticulosComprados> lista=new ArrayList<ArticulosComprados>();
+//	lista.add(ar);
+//	try {
+//		cli.comprarArticulos(com, lista);
+//		mc.borrarCompra(com);
+//	} catch (SQLException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
+//	try {
+//		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+//		ResultSet carga=comando.executeQuery("SELECT "+Tablas.Dinero+" FROM "+Tablas.CLIENTE);
+//		double dinero=0;
+//		double dineroAntes=1000;
+//		while(carga.next()) {
+//			dinero=carga.getDouble(Tablas.Dinero);
+//		}
+//		assertTrue(dinero<dineroAntes);
+//	} catch (SQLException e1) {
+//		// TODO Auto-generated catch block
+//		e1.printStackTrace();
+//	}
+//	try {
+//		cli.devolverUnArticulo(ar, 3);
+//	} catch (SQLException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
+//	try {
+//		cli.devolverUnArticulo(ar, 1);
+//	} catch (SQLException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
+//	try {
+//		cli.cancelarCompra(com,lista);
+//	} catch (SQLException e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
+//	try {
+//		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+//		ResultSet carga=comando.executeQuery("SELECT "+Tablas.Dinero+" FROM "+Tablas.CLIENTE);
+//		double dinero=0;
+//		double dineroAntes=1000;
+//		while(carga.next()) {
+//			dinero=carga.getDouble(Tablas.Dinero);
+//		}
+//		assertTrue(dinero==dineroAntes);
+//	} catch (SQLException e1) {
+//		// TODO Auto-generated catch block
+//		e1.printStackTrace();
+//	}
+	
 	}
 	
 	

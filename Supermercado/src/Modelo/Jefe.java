@@ -1,8 +1,16 @@
 package Modelo;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
+
+import com.mysql.jdbc.Statement;
+
+import Controlador.Metodos;
+import Controlador.Tablas;
 
 public class Jefe extends Persona{
 	private String titulo;
@@ -64,7 +72,6 @@ public class Jefe extends Persona{
 		return Objects.equals(dni, other.dni);
 	}
 
-	
 	@Override
 	public String toString() {
 		return "Jefe [titulo=" + titulo + ", dni=" + dni + ", nombre=" + nombre + ", apellidos=" + apellidos
@@ -79,8 +86,47 @@ public class Jefe extends Persona{
 	}
 
 	@Override
-	public void comprarArticulos(Compra compra,ArrayList<ArticulosComprados> arc) {
+	public void comprarArticulos(Compra compra,ArrayList<ArticulosComprados> lista) throws SQLException {
 		// TODO Auto-generated method stub
-		
+		Metodos mc=new Metodos();
+		Calendar cal=Calendar.getInstance();
+		String fecha=cal.get(Calendar.YEAR)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.DAY_OF_MONTH);
+		Statement comando;
+		int codC=-1;
+			comando = (Statement) mc.conectarBaseDatos().createStatement();
+			comando.executeUpdate("INSERT INTO "+Tablas.Compras+" ("+Tablas.DNI+","+Tablas.precioFinal+","+Tablas.fechaCompra+")"
+					+ "VALUES ('"+getDni()+"','"+compra.getPrecioTotal()+"','"+fecha+"')");
+			ResultSet codCompra=comando.executeQuery("SELECT "+Tablas.codigoCompra+" FROM "+Tablas.Compras+" WHERE "+Tablas.DNI+"='"+dni+"' "
+					+ "ORDER BY "+Tablas.codigoCompra+" DESC LIMIT 1");
+			while(codCompra.next()) {
+				codC=codCompra.getInt(Tablas.codigoCompra);
+			}
+			for(ArticulosComprados ar:lista) {
+			comando.executeUpdate("INSERT INTO "+Tablas.ArticulosComprados+" VALUES ('"+codC+"','"+ar.getIdArticulo()+"','"+ar.getCantidad()+"','"+ar.getPrecioArt()+"')");
+			comando.executeUpdate("UPDATE "+Tablas.Articulo+" SET "+Tablas.StockActual+"=("+Tablas.StockActual+"-"+ar.getCantidad()+") WHERE "+Tablas.IdArticulo+"='"+ar.getIdArticulo()+"'");
+			}
 	}
+	public void cancelarCompra(Compra com,ArrayList<ArticulosComprados> lista) throws SQLException {
+		// TODO Auto-generated method stub
+		Metodos mc=new Metodos();
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		int codigoCompra=-1;
+		for(ArticulosComprados arc:lista) {
+		comando.executeUpdate("UPDATE "+Tablas.Articulo+" SET "+Tablas.StockActual+"=("+Tablas.StockActual+"+"+arc.getCantidad()+") WHERE "+Tablas.IdArticulo+"='"+arc.getIdArticulo()+"'");
+		codigoCompra=arc.getCodigoCompra();
+		}
+		comando.executeUpdate("DELETE FROM "+Tablas.Compras+" WHERE "+Tablas.DNI+"='"+getDni()+"' AND "+Tablas.codigoCompra+"='"+codigoCompra+"'");
+}
+	public void devolverUnArticulo(ArticulosComprados arc,int numeroDevolver) throws SQLException {
+		Metodos mc=new Metodos();
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		if(arc.getCantidad()==numeroDevolver) {
+			comando.executeUpdate("DELETE FROM "+Tablas.ArticulosComprados+" WHERE "+Tablas.IdArticulo+"='"+arc.getIdArticulo()+"' AND "+Tablas.codigoCompra+"='"+arc.getCodigoCompra()+"'");
+		}else{
+			comando.executeUpdate("UPDATE "+Tablas.ArticulosComprados+" SET "+Tablas.Cantidad+"=("+Tablas.Cantidad+"-"+numeroDevolver+") WHERE "+Tablas.IdArticulo+"='"+arc.getIdArticulo()+"'"
+					+ "AND  "+Tablas.codigoCompra+"='"+arc.getCodigoCompra()+"'");
+		}
+		comando.executeUpdate("UPDATE "+Tablas.Articulo+" SET "+Tablas.StockActual+"=("+Tablas.StockActual+"+"+arc.getCantidad()+") WHERE "+Tablas.IdArticulo+"='"+arc.getIdArticulo()+"'");
+	}
+	
 }

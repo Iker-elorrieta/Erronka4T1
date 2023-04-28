@@ -16,6 +16,10 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 import Modelo.*;
 
 public class Metodos {
@@ -32,10 +36,10 @@ public class Metodos {
 		ArrayList<Cliente> listaClientes=new ArrayList<Cliente>();
 		Cliente comprador=null;
 		Statement comando = (Statement) conectarBaseDatos().createStatement();
-		ResultSet cuenta=comando.executeQuery("SELECT * FROM "+Tablas.Cliente);
+		ResultSet cuenta=comando.executeQuery("SELECT * FROM "+Tablas.CLIENTE);
 		while(cuenta.next()) {
-			comprador=new Cliente(cuenta.getString(Tablas.DNI), cuenta.getString(Tablas.Nombre), 
-					cuenta.getString(Tablas.Apellidos), cuenta.getDate(Tablas.FechaNacimineto),cuenta.getString(Tablas.Email),
+			comprador=new Cliente(cuenta.getString(Tablas.DNI), cuenta.getString(Tablas.NOMBRE), 
+					cuenta.getString(Tablas.APELLIDOS), cuenta.getDate(Tablas.FECHANACIMIENTO),cuenta.getString(Tablas.EMAIL),
 					cuenta.getString(Tablas.Contrasena),cuenta.getDouble(Tablas.Dinero),cuenta.getBoolean(Tablas.TarjetaCliente)
 					,cuenta.getBoolean(Tablas.bloqueado));
 			listaClientes.add(comprador);
@@ -48,8 +52,8 @@ public class Metodos {
 		Statement comando = (Statement) conectarBaseDatos().createStatement();
 		ResultSet cuentaJefe=comando.executeQuery("SELECT * FROM "+Tablas.Jefe);
 		while(cuentaJefe.next()) {
-		jefes=new Jefe(cuentaJefe.getString(Tablas.DNI), cuentaJefe.getString(Tablas.Nombre), 
-				cuentaJefe.getString(Tablas.Apellidos), cuentaJefe.getDate(Tablas.FechaNacimineto),cuentaJefe.getString(Tablas.Email),
+		jefes=new Jefe(cuentaJefe.getString(Tablas.DNI), cuentaJefe.getString(Tablas.NOMBRE), 
+				cuentaJefe.getString(Tablas.APELLIDOS), cuentaJefe.getDate(Tablas.FECHANACIMIENTO),cuentaJefe.getString(Tablas.EMAIL),
 				cuentaJefe.getString(Tablas.Contrasena),cuentaJefe.getString(Tablas.Titulo),cuentaJefe.getDate(Tablas.fechaAdquisicion)
 				,cuentaJefe.getFloat(Tablas.porcentajeEmpresa),cuentaJefe.getBoolean(Tablas.dios));
 		listaJefes.add(jefes);
@@ -150,7 +154,7 @@ public class Metodos {
 	
 	public void registrarse(Cliente cli) throws ErroresDeRegistro, SQLException {
 			Statement comando = (Statement) conectarBaseDatos().createStatement();
-			comando.executeUpdate("INSERT INTO "+Tablas.Cliente+" VALUES ('"+cli.getDni()+"','"+cli.getNombre()+"','"+cli.getApellidos()+"',"
+			comando.executeUpdate("INSERT INTO "+Tablas.CLIENTE+" VALUES ('"+cli.getDni()+"','"+cli.getNombre()+"','"+cli.getApellidos()+"',"
 									+ "'"+cli.getFechaNacimiento()+"','"+cli.getEmail()+"','"+cli.getDinero()+"','"+pasarBoolean(cli.isTarjetaCliente())+"',"
 									+ "'"+cli.getContrasena()+"','"+pasarBoolean(cli.isBloqueado())+"')");		
 }
@@ -208,9 +212,9 @@ public class Metodos {
 	}
 	public void cambiarPerfilCliente(Cliente cli) throws SQLException {
 		Statement comando = (Statement) conectarBaseDatos().createStatement();
-		comando.executeUpdate("UPDATE "+Tablas.Cliente+" SET "+Tablas.DNI+"='"+cli.getDni()+"',"
-				+ " "+Tablas.Nombre+"='"+cli.getNombre()+"', "+Tablas.Apellidos+"='"+cli.getApellidos()+"',"
-				+ " "+Tablas.FechaNacimineto+"='"+cli.getFechaNacimiento()+"', "+Tablas.Email+"='"+cli.getEmail()+"',"
+		comando.executeUpdate("UPDATE "+Tablas.CLIENTE+" SET "+Tablas.DNI+"='"+cli.getDni()+"',"
+				+ " "+Tablas.NOMBRE+"='"+cli.getNombre()+"', "+Tablas.APELLIDOS+"='"+cli.getApellidos()+"',"
+				+ " "+Tablas.FECHANACIMIENTO+"='"+cli.getFechaNacimiento()+"', "+Tablas.EMAIL+"='"+cli.getEmail()+"',"
 				+ " "+Tablas.Dinero+"='"+cli.getDinero()+"', "+Tablas.TarjetaCliente+"='"+pasarBoolean(cli.isTarjetaCliente())+"',"
 				+ " "+Tablas.Contrasena+"='"+cli.getContrasena()+"', "+Tablas.bloqueado+"='"+pasarBoolean(cli.isBloqueado())+"'"
 				+ " WHERE "+Tablas.DNI+"='"+cli.getDni()+"'");
@@ -220,8 +224,8 @@ public class Metodos {
 	public void cambiarPerfilJefe(Jefe je) throws SQLException {
 		Statement comando = (Statement) conectarBaseDatos().createStatement();
 		comando.executeUpdate("UPDATE "+Tablas.Jefe+" SET "+Tablas.DNI+"='"+je.getDni()+"',"
-				+ " "+Tablas.Nombre+"='"+je.getNombre()+"', "+Tablas.Apellidos+"='"+je.getApellidos()+"',"
-				+ " "+Tablas.FechaNacimineto+"='"+je.getFechaNacimiento()+"', "+Tablas.Email+"='"+je.getEmail()+"',"
+				+ " "+Tablas.NOMBRE+"='"+je.getNombre()+"', "+Tablas.APELLIDOS+"='"+je.getApellidos()+"',"
+				+ " "+Tablas.FECHANACIMIENTO+"='"+je.getFechaNacimiento()+"', "+Tablas.EMAIL+"='"+je.getEmail()+"',"
 				+ " "+Tablas.Titulo+"='"+je.getTitulo()+"', "+Tablas.fechaAdquisicion+"='"+je.getFechaAdquisicion()+"',"
 				+ " "+Tablas.Contrasena+"='"+je.getContrasena()+"', "+Tablas.porcentajeEmpresa+"='"+je.getPorcentajeEmpresa()+"'"
 				+ " "+Tablas.dios+"="+pasarBoolean(je.isDios())+" WHERE "+Tablas.DNI+"='"+je.getDni()+"'");
@@ -283,7 +287,7 @@ public class Metodos {
 	public void darseBajaCliente(Cliente cliente) throws SQLException {
 		Statement comando;
 			comando = (Statement) conectarBaseDatos().createStatement();
-			comando.executeUpdate("DELETE FROM "+Tablas.Cliente+" WHERE "+Tablas.DNI+"='"+cliente.getDni()+"'");
+			comando.executeUpdate("DELETE FROM "+Tablas.CLIENTE+" WHERE "+Tablas.DNI+"='"+cliente.getDni()+"'");
 	}
 	public void darseBajaJefe(Jefe jefe) throws SQLException {
 		Statement comando;
@@ -323,18 +327,18 @@ public class Metodos {
 	Jefe jefes=null;
 	try {
 		Statement comando = (Statement) conectarBaseDatos().createStatement();
-		ResultSet cuenta=comando.executeQuery("SELECT * FROM "+Tablas.Cliente);
+		ResultSet cuenta=comando.executeQuery("SELECT * FROM "+Tablas.CLIENTE);
 		while(cuenta.next()) {
-			comprador=new Cliente(cuenta.getString(Tablas.DNI), cuenta.getString(Tablas.Nombre), 
-					cuenta.getString(Tablas.Apellidos), cuenta.getDate(Tablas.FechaNacimineto),cuenta.getString(Tablas.Email),
+			comprador=new Cliente(cuenta.getString(Tablas.DNI), cuenta.getString(Tablas.NOMBRE), 
+					cuenta.getString(Tablas.APELLIDOS), cuenta.getDate(Tablas.FECHANACIMIENTO),cuenta.getString(Tablas.EMAIL),
 					cuenta.getString(Tablas.Contrasena),cuenta.getDouble(Tablas.Dinero),cuenta.getBoolean(Tablas.TarjetaCliente)
 					,cuenta.getBoolean(Tablas.bloqueado));
 			listaPersonas.add(comprador);
 		}
 		ResultSet cuentaJefe=comando.executeQuery("SELECT * FROM "+Tablas.Jefe);
 		while(cuentaJefe.next()) {
-		jefes=new Jefe(cuentaJefe.getString(Tablas.DNI), cuentaJefe.getString(Tablas.Nombre), 
-				cuentaJefe.getString(Tablas.Apellidos), cuentaJefe.getDate(Tablas.FechaNacimineto),cuentaJefe.getString(Tablas.Email),
+		jefes=new Jefe(cuentaJefe.getString(Tablas.DNI), cuentaJefe.getString(Tablas.NOMBRE), 
+				cuentaJefe.getString(Tablas.APELLIDOS), cuentaJefe.getDate(Tablas.FECHANACIMIENTO),cuentaJefe.getString(Tablas.EMAIL),
 				cuentaJefe.getString(Tablas.Contrasena),cuentaJefe.getString(Tablas.Titulo),cuentaJefe.getDate(Tablas.fechaAdquisicion)
 				,cuentaJefe.getFloat(Tablas.porcentajeEmpresa),cuentaJefe.getBoolean(Tablas.dios));
 		listaPersonas.add(jefes);
@@ -393,7 +397,7 @@ public class Metodos {
 		Statement comando;
 		try {
 			comando = (Statement) conectarBaseDatos().createStatement();
-			comando.executeUpdate("UPDATE "+Tablas.Cliente+" SET "+Tablas.Dinero+"='"+dinero+"'");
+			comando.executeUpdate("UPDATE "+Tablas.CLIENTE+" SET "+Tablas.Dinero+"='"+dinero+"'");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -403,7 +407,7 @@ public class Metodos {
 		Statement comando;
 		try {
 			comando = (Statement) conectarBaseDatos().createStatement();
-			comando.executeUpdate("UPDATE "+Tablas.Cliente+" SET "+Tablas.bloqueado+"='"+pasarBoolean(true)+"'");
+			comando.executeUpdate("UPDATE "+Tablas.CLIENTE+" SET "+Tablas.bloqueado+"='"+pasarBoolean(true)+"'");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -425,4 +429,6 @@ public class Metodos {
 		}
 		return inicio;
 	}
+	
+	
 }

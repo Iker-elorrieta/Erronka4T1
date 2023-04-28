@@ -4,8 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.Test;
 
+import Controlador.Metodos;
+import Modelo.ArticulosComprados;
+import Modelo.Compra;
 import Modelo.Jefe;
 
 class JefeTest {
@@ -68,12 +75,50 @@ Jefe obj = new Jefe(null, null, null, null, null, null, null, null, 0, false);
 	assertFalse(resultado6);
 	
 	obj1.hashCode();
-	obj1.comprarArticulos(null, null);
 	}
 	
 	@Test
 	void test_toString() {
 		assertEquals(obj.toString(),"Jefe [titulo=null, dni=null, nombre=null, apellidos=null, fechaNacimiento=null, email=null]");
+	}
+	@Test
+	void testMetodos() {
+//		Jefe obj1 = new Jefe("154352K", null, null, null, null, null, null, null, 0, false);
+//		Metodos mc=new Metodos();
+//		Compra com=null;
+//		try {
+//			com=new Compra(0,98.1,mc.deStringADate("2019-07-09"));
+//		} catch (ParseException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//		ArticulosComprados ar=new ArticulosComprados(13, 1, 3, 23);
+//		ArrayList<ArticulosComprados> lista=new ArrayList<ArticulosComprados>();
+//		lista.add(ar);
+//		try {
+//			obj1.comprarArticulos(com, lista);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		try {
+//			obj1.devolverUnArticulo(ar, 3);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		try {
+//			obj1.devolverUnArticulo(ar, 1);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		try {
+//			obj1.cancelarCompra(com,lista);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 
