@@ -15,11 +15,6 @@ public class Seccion {
 		this.arrayArticulos = arrayArticulos;
 	}
 
-	
-	
-
-
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(codigoSeccion);

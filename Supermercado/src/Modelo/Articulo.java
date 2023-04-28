@@ -4,34 +4,32 @@ public abstract class Articulo {
 	protected int idArticulo;
 	protected String nombreArticulo;
 	protected String rutaImagen;
+	protected String descripcion;
 	protected Double precio;
 	protected int stockMaximo;
 	protected int stockActual;
-	protected tipoArticulo type;
+	protected tipoArticulo tipo;
 	
 
 
-	public Articulo(int idArticulo, String nombreArticulo, String rutaImagen, Double precio, int stockMaximo,
-			int stockActual, tipoArticulo type) {
+	public Articulo(int idArticulo, String nombreArticulo, String rutaImagen,String descripcion, Double precio, int stockMaximo,
+			int stockActual, tipoArticulo tipo) {
 		super();
 		this.idArticulo = idArticulo;
 		this.nombreArticulo = nombreArticulo;
 		this.rutaImagen = rutaImagen;
+		this.descripcion=descripcion;
 		this.precio = precio;
 		this.stockMaximo = stockMaximo;
 		this.stockActual = stockActual;
-		this.type = type;
+		this.tipo = tipo;
 	}
-
-
-
-	
-	
-	
-	
-	
-	
-	
+	public String getDescripcion() {
+		return descripcion;
+	}
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
 	public int getIdArticulo() {
 		return idArticulo;
 	}
@@ -50,8 +48,8 @@ public abstract class Articulo {
 	public int getStockActual() {
 		return stockActual;
 	}
-	public tipoArticulo getType() {
-		return type;
+	public tipoArticulo gettipo() {
+		return tipo;
 	}
 	public void setIdArticulo(int idArticulo) {
 		this.idArticulo = idArticulo;
@@ -71,8 +69,8 @@ public abstract class Articulo {
 	public void setStockActual(int stockActual) {
 		this.stockActual = stockActual;
 	}
-	public void setType(tipoArticulo type) {
-		this.type = type;
+	public void settipo(tipoArticulo tipo) {
+		this.tipo = tipo;
 	}
 	
 	

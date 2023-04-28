@@ -10,7 +10,7 @@ import Modelo.tipoArticulo;
 
 class RopaTest {
 
-Ropa obj = new Ropa(0, null, null, null, 0, 0, null, null, null, null, null);
+Ropa obj = new Ropa(0, null, null, null, null, 0, 0, null, null, null, null, null);
 	
 	@Test
 	void test_GettersSetters() {
@@ -23,8 +23,9 @@ Ropa obj = new Ropa(0, null, null, null, 0, 0, null, null, null, null, null);
 		obj.setPrecio(23.1);
 		obj.setStockActual(4);
 		obj.setStockMaximo(10);
-		obj.setType(tipoArticulo.Comida);
+		obj.settipo(tipoArticulo.Comida);
 		obj.setRutaImagen("imagen.png");
+		obj.setDescripcion("des");
 		
 		assertEquals(obj.getMarca(),"supreme");
 		assertEquals(obj.getTalla(),"S");
@@ -36,15 +37,16 @@ Ropa obj = new Ropa(0, null, null, null, 0, 0, null, null, null, null, null);
 		assertEquals(obj.getPrecio(),23.1);
 		assertEquals(obj.getStockActual(),4);
 		assertEquals(obj.getStockMaximo(),10);
-		assertEquals(obj.getType(),tipoArticulo.Comida);
+		assertEquals(obj.gettipo(),tipoArticulo.Comida);
 		assertEquals(obj.getRutaImagen(),"imagen.png");
+		assertEquals(obj.getDescripcion(),"des");
 	
 	}
 	
 	@Test
 	void test_equals() {
-		Ropa obj1 = new Ropa(0, null, null, null, 0, 0, null, null, null, null, null);
-		Ropa obj2 = new Ropa(0, null, null, null, 0, 0, null, null, null, null, null);
+		Ropa obj1 = new Ropa(0, null, null, null, null, 0, 0, null, null, null, null, null);
+		Ropa obj2 = new Ropa(0, null, null, null, null, 0, 0, null, null, null, null, null);
 		
 		obj1.setIdArticulo(2132);
 		obj2.setIdArticulo(2132);
@@ -72,7 +74,7 @@ Ropa obj = new Ropa(0, null, null, null, 0, 0, null, null, null, null, null);
 	
 	@Test
 	void test_toString() {
-		assertEquals(obj.toString(),"Ropa [talla=null, color=null, material=null, marca=null, idArticulo=0, nombreArticulo=null, rutaImagen=null, precio=null, stockMaximo=0, stockActual=0, type=null]");
+		assertEquals(obj.toString(),"Ropa [talla=null, color=null, material=null, marca=null, idArticulo=0, nombreArticulo=null, rutaImagen=null, precio=null, stockMaximo=0, stockActual=0, tipo=null]");
 	}
 
 }

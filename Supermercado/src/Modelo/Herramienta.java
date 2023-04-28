@@ -7,9 +7,9 @@ public class Herramienta extends Articulo{
 	private int garantia;
 	
 
-	public Herramienta(int idArticulo, String nombreArticulo, String rutaImagen, Double precio, int stockMaximo,
-			int stockActual, tipoArticulo type, Boolean electrica, int garantia) {
-		super(idArticulo, nombreArticulo, rutaImagen, precio, stockMaximo, stockActual, type);
+	public Herramienta(int idArticulo, String nombreArticulo, String rutaImagen,String descripcion, Double precio, int stockMaximo,
+			int stockActual, tipoArticulo tipo, Boolean electrica, int garantia) {
+		super(idArticulo, nombreArticulo, rutaImagen,descripcion, precio, stockMaximo, stockActual, tipo);
 		this.electrica = electrica;
 		this.garantia = garantia;
 	}
@@ -35,7 +35,7 @@ public class Herramienta extends Articulo{
 	public String toString() {
 		return "Herramienta [electrica=" + electrica + ", garantia=" + garantia + ", idArticulo=" + idArticulo
 				+ ", nombreArticulo=" + nombreArticulo + ", rutaImagen=" + rutaImagen + ", precio=" + precio
-				+ ", stockMaximo=" + stockMaximo + ", stockActual=" + stockActual + ", type=" + type + "]";
+				+ ", stockMaximo=" + stockMaximo + ", stockActual=" + stockActual + ", tipo=" + tipo + "]";
 	}
 
 

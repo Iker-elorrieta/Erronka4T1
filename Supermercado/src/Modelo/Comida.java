@@ -5,15 +5,13 @@ import java.util.Objects;
 
 public class Comida extends Articulo{
 	private Date fechaCaducidad;
-	private String nombreAlimento;
 	private String procedencia;
 	
 	
-	public Comida(int idArticulo, String nombreArticulo, String rutaImagen, Double precio, int stockMaximo,
-			int stockActual, tipoArticulo type, Date fechaCaducidad, String nombreAlimento, String procedencia) {
-		super(idArticulo, nombreArticulo, rutaImagen, precio, stockMaximo, stockActual, type);
+	public Comida(int idArticulo, String nombreArticulo, String rutaImagen,String descripcion, Double precio, int stockMaximo,
+			int stockActual, tipoArticulo tipo, Date fechaCaducidad, String procedencia) {
+		super(idArticulo, nombreArticulo, rutaImagen,descripcion, precio, stockMaximo, stockActual, tipo);
 		this.fechaCaducidad = fechaCaducidad;
-		this.nombreAlimento = nombreAlimento;
 		this.procedencia = procedencia;
 	}
 	
@@ -35,27 +33,21 @@ public class Comida extends Articulo{
 
 	@Override
 	public String toString() {
-		return "Comida [fechaCaducidad=" + fechaCaducidad + ", nombreAlimento=" + nombreAlimento + ", procedencia="
+		return "Comida [fechaCaducidad=" + fechaCaducidad + ", procedencia="
 				+ procedencia + ", idArticulo=" + idArticulo + ", nombreArticulo=" + nombreArticulo + ", rutaImagen="
 				+ rutaImagen + ", precio=" + precio + ", stockMaximo=" + stockMaximo + ", stockActual=" + stockActual
-				+ ", type=" + type + "]";
+				+ ", tipo=" + tipo + "]";
 	}
 
 
 	public Date getFechaCaducidad() {
 		return fechaCaducidad;
 	}
-	public String getNombreAlimento() {
-		return nombreAlimento;
-	}
 	public String getProcedencia() {
 		return procedencia;
 	}
 	public void setFechaCaducidad(Date fechaCaducidad) {
 		this.fechaCaducidad = fechaCaducidad;
-	}
-	public void setNombreAlimento(String nombreAlimento) {
-		this.nombreAlimento = nombreAlimento;
 	}
 	public void setProcedencia(String procedencia) {
 		this.procedencia = procedencia;

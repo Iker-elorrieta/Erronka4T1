@@ -8,17 +8,16 @@ public class Compra {
 private int codigoCompra;
 private ArrayList<Articulo> arrayArticulos;
 private double precioTotal;
-private Date fecha;
+private Date fechaCompra;
 
 
-public Compra(int codigoCompra, ArrayList<Articulo> arrayArticulos, double precioTotal, Date fecha) {
+public Compra(int codigoCompra, double precioTotal, Date fechaCompra) {
 	super();
 	this.codigoCompra = codigoCompra;
-	this.arrayArticulos = arrayArticulos;
 	this.precioTotal = precioTotal;
-	this.fecha = fecha;
+	this.fechaCompra = fechaCompra;
+	arrayArticulos = new ArrayList<Articulo>();
 }
-
 
 @Override
 public int hashCode() {
@@ -36,7 +35,7 @@ public boolean equals(Object obj) {
 
 @Override
 public String toString() {
-	return "Compra [codigoCompra=" + codigoCompra + ", precioTotal=" + precioTotal + ", fecha=" + fecha + "]";
+	return "Compra [codigoCompra=" + codigoCompra + ", precioTotal=" + precioTotal + ", fechaCompra=" + fechaCompra + "]";
 }
 
 public int getCodigoCompra() {
@@ -48,8 +47,8 @@ public ArrayList<Articulo> getArrayArticulos() {
 public double getPrecioTotal() {
 	return precioTotal;
 }
-public Date getFecha() {
-	return fecha;
+public Date getFechaCompra() {
+	return fechaCompra;
 }
 public void setCodigoCompra(int codigoCompra) {
 	this.codigoCompra = codigoCompra;
@@ -60,18 +59,9 @@ public void setArrayArticulos(ArrayList<Articulo> arrayArticulos) {
 public void setPrecioTotal(double precioTotal) {
 	this.precioTotal = precioTotal;
 }
-public void setFecha(Date fecha) {
-	this.fecha = fecha;
+public void setFechaCompra(Date fechaCompra) {
+	this.fechaCompra = fechaCompra;
 }
-	
-
-
-
-
-
-
-
-
 
 
 }

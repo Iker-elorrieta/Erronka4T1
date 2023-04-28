@@ -8,9 +8,9 @@ public class Ropa extends Articulo{
 	private String material;
 	private String marca;
 	
-	public Ropa(int idArticulo, String nombreArticulo, String rutaImagen, Double precio, int stockMaximo,
-			int stockActual, tipoArticulo type, String talla, String color, String material, String marca) {
-		super(idArticulo, nombreArticulo, rutaImagen, precio, stockMaximo, stockActual, type);
+	public Ropa(int idArticulo, String nombreArticulo, String rutaImagen,String descripcion, Double precio, int stockMaximo,
+			int stockActual, tipoArticulo tipo, String talla, String color, String material, String marca) {
+		super(idArticulo, nombreArticulo, rutaImagen,descripcion, precio, stockMaximo, stockActual, tipo);
 		this.talla = talla;
 		this.color = color;
 		this.material = material;
@@ -36,8 +36,8 @@ public class Ropa extends Articulo{
 	public String toString() {
 		return "Ropa [talla=" + talla + ", color=" + color + ", material=" + material + ", marca=" + marca
 				+ ", idArticulo=" + idArticulo + ", nombreArticulo=" + nombreArticulo + ", rutaImagen=" + rutaImagen
-				+ ", precio=" + precio + ", stockMaximo=" + stockMaximo + ", stockActual=" + stockActual + ", type="
-				+ type + "]";
+				+ ", precio=" + precio + ", stockMaximo=" + stockMaximo + ", stockActual=" + stockActual + ", tipo="
+				+ tipo + "]";
 	}
 
 	public String getTalla() {

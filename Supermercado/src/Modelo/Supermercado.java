@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Supermercado {
-	//1-const 2-he 3-ToStr 4-GyS
+	
 private String codigoSuper;
 private String direccion;
 private float metrosCuadrados;

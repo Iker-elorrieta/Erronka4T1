@@ -13,25 +13,25 @@ import Modelo.Compra;
 
 class CompraTest {
 	ArrayList<Articulo> arrayArticulos = new ArrayList<Articulo>();
-Compra obj = new Compra(212, arrayArticulos, 12313, Date.valueOf("2034-02-03"));
+Compra obj = new Compra(212, 12313, Date.valueOf("2034-02-03"));
 	
 	@Test
 	void test_GettersSetters() {
 		obj.setArrayArticulos(arrayArticulos);
 		obj.setCodigoCompra(212);
-		obj.setFecha(Date.valueOf("2034-02-03"));
+		obj.setFechaCompra(Date.valueOf("2034-02-03"));
 		obj.setPrecioTotal(64.2);
 		
 		assertEquals(obj.getArrayArticulos(),arrayArticulos);
 		assertEquals(obj.getCodigoCompra(),212);
-		assertEquals(obj.getFecha(),Date.valueOf("2034-02-03"));
+		assertEquals(obj.getFechaCompra(),Date.valueOf("2034-02-03"));
 		assertEquals(Double.valueOf(obj.getPrecioTotal()),64.2);
 	}
 	
 	@Test
 	void test_equals() {
-		Compra obj1 = new Compra(0, arrayArticulos, 0, null);
-		Compra obj2 = new Compra(0, arrayArticulos, 0, null);
+		Compra obj1 = new Compra(0, 0, null);
+		Compra obj2 = new Compra(0, 0, null);
 		
 		obj1.setCodigoCompra(2131232);
 		obj2.setCodigoCompra(2131232);
@@ -59,7 +59,7 @@ Compra obj = new Compra(212, arrayArticulos, 12313, Date.valueOf("2034-02-03"));
 	
 	@Test
 	void test_toString() {
-		assertEquals(obj.toString(),"Compra [codigoCompra=212, precioTotal=12313.0, fecha=2034-02-03]");
+		assertEquals(obj.toString(),"Compra [codigoCompra=212, precioTotal=12313.0, fechaCompra=2034-02-03]");
 	}
 
 }
