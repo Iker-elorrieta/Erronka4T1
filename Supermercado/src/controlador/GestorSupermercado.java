@@ -6,6 +6,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import modelo.Jefe;
+import modelo.Persona;
 import modelo.Seccion;
 import modelo.Supermercado;
 import modelo.tipoArticulo;
@@ -76,5 +77,16 @@ public class GestorSupermercado {
 		}
 		su.setArraySecciones(listaSe);
 		return su;
+	}
+	public ArrayList<Supermercado> todoSupermercados(ArrayList<Persona> personas) throws SQLException{
+		ArrayList<Supermercado> todos=new ArrayList<Supermercado>();
+		Jefe temporal=null;
+		for(Persona per:personas) {
+			if(per instanceof Jefe) {
+				temporal=(Jefe) per;
+				todos.add(buscarSupermercado(temporal));
+			}
+		}
+		return todos;
 	}
 }

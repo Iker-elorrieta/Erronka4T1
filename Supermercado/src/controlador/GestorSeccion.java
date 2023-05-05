@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-
+import modelo.Articulo;
 import modelo.Seccion;
 import modelo.Supermercado;
 import modelo.tipoArticulo;
@@ -50,5 +50,13 @@ public class GestorSeccion {
 		comando = (Statement) mc.conectarBaseDatos().createStatement();
 		comando.executeUpdate("DELETE FROM "+TABLAS.SECCION+" WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
 	}
-	
+	public Seccion buscarSeccionPorTipo(Supermercado su,Articulo ar){
+		Seccion vuelta=null;
+		for(Seccion se: su.getArraySecciones()) {
+			if(se.getNombreSeccion().equals(ar.gettipo())) {
+				vuelta=se;
+			}
+		}
+		return vuelta;
+	}
 }

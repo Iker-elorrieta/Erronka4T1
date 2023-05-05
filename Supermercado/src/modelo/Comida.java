@@ -3,7 +3,10 @@ package modelo;
 import java.util.Date;
 import java.util.Objects;
 
+import controlador.Metodos;
+
 public class Comida extends Articulo{
+	Metodos mc=new Metodos();
 	private Date fechaCaducidad;
 	private String procedencia;
 	
@@ -36,8 +39,8 @@ public class Comida extends Articulo{
 				+ rutaImagen + ", precio=" + precio + ", stockActual=" + stockActual
 				+ ", tipo=" + tipo + "]";
 	}
-	public Date getFechaCaducidad() {
-		return fechaCaducidad;
+	public String getFechaCaducidad() {
+		return mc.formatearFecha(fechaCaducidad);
 	}
 	public String getProcedencia() {
 		return procedencia;

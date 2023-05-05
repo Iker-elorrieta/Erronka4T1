@@ -118,7 +118,7 @@ public class GestorPersona {
 	public void cambiarEstadoUsuario(Cliente cliente,boolean opcion) throws SQLException {
 		Statement comando;
 			comando = (Statement) mc.conectarBaseDatos().createStatement();
-			comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.BLOQUEADO+"='"+mc.pasarBoolean(opcion)+"'");
+			comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.BLOQUEADO+"='"+mc.pasarBoolean(opcion)+"' WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
 	}
 	public void comprobarCampos(String nombre,String apellidos, String contrasena,String DNI,String fechaNa,String email) throws ErroresDeRegistro {
 		if(nombre.equals("")|apellidos.equals("")|contrasena.equals("")|DNI.equals("")|fechaNa.equals("")|email.equals("")) {
