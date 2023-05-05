@@ -6,7 +6,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import modelo.Jefe;
+import modelo.Seccion;
 import modelo.Supermercado;
+import modelo.tipoArticulo;
 
 public class GestorSupermercado {
 	Metodos mc=new Metodos();
@@ -56,5 +58,23 @@ public class GestorSupermercado {
 		Statement comando;
 			comando = (Statement) mc.conectarBaseDatos().createStatement();
 			comando.executeUpdate("DELETE FROM "+TABLAS.SUPERMERCADO+" WHERE "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"'");
+	}
+	public Supermercado buscarSupermercado(Jefe je) throws SQLException {
+		ArrayList<Seccion> listaSe=new ArrayList<Seccion>();
+		Supermercado su=null;
+		Seccion se=null;
+		Statement comando;
+		comando = (Statement) mc.conectarBaseDatos().createStatement();
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.SUPERMERCADO+" WHERE "+TABLAS.DNIJEFE+"='"+je.getDni()+"'");
+		while(carga.next()) {
+			su=new Supermercado(carga.getString(TABLAS.CODIGOSUPER),carga.getString(TABLAS.EMPRESA),carga.getString(TABLAS.DIRECCION),carga.getInt(TABLAS.NUMEROEMPLEADOS),null);
+		}
+		carga=comando.executeQuery("SELECT * FROM "+TABLAS.SECCION+" WHERE "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"'");
+		while(carga.next()) {
+			se=new Seccion(carga.getString(TABLAS.CODIGOSECCION), tipoArticulo.valueOf(carga.getString(TABLAS.TIPO)), null);
+			listaSe.add(se);
+		}
+		su.setArraySecciones(listaSe);
+		return su;
 	}
 }

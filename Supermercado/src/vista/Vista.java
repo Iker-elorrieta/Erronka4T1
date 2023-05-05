@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JPanel;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -50,6 +51,7 @@ public class Vista {
 	private JDatePickerImpl datePicker_1;
 	private JDatePickerImpl datePicker_2;
 	private JDatePickerImpl datePicker_3;
+	private JDatePickerImpl datePicker_4;
 	private JTable tabla;
 	private JTextField textCNombre;
 	private JTextField textCApellidos;
@@ -68,8 +70,9 @@ public class Vista {
 	
 	private Jefe nuevoJefe=null;
 	private Supermercado supermercado=null;
-	private Seccion seccion;
+	private Seccion seccion=null;
 	private Boolean cambios=true;
+	private Jefe admin;
 	private int cuentaSecciones=0;
 	private ArrayList<Articulo> listaArticulos;
 	private ArrayList<Persona> usuarios;
@@ -90,6 +93,8 @@ public class Vista {
 	private JTextField textTalla;
 	private JTextField textMarca;
 	private JTextField textProcedencia;
+	private Supermercado su;
+	
 	/**
 	private GestorArticuloComprado gac=new GestorArticuloComprado();
 	
@@ -216,6 +221,10 @@ public class Vista {
 		panel_PerfilUtilidades.add(datePicker_1);
 		datePicker_1.setEnabled(false);
 		
+		JButton btnInfo = new JButton("Datos");
+		JLabel lblCrear = new JLabel("Anadir");
+		JButton btnCreacion = new JButton("Supermercado");
+		JButton btnAnadirArticulo = new JButton("Articulos");
 		JLabel lblSaludo = new JLabel("");
 		lblSaludo.setForeground(new Color(0, 0, 255));
 		JLabel lblErrorInicioSesion = new JLabel("");
@@ -224,7 +233,6 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					login=gp.iniciarSesion(usuarios,cemail.getText(),String.valueOf(campoContrasena.getPassword()));
-					tabbedPane.setSelectedIndex(3);
 					lblErrorInicioSesion.setText("");
 					cemail.setText("");
 					campoContrasena.setText("");
@@ -235,7 +243,24 @@ public class Vista {
 					datePicker_1.getJFormattedTextField().setText(login.getFechaNacimiento());
 					if(login.getTipo().equals(tipoPersona.Cliente)) {
 						cliente=(Cliente) login;
+						if(cliente.isBloqueado()) {
+							JOptionPane.showMessageDialog(null,"Estas bloqueado, no puedes iniciar sesion");
+							frame.dispose();
+						}else {
+							lblCrear.setVisible(false);
+							btnCreacion.setVisible(false);
+							btnAnadirArticulo.setVisible(false);
+							btnInfo.setVisible(false);
+							tabbedPane.setSelectedIndex(3);
 					textDineroActual.setText(String.valueOf(cliente.getDinero()));
+						}
+					}else {
+						admin=(Jefe) login;
+						lblCrear.setVisible(true);
+						btnCreacion.setVisible(true);
+						btnAnadirArticulo.setVisible(true);
+						btnInfo.setVisible(true);
+						tabbedPane.setSelectedIndex(3);
 					}
 				} catch (ErroresDeLogin e1) {
 					// TODO Auto-generated catch block
@@ -562,7 +587,6 @@ public class Vista {
 		lblErroresCambio.setBounds(10, 160, 303, 14);
 		panel_PerfilUtilidades.add(lblErroresCambio);
 		
-		JButton btnInfo = new JButton("Datos");
 		btnInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tabbedPane.setSelectedIndex(4);
@@ -571,7 +595,6 @@ public class Vista {
 		btnInfo.setBounds(558, 101, 110, 23);
 		panel_PerfilUtilidades.add(btnInfo);
 		
-		JButton btnCreacion = new JButton("Supermercado");
 		btnCreacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tabbedPane.setSelectedIndex(5);
@@ -580,16 +603,26 @@ public class Vista {
 		btnCreacion.setBounds(401, 101, 110, 23);
 		panel_PerfilUtilidades.add(btnCreacion);
 		
-		JButton btnAñadirArticulo = new JButton("Articulos");
-		btnAñadirArticulo.addActionListener(new ActionListener() {
+		JComboBox<String> suAnadirArticulo = new JComboBox<String>();
+		btnAnadirArticulo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				tabbedPane.setSelectedIndex(7);
+				tabbedPane.setSelectedIndex(6);
+				try {
+					su=gsm.buscarSupermercado(admin);
+					admin.setSupermercado(su);
+					String [] cargaSuper=new String [1];
+					cargaSuper[0]=admin.getSupermercado().getEmpresa();
+					suAnadirArticulo.setModel(new DefaultComboBoxModel<String>(cargaSuper));
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
-		btnAñadirArticulo.setBounds(401, 159, 110, 23);
-		panel_PerfilUtilidades.add(btnAñadirArticulo);
+		btnAnadirArticulo.setBounds(401, 159, 110, 23);
+		panel_PerfilUtilidades.add(btnAnadirArticulo);
 		
-		JLabel lblCrear = new JLabel("Anadir");
+		
 		lblCrear.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblCrear.setBounds(420, 59, 66, 14);
 		panel_PerfilUtilidades.add(lblCrear);
@@ -998,16 +1031,16 @@ public class Vista {
 		tabbedPane.addTab("Septima", null, panel_Articulos, null);
 		panel_Articulos.setLayout(null);
 		
-		JComboBox<String> suAnadirArticulo = new JComboBox<String>();
+		
 		suAnadirArticulo.setBounds(228, 37, 156, 22);
 		panel_Articulos.add(suAnadirArticulo);
 		
 		JLabel lblNombreArticulo = new JLabel("Nombre:");
-		lblNombreArticulo.setBounds(10, 83, 46, 14);
+		lblNombreArticulo.setBounds(10, 83, 75, 14);
 		panel_Articulos.add(lblNombreArticulo);
 		
 		textNombreArticulo = new JTextField();
-		textNombreArticulo.setBounds(66, 80, 123, 20);
+		textNombreArticulo.setBounds(95, 80, 123, 20);
 		panel_Articulos.add(textNombreArticulo);
 		textNombreArticulo.setColumns(10);
 		
@@ -1037,7 +1070,36 @@ public class Vista {
 		panel_Articulos.add(textPrecio);
 		textPrecio.setColumns(10);
 		
+		JSpinner Garantia = new JSpinner();
+		JCheckBox chckElectrica = new JCheckBox("Electrica");
 		JComboBox<String> tipoArticulo = new JComboBox<String>();
+		tipoArticulo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tipoArticulo.getSelectedItem().equals("Comida")) {
+					datePicker_4.setEnabled(true);
+					textProcedencia.setEnabled(true);
+					Garantia.setEnabled(false);
+					chckElectrica.setEnabled(false);
+					textTalla.setEnabled(false);
+					textMarca.setEnabled(false);
+				}else if(tipoArticulo.getSelectedItem().equals("Herramienta")){
+					Garantia.setEnabled(true);
+					chckElectrica.setEnabled(true);
+					datePicker_4.setEnabled(false);
+					textProcedencia.setEnabled(false);
+					textTalla.setEnabled(false);
+					textMarca.setEnabled(false);
+				}else {
+					Garantia.setEnabled(false);
+					chckElectrica.setEnabled(false);
+					datePicker_4.setEnabled(false);
+					textProcedencia.setEnabled(false);
+					textTalla.setEnabled(true);
+					textMarca.setEnabled(true);
+				}
+			}
+		});
+		tipoArticulo.setModel(new DefaultComboBoxModel<String>(Tipos));
 		tipoArticulo.setBounds(288, 217, 131, 22);
 		panel_Articulos.add(tipoArticulo);
 		
@@ -1053,6 +1115,7 @@ public class Vista {
 		textTalla.setBounds(515, 80, 123, 20);
 		panel_Articulos.add(textTalla);
 		textTalla.setColumns(10);
+		textTalla.setEnabled(false);
 		
 		JLabel lblMarca = new JLabel("Marca:");
 		lblMarca.setBounds(429, 128, 46, 14);
@@ -1062,9 +1125,10 @@ public class Vista {
 		textMarca.setBounds(515, 125, 123, 20);
 		panel_Articulos.add(textMarca);
 		textMarca.setColumns(10);
+		textMarca.setEnabled(false);
 		
 		JLabel lblFechaDeCaducidad = new JLabel("Fecha de Caducidad");
-		lblFechaDeCaducidad.setBounds(497, 175, 141, 14);
+		lblFechaDeCaducidad.setBounds(525, 163, 141, 14);
 		panel_Articulos.add(lblFechaDeCaducidad);
 		
 		JLabel lblProcedencia = new JLabel("Procedencia:");
@@ -1075,23 +1139,43 @@ public class Vista {
 		textProcedencia.setBounds(515, 233, 123, 20);
 		panel_Articulos.add(textProcedencia);
 		textProcedencia.setColumns(10);
+		textProcedencia.setEnabled(false);
 		
-		JCheckBox chckElectrica = new JCheckBox("Electrica");
 		chckElectrica.setBounds(497, 267, 97, 23);
 		panel_Articulos.add(chckElectrica);
+		chckElectrica.setEnabled(false);
 		
-		JSpinner Garantia = new JSpinner();
+		
 		Garantia.setModel(new SpinnerNumberModel(2, 2, 5, 1));
 		Garantia.setBounds(564, 297, 30, 20);
 		panel_Articulos.add(Garantia);
+		Garantia.setEnabled(false);
 		
 		JLabel lblGarantia = new JLabel("Garantia:");
-		lblGarantia.setBounds(443, 300, 46, 14);
+		lblGarantia.setBounds(429, 300, 60, 14);
 		panel_Articulos.add(lblGarantia);
 		
+		UtilDateModel modelx = new UtilDateModel();
+		//model.setDate(2022, 5, 6);
+		Properties px = new Properties();
+		JDatePanelImpl datePanelx = new JDatePanelImpl(modelx, px);
+		datePicker_4 = new JDatePickerImpl(datePanelx, new DateLabelFormatter());
+		datePicker_4.setBounds(513, 200, 125, 20);
+		datePicker_4.getJFormattedTextField().setEnabled(false);
+		panel_Articulos.add(datePicker_4);
+		
 		JButton btnInsertar = new JButton("Confirmar");
-		btnInsertar.setBounds(284, 379, 89, 23);
+		btnInsertar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		btnInsertar.setBounds(541, 379, 97, 23);
 		panel_Articulos.add(btnInsertar);
+		
+		JButton btnCancelarArticulo = new JButton("Cancelar");
+		btnCancelarArticulo.setBounds(66, 379, 89, 23);
+		panel_Articulos.add(btnCancelarArticulo);
 		
 	}
 }
