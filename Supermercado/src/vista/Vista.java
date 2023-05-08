@@ -148,9 +148,9 @@ public class Vista {
 		paneles.setBounds(0, 0, 707, 453);
 		frame.getContentPane().add(paneles);
 		
-		JPanel panel = new JPanel();
-		paneles.addTab("Primera", null, panel, null);
-		panel.setLayout(null);
+		JPanel panel_Bienvenido = new JPanel();
+		paneles.addTab("Primera", null, panel_Bienvenido, null);
+		panel_Bienvenido.setLayout(null);
 		
 		JButton btnIniSes = new JButton("Iniciar sesion");
 		btnIniSes.addActionListener(new ActionListener() {
@@ -159,7 +159,7 @@ public class Vista {
 			}
 		});
 		btnIniSes.setBounds(263, 181, 127, 23);
-		panel.add(btnIniSes);
+		panel_Bienvenido.add(btnIniSes);
 		
 		JButton btnRegis = new JButton("Registrarse");
 		btnRegis.addActionListener(new ActionListener() {
@@ -168,28 +168,28 @@ public class Vista {
 			}
 		});
 		btnRegis.setBounds(263, 252, 127, 23);
-		panel.add(btnRegis);
+		panel_Bienvenido.add(btnRegis);
 		
 		JLabel lblMensajeIni = new JLabel("Bienvenido al Super Elorrieta!");
 		lblMensajeIni.setFont(new Font("Tahoma", Font.BOLD, 34));
 		lblMensajeIni.setBounds(74, 31, 536, 81);
-		panel.add(lblMensajeIni);
+		panel_Bienvenido.add(lblMensajeIni);
 		
 		JLabel lblIniSes = new JLabel("Pulse en este botón para acceder a su cuenta.");
 		lblIniSes.setBounds(214, 156, 283, 14);
-		panel.add(lblIniSes);
+		panel_Bienvenido.add(lblIniSes);
 		
 		JLabel lblCreaCuen = new JLabel("Pulse este si quiere crear una cuenta.");
 		lblCreaCuen.setBounds(227, 227, 239, 14);
-		panel.add(lblCreaCuen);
+		panel_Bienvenido.add(lblCreaCuen);
 		
 		JButton btnInvi = new JButton("Invitado");
 		btnInvi.setBounds(283, 316, 89, 23);
-		panel.add(btnInvi);
+		panel_Bienvenido.add(btnInvi);
 		
 		JLabel lblInvi = new JLabel("Si solo va a mirar nuestros productos pulse el botón de Invitado.");
 		lblInvi.setBounds(182, 291, 362, 14);
-		panel.add(lblInvi);
+		panel_Bienvenido.add(lblInvi);
 		
 		JPanel panel_IniciarSesion = new JPanel();
 		paneles.addTab("Segundo", null, panel_IniciarSesion, null);
@@ -219,13 +219,15 @@ public class Vista {
 		JDatePanelImpl datePanelo = new JDatePanelImpl(modelo, po);
 		datePicker_1 = new JDatePickerImpl(datePanelo, new DateLabelFormatter());
 		datePicker_1.getJFormattedTextField().setEnabled(false);
-		datePicker_1.setBounds(116, 104, 125, 20);
+		datePicker_1.setBounds(156, 104, 125, 20);
 		panel_PerfilUtilidades.add(datePicker_1);
 		datePicker_1.setEnabled(false);
 		
+		JButton btnAnadirSecciones = new JButton("Secciones");
+		JButton btnPaginaSuper = new JButton("Supermercado");
 		JButton btnInfo = new JButton("Datos");
 		JLabel lblCrear = new JLabel("Anadir");
-		JButton btnCreacion = new JButton("Supermercado");
+		JButton btnCreacion = new JButton("Administrador");
 		JButton btnAnadirArticulo = new JButton("Articulos");
 		JLabel lblSaludo = new JLabel("");
 		lblSaludo.setForeground(new Color(0, 0, 255));
@@ -252,6 +254,8 @@ public class Vista {
 							lblCrear.setVisible(false);
 							btnCreacion.setVisible(false);
 							btnAnadirArticulo.setVisible(false);
+							btnPaginaSuper.setVisible(false);
+							btnAnadirSecciones.setVisible(true);
 							btnInfo.setVisible(false);
 							paneles.setSelectedIndex(3);
 					textDineroActual.setText(String.valueOf(cliente.getDinero()));
@@ -507,7 +511,7 @@ public class Vista {
 		panel_PerfilUtilidades.add(lblCGmail);
 		
 		JLabel lblCFechaNacimiento = new JLabel("Fecha de Nacimiento:");
-		lblCFechaNacimiento.setBounds(10, 110, 103, 14);
+		lblCFechaNacimiento.setBounds(10, 110, 136, 14);
 		panel_PerfilUtilidades.add(lblCFechaNacimiento);
 		
 		JLabel lblCContrasena = new JLabel("Contrasena:");
@@ -516,26 +520,26 @@ public class Vista {
 		
 		textCNombre = new JTextField();
 		textCNombre.setEnabled(false);
-		textCNombre.setBounds(116, 33, 125, 20);
+		textCNombre.setBounds(156, 33, 125, 20);
 		panel_PerfilUtilidades.add(textCNombre);
 		textCNombre.setColumns(10);
 		
 		
 		textCApellidos = new JTextField();
 		textCApellidos.setEnabled(false);
-		textCApellidos.setBounds(116, 58, 125, 20);
+		textCApellidos.setBounds(156, 58, 125, 20);
 		panel_PerfilUtilidades.add(textCApellidos);
 		textCApellidos.setColumns(10);
 		
 		textCEmail = new JTextField();
 		textCEmail.setEnabled(false);
-		textCEmail.setBounds(116, 82, 125, 20);
+		textCEmail.setBounds(156, 82, 125, 20);
 		panel_PerfilUtilidades.add(textCEmail);
 		textCEmail.setColumns(10);
 		
 		passCContrasena = new JPasswordField();
 		passCContrasena.setEnabled(false);
-		passCContrasena.setBounds(116, 132, 125, 20);
+		passCContrasena.setBounds(156, 132, 125, 20);
 		panel_PerfilUtilidades.add(passCContrasena);
 		
 		JLabel lblAumentarDinero = new JLabel("Cartera");
@@ -608,7 +612,7 @@ public class Vista {
 		JComboBox<String> suAnadirArticulo = new JComboBox<String>();
 		btnAnadirArticulo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				paneles.setSelectedIndex(6);
+				paneles.setSelectedIndex(8);
 				try {
 					su=gsm.buscarSupermercado(admin);
 					admin.setSupermercado(su);
@@ -621,13 +625,57 @@ public class Vista {
 				}
 			}
 		});
-		btnAnadirArticulo.setBounds(401, 159, 110, 23);
+		btnAnadirArticulo.setBounds(377, 194, 134, 23);
 		panel_PerfilUtilidades.add(btnAnadirArticulo);
 		
 		
 		lblCrear.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblCrear.setBounds(420, 59, 66, 14);
 		panel_PerfilUtilidades.add(lblCrear);
+		
+		JLabel lblErrorSeleccion = new JLabel("");
+		lblErrorSeleccion.setForeground(new Color(255, 0, 0));
+		lblErrorSeleccion.setBounds(377, 251, 291, 14);
+		panel_PerfilUtilidades.add(lblErrorSeleccion);
+		
+		JComboBox<String> escogeJefe = new JComboBox<String>();
+		
+		btnPaginaSuper.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					escogeJefe.setModel(new DefaultComboBoxModel<String>(mc.deArrayListAStringArrayJefe(gp.cargarJefesSinSupermercado(gsm.cargarSupermercados().size()))));
+					paneles.setSelectedIndex(6);
+					lblErrorSeleccion.setText("");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					lblErrorSeleccion.setText(e1.getMessage());
+				} catch (ErroresDeOperaciones e1) {
+					// TODO Auto-generated catch block
+					lblErrorSeleccion.setText(e1.getMessage());
+				}
+				
+			}
+		});
+		btnPaginaSuper.setBounds(377, 131, 134, 23);
+		panel_PerfilUtilidades.add(btnPaginaSuper);
+		
+		
+		
+		JComboBox<String> escogeSuper = new JComboBox<String>();
+		
+		btnAnadirSecciones.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					escogeSuper.setModel(new DefaultComboBoxModel<String>(mc.deArrayListAStringArraySuper(gsm.cargarSupermercados())));
+					paneles.setSelectedIndex(7);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnAnadirSecciones.setBounds(377, 165, 134, 23);
+		panel_PerfilUtilidades.add(btnAnadirSecciones);
 		
 		JPanel panel_Otros = new JPanel();
 		panel_Otros.setLayout(null);
@@ -800,148 +848,90 @@ public class Vista {
 		btnVerSecciones.setBounds(454, 5, 103, 23);
 		panel_Otros.add(btnVerSecciones);
 		
-		JPanel panel_AdminSuperSeccion = new JPanel();
-		paneles.addTab("Sexta", null, panel_AdminSuperSeccion, null);
-		panel_AdminSuperSeccion.setLayout(null);
-		
 		UtilDateModel model2 = new UtilDateModel();
 		//model.setDate(2022, 5, 6);
 		Properties p2 = new Properties();
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
-		datePicker_3 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
-		datePicker_3.getJFormattedTextField().setEnabled(false);
-		datePicker_3.setBounds(136, 145, 125, 20);
-		panel_AdminSuperSeccion.add(datePicker_3);
 		
 		UtilDateModel model3 = new UtilDateModel();
 		//model.setDate(2022, 5, 6);
 		Properties p3 = new Properties();
 		JDatePanelImpl datePanel3 = new JDatePanelImpl(model3, p3);
+		
+		JPanel panel_Admin = new JPanel();
+		paneles.addTab("Sexta", null, panel_Admin, null);
+		panel_Admin.setLayout(null);
+		datePicker_3 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+		datePicker_3.getJFormattedTextField().setEnabled(false);
+		datePicker_3.setBounds(295, 145, 125, 20);
+		panel_Admin.add(datePicker_3);
 		datePicker_2 = new JDatePickerImpl(datePanel3, new DateLabelFormatter());
 		datePicker_2.getJFormattedTextField().setEnabled(false);
-		datePicker_2.setBounds(136, 176, 125, 20);
-		panel_AdminSuperSeccion.add(datePicker_2);
+		datePicker_2.setBounds(295, 176, 125, 20);
+		panel_Admin.add(datePicker_2);
 		
 		
 		
 		textDNIJefe = new JTextField();
-		textDNIJefe.setBounds(137, 24, 115, 20);
-		panel_AdminSuperSeccion.add(textDNIJefe);
+		textDNIJefe.setBounds(305, 24, 115, 20);
+		panel_Admin.add(textDNIJefe);
 		textDNIJefe.setColumns(10);
 		
 		JLabel lblDniJ = new JLabel("DNI:");
-		lblDniJ.setBounds(10, 27, 77, 14);
-		panel_AdminSuperSeccion.add(lblDniJ);
+		lblDniJ.setBounds(192, 27, 77, 14);
+		panel_Admin.add(lblDniJ);
 		
 		textNombreJefe = new JTextField();
-		textNombreJefe.setBounds(137, 55, 115, 20);
-		panel_AdminSuperSeccion.add(textNombreJefe);
+		textNombreJefe.setBounds(305, 55, 115, 20);
+		panel_Admin.add(textNombreJefe);
 		textNombreJefe.setColumns(10);
 		
 		JLabel lblCrearAdmin = new JLabel("Creacion del Administrador");
 		lblCrearAdmin.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblCrearAdmin.setBounds(10, 0, 213, 14);
-		panel_AdminSuperSeccion.add(lblCrearAdmin);
+		lblCrearAdmin.setBounds(240, 2, 213, 14);
+		panel_Admin.add(lblCrearAdmin);
 		
 		JLabel lblNombreJefe = new JLabel("Nombre:");
-		lblNombreJefe.setBounds(10, 58, 77, 14);
-		panel_AdminSuperSeccion.add(lblNombreJefe);
+		lblNombreJefe.setBounds(175, 58, 77, 14);
+		panel_Admin.add(lblNombreJefe);
 		
 		JLabel lblApellidosJefe = new JLabel("Apellidos:");
-		lblApellidosJefe.setBounds(10, 89, 77, 14);
-		panel_AdminSuperSeccion.add(lblApellidosJefe);
+		lblApellidosJefe.setBounds(165, 89, 77, 14);
+		panel_Admin.add(lblApellidosJefe);
 		
 		textApellidosJefe = new JTextField();
-		textApellidosJefe.setBounds(137, 86, 115, 20);
-		panel_AdminSuperSeccion.add(textApellidosJefe);
+		textApellidosJefe.setBounds(305, 86, 115, 20);
+		panel_Admin.add(textApellidosJefe);
 		textApellidosJefe.setColumns(10);
 		
 		textGmailJefe = new JTextField();
-		textGmailJefe.setBounds(137, 117, 115, 20);
-		panel_AdminSuperSeccion.add(textGmailJefe);
+		textGmailJefe.setBounds(305, 117, 115, 20);
+		panel_Admin.add(textGmailJefe);
 		textGmailJefe.setColumns(10);
 		
 		JLabel lblGmailJefe = new JLabel("E-mail:");
-		lblGmailJefe.setBounds(10, 120, 46, 14);
-		panel_AdminSuperSeccion.add(lblGmailJefe);
+		lblGmailJefe.setBounds(179, 120, 46, 14);
+		panel_Admin.add(lblGmailJefe);
 		
 		JLabel lblFechaNacimientoJefe = new JLabel("Fecha de nacimiento:");
-		lblFechaNacimientoJefe.setBounds(10, 151, 131, 14);
-		panel_AdminSuperSeccion.add(lblFechaNacimientoJefe);
+		lblFechaNacimientoJefe.setBounds(111, 151, 131, 14);
+		panel_Admin.add(lblFechaNacimientoJefe);
 		
 		JLabel lblFechaAdquisicion = new JLabel("Fecha adquisicion:");
-		lblFechaAdquisicion.setBounds(10, 182, 131, 14);
-		panel_AdminSuperSeccion.add(lblFechaAdquisicion);
+		lblFechaAdquisicion.setBounds(121, 176, 131, 14);
+		panel_Admin.add(lblFechaAdquisicion);
 		
 		JLabel lblPorcentajeEmpresa = new JLabel("Porcentaje empresa:");
-		lblPorcentajeEmpresa.setBounds(10, 210, 131, 14);
-		panel_AdminSuperSeccion.add(lblPorcentajeEmpresa);
+		lblPorcentajeEmpresa.setBounds(111, 216, 131, 14);
+		panel_Admin.add(lblPorcentajeEmpresa);
 		
 		JLabel lblContrasenaJefe = new JLabel("Contrasena:");
-		lblContrasenaJefe.setBounds(10, 241, 77, 14);
-		panel_AdminSuperSeccion.add(lblContrasenaJefe);
+		lblContrasenaJefe.setBounds(148, 241, 77, 14);
+		panel_Admin.add(lblContrasenaJefe);
 		
 		passJefe = new JPasswordField();
-		passJefe.setBounds(136, 238, 115, 20);
-		panel_AdminSuperSeccion.add(passJefe);
-		
-		JLabel lblCrearSuper = new JLabel("Creacion del Supermercado");
-		lblCrearSuper.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblCrearSuper.setBounds(259, 0, 201, 14);
-		panel_AdminSuperSeccion.add(lblCrearSuper);
-		
-		JLabel lblCodigoSuper = new JLabel("Codigo:");
-		lblCodigoSuper.setBounds(269, 27, 46, 14);
-		panel_AdminSuperSeccion.add(lblCodigoSuper);
-		
-		textCodigoSuper = new JTextField();
-		textCodigoSuper.setBounds(345, 24, 115, 20);
-		panel_AdminSuperSeccion.add(textCodigoSuper);
-		textCodigoSuper.setColumns(10);
-		
-		JLabel lblEmpresa = new JLabel("Empresa:");
-		lblEmpresa.setBounds(268, 58, 77, 14);
-		panel_AdminSuperSeccion.add(lblEmpresa);
-		
-		textEmpresa = new JTextField();
-		textEmpresa.setBounds(345, 55, 115, 20);
-		panel_AdminSuperSeccion.add(textEmpresa);
-		textEmpresa.setColumns(10);
-		
-		JLabel lblDireccion = new JLabel("Direccion:");
-		lblDireccion.setBounds(262, 89, 77, 14);
-		panel_AdminSuperSeccion.add(lblDireccion);
-		
-		textDireccion = new JTextField();
-		textDireccion.setBounds(345, 86, 115, 20);
-		panel_AdminSuperSeccion.add(textDireccion);
-		textDireccion.setColumns(10);
-		
-		JLabel lblNumEmple = new JLabel("Numero empleados:");
-		lblNumEmple.setBounds(262, 120, 131, 14);
-		panel_AdminSuperSeccion.add(lblNumEmple);
-		
-		JSpinner NumEmple = new JSpinner();
-		NumEmple.setModel(new SpinnerNumberModel(1, 1, 25, 1));
-		NumEmple.setBounds(373, 120, 46, 20);
-		panel_AdminSuperSeccion.add(NumEmple);
-		
-		JLabel lblCreaSecciones = new JLabel("Creacion de Secciones");
-		lblCreaSecciones.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblCreaSecciones.setBounds(470, 0, 171, 14);
-		panel_AdminSuperSeccion.add(lblCreaSecciones);
-		
-		JComboBox<String> tipoSeccion = new JComboBox<String>();
-		tipoSeccion.setBounds(525, 23, 104, 22);
-		tipoSeccion.setModel(new DefaultComboBoxModel<String>(Tipos));
-		panel_AdminSuperSeccion.add(tipoSeccion);
-		
-		JLabel lblTipo = new JLabel("Tipo:");
-		lblTipo.setBounds(469, 27, 46, 14);
-		panel_AdminSuperSeccion.add(lblTipo);
-		
-		JButton btnCancelarSuper = new JButton("Cancelar");
-		JButton btnCancelarSe = new JButton("Cancelar");
+		passJefe.setBounds(305, 238, 115, 20);
+		panel_Admin.add(passJefe);
 		JButton btnCancelarJefe = new JButton("Cancelar");
 		JSpinner porcentajeEmpresa = new JSpinner();
 		JLabel lblErroresASS = new JLabel("");
@@ -949,29 +939,16 @@ public class Vista {
 		btnConfirmarCreacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					cv.comprobarCampos(panel_AdminSuperSeccion);
+					cv.comprobarCampos(panel_Admin);
 					nuevoJefe=new Jefe(textDNIJefe.getText(),textNombreJefe.getText(),textApellidos.getText(),
 					mc.deStringADate(datePicker_3.getJFormattedTextField().getText()),textGmailJefe.getText(),
 					String.valueOf(passJefe.getPassword()),tipoPersona.Jefe,
 					mc.deStringADate(datePicker_2.getJFormattedTextField().getText()),(Float)porcentajeEmpresa.getValue(),0);
-					supermercado=new Supermercado(textCodigoSuper.getText(),textEmpresa.getText(),textDireccion.getText(),(Integer) NumEmple.getValue(),null);
 					gp.insertarPersona(nuevoJefe);
-					gsm.insertarSupermercado(nuevoJefe, supermercado);
-					if(!textPrimeraSe.getText().equals("")) {
-						seccion=new Seccion(supermercado.getCodigoSuper()+"1",tipoArticulo.valueOf(textPrimeraSe.getText()),null);
-						gs.insertarSeccion(supermercado, seccion);
-					} 
-					if(!textSegundaSe.getText().equals("")) {
-						seccion=new Seccion(supermercado.getCodigoSuper()+"2",tipoArticulo.valueOf(textPrimeraSe.getText()),null);
-						gs.insertarSeccion(supermercado, seccion);
-					}
-					if(!textSegundaSe.getText().equals("")) {
-						seccion=new Seccion(supermercado.getCodigoSuper()+"3",tipoArticulo.valueOf(textPrimeraSe.getText()),null);
-						gs.insertarSeccion(supermercado, seccion);
-					}
-					btnCancelarSuper.doClick();
-					btnCancelarSe.doClick();
+					datePicker_3.getJFormattedTextField().setText("");
+					datePicker_2.getJFormattedTextField().setText("");
 					btnCancelarJefe.doClick();
+					paneles.setSelectedIndex(3);
 				} catch (NumberFormatException e1) {
 					// TODO Auto-generated catch block
 					lblErroresASS.setText(e1.getMessage());
@@ -990,42 +967,215 @@ public class Vista {
 				}
 			}
 		});
-		btnConfirmarCreacion.setBounds(411, 377, 104, 23);
-		panel_AdminSuperSeccion.add(btnConfirmarCreacion);
+		btnConfirmarCreacion.setBounds(588, 377, 104, 23);
+		panel_Admin.add(btnConfirmarCreacion);
 		
-		textPrimeraSe = new JTextField();
-		textPrimeraSe.setEnabled(false);
-		textPrimeraSe.setBounds(543, 55, 86, 20);
-		panel_AdminSuperSeccion.add(textPrimeraSe);
-		textPrimeraSe.setColumns(10);
+		btnCancelarJefe.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textDNIJefe.setText("");
+				textNombreJefe.setText("");
+				textApellidosJefe.setText("");
+				textGmailJefe.setText("");
+				porcentajeEmpresa.setValue(51);
+				passJefe.setText("");
+			}
+		});
+		btnCancelarJefe.setBounds(295, 377, 89, 23);
+		panel_Admin.add(btnCancelarJefe);
 		
-		JLabel lblPrimeraSe = new JLabel("Primera:");
-		lblPrimeraSe.setBounds(469, 58, 64, 14);
-		panel_AdminSuperSeccion.add(lblPrimeraSe);
 		
-		JLabel lblSegundaSe = new JLabel("Segunda:");
-		lblSegundaSe.setBounds(470, 89, 63, 14);
-		panel_AdminSuperSeccion.add(lblSegundaSe);
+		JButton btnCancelar = new JButton("Atras");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnCancelarJefe.doClick();
+				paneles.setSelectedIndex(3);
+				lblErroresASS.setText("");
+			}
+		});
+		btnCancelar.setBounds(10, 377, 89, 23);
+		panel_Admin.add(btnCancelar);
 		
-		textSegundaSe = new JTextField();
-		textSegundaSe.setEnabled(false);
-		textSegundaSe.setBounds(543, 86, 86, 20);
-		panel_AdminSuperSeccion.add(textSegundaSe);
-		textSegundaSe.setColumns(10);
 		
-		JLabel lblTerceraSe = new JLabel("Tercera:");
-		lblTerceraSe.setBounds(469, 120, 64, 14);
-		panel_AdminSuperSeccion.add(lblTerceraSe);
+		lblErroresASS.setForeground(new Color(255, 0, 0));
+		lblErroresASS.setBounds(136, 323, 429, 14);
+		panel_Admin.add(lblErroresASS);
 		
-		textTerceraSe = new JTextField();
-		textTerceraSe.setEnabled(false);
-		textTerceraSe.setBounds(543, 117, 86, 20);
-		panel_AdminSuperSeccion.add(textTerceraSe);
-		textTerceraSe.setColumns(10);
+		porcentajeEmpresa.setModel(new SpinnerNumberModel(Float.valueOf(51), Float.valueOf(51), Float.valueOf(100), Float.valueOf(1)));
+		porcentajeEmpresa.setBounds(358, 207, 46, 20);
+		panel_Admin.add(porcentajeEmpresa);
+		
+		
+		
+		
+		
+		
+		
+		
+		JPanel panel_Supermercado = new JPanel();
+		paneles.addTab("Septima", null, panel_Supermercado, null);
+		panel_Supermercado.setLayout(null);
+		
+		JButton btnCancelarSuper = new JButton("Cancelar");
+		btnCancelarSuper.setBounds(304, 278, 89, 23);
+		panel_Supermercado.add(btnCancelarSuper);
+		
+		JLabel lblCrearSuper = new JLabel("Creacion del Supermercado");
+		lblCrearSuper.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblCrearSuper.setBounds(259, 12, 201, 14);
+		panel_Supermercado.add(lblCrearSuper);
+		
+		JLabel lblCodigoSuper = new JLabel("Codigo:");
+		lblCodigoSuper.setBounds(259, 81, 46, 14);
+		panel_Supermercado.add(lblCodigoSuper);
+		
+		textCodigoSuper = new JTextField();
+		textCodigoSuper.setBounds(345, 78, 115, 20);
+		panel_Supermercado.add(textCodigoSuper);
+		textCodigoSuper.setColumns(10);
+		
+		JLabel lblEmpresa = new JLabel("Empresa:");
+		lblEmpresa.setBounds(259, 112, 77, 14);
+		panel_Supermercado.add(lblEmpresa);
+		
+		textEmpresa = new JTextField();
+		textEmpresa.setBounds(345, 109, 115, 20);
+		panel_Supermercado.add(textEmpresa);
+		textEmpresa.setColumns(10);
+		
+		JLabel lblDireccion = new JLabel("Direccion:");
+		lblDireccion.setBounds(259, 143, 77, 14);
+		panel_Supermercado.add(lblDireccion);
+		
+		textDireccion = new JTextField();
+		textDireccion.setBounds(345, 140, 115, 20);
+		panel_Supermercado.add(textDireccion);
+		textDireccion.setColumns(10);
+		
+		JLabel lblNumEmple = new JLabel("Numero empleados:");
+		lblNumEmple.setBounds(262, 168, 131, 14);
+		panel_Supermercado.add(lblNumEmple);
+		
+		JSpinner NumEmple = new JSpinner();
+		NumEmple.setModel(new SpinnerNumberModel(1, 1, 25, 1));
+		NumEmple.setBounds(386, 165, 46, 20);
+		panel_Supermercado.add(NumEmple);
+		
+		JButton btnAtrasSuper = new JButton("Atras");
+		JLabel lblErroresSuper = new JLabel("");
+		JButton btnConfirmarSupermercado = new JButton("Confirmar");
+		btnConfirmarSupermercado.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					cv.comprobarCampos(panel_Supermercado);
+					supermercado=new Supermercado(textCodigoSuper.getText(),textEmpresa.getText(),textDireccion.getText(),(Integer) NumEmple.getValue(),null);
+					nuevoJefe=(Jefe) gp.buscarPersona(String.valueOf(escogeJefe.getItemAt(escogeJefe.getSelectedIndex())), usuarios);
+					gsm.insertarSupermercado(nuevoJefe, supermercado);
+					btnAtrasSuper.doClick();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					lblErroresSuper.setText(e1.getMessage());
+				} catch (ErroresDeOperaciones e1) {
+					// TODO Auto-generated catch block
+					lblErroresSuper.setText(e1.getMessage());
+				}
+			}
+		});
+		btnConfirmarSupermercado.setBounds(588, 391, 104, 23);
+		panel_Supermercado.add(btnConfirmarSupermercado);
+		
+		
+		btnAtrasSuper.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnCancelarSuper.doClick();
+				paneles.setSelectedIndex(3);
+			}
+		});
+		btnAtrasSuper.setBounds(10, 391, 89, 23);
+		panel_Supermercado.add(btnAtrasSuper);
+		
+		
+		escogeJefe.setBounds(345, 37, 115, 22);
+		panel_Supermercado.add(escogeJefe);
+		
+		JLabel lblJefe = new JLabel("Jefes disponibles:");
+		lblJefe.setBounds(221, 41, 115, 14);
+		panel_Supermercado.add(lblJefe);
+		
+		
+		lblErroresSuper.setForeground(new Color(255, 0, 0));
+		lblErroresSuper.setBounds(259, 220, 201, 14);
+		panel_Supermercado.add(lblErroresSuper);
+		
+		btnCancelarSuper.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textCodigoSuper.setText("");
+				textEmpresa.setText("");
+				textDireccion.setText("");
+				NumEmple.setValue(0);
+			}
+		});
+		
+		JPanel panel_Seccion = new JPanel();
+		paneles.addTab("Octava", null, panel_Seccion, null);
+		panel_Seccion.setLayout(null);
+		
+		JLabel lblCreaSecciones = new JLabel("Creacion de Secciones");
+		lblCreaSecciones.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblCreaSecciones.setBounds(221, 5, 152, 17);
+		 panel_Seccion.add(lblCreaSecciones);
+		 
+		 textPrimeraSe = new JTextField();
+			textPrimeraSe.setEnabled(false);
+			textPrimeraSe.setBounds(286, 160, 112, 20);
+			panel_Seccion.add(textPrimeraSe);
+			textPrimeraSe.setColumns(10);
+			textPrimeraSe.setVisible(false);
+			
+			JLabel lblPrimeraSe = new JLabel("Primera:");
+			lblPrimeraSe.setBounds(181, 163, 69, 14);
+			panel_Seccion.add(lblPrimeraSe);
+			lblPrimeraSe.setVisible(false);
+			
+			JLabel lblSegundaSe = new JLabel("Segunda:");
+			lblSegundaSe.setBounds(181, 195, 69, 14);
+			panel_Seccion.add(lblSegundaSe);
+			lblSegundaSe.setVisible(false);
+			
+			textSegundaSe = new JTextField();
+			textSegundaSe.setEnabled(false);
+			textSegundaSe.setBounds(286, 192, 112, 20);
+			panel_Seccion.add(textSegundaSe);
+			textSegundaSe.setColumns(10);
+			textSegundaSe.setVisible(false);
+			
+			JLabel lblTerceraSe = new JLabel("Tercera:");
+			lblTerceraSe.setBounds(181, 226, 69, 14);
+			panel_Seccion.add(lblTerceraSe);
+			lblTerceraSe.setVisible(false);
+			
+			textTerceraSe = new JTextField();
+			textTerceraSe.setEnabled(false);
+			textTerceraSe.setBounds(286, 223, 112, 20);
+			panel_Seccion.add(textTerceraSe);
+			textTerceraSe.setColumns(10);
+			textTerceraSe.setVisible(false);
+		
+		JComboBox<String> tipoSeccion = new JComboBox<String>();
+		tipoSeccion.setBounds(286, 118, 112, 20);
+		tipoSeccion.setModel(new DefaultComboBoxModel<String>(Tipos));
+		panel_Seccion.add(tipoSeccion);
+		tipoSeccion.setVisible(false);
+		
+		JLabel lblTipo = new JLabel("Tipo:");
+		lblTipo.setBounds(196, 121, 35, 14);
+		panel_Seccion.add(lblTipo);
+		lblTipo.setVisible(false);
 		
 		JButton btnSelecSe = new JButton("Seleccionar");
 		btnSelecSe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				tipoSeccion.setEnabled(false);
 				if(cuentaSecciones==0) {
 					textPrimeraSe.setText(tipoSeccion.getItemAt(tipoSeccion.getSelectedIndex()));
 					cuentaSecciones++;
@@ -1048,9 +1198,30 @@ public class Vista {
 				}
 			}
 		});
-		btnSelecSe.setBounds(575, 166, 104, 23);
-		panel_AdminSuperSeccion.add(btnSelecSe);
-
+		btnSelecSe.setBounds(394, 268, 112, 23);
+		 panel_Seccion.add(btnSelecSe);
+		
+		JButton btnAnadir = new JButton("Mas");
+		btnAnadir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tipoSeccion.setEnabled(true);
+				if(cuentaSecciones==1) {
+				lblSegundaSe.setVisible(true);
+				textSegundaSe.setVisible(true);
+				}else if(cuentaSecciones==2) {
+				lblTerceraSe.setVisible(true);
+				textTerceraSe.setVisible(true);
+				} 
+			}
+		});
+		btnAnadir.setBounds(298, 268, 75, 23);
+		panel_Seccion.add(btnAnadir);
+		
+		JButton btnConfirmarSe = new JButton("Confirmar");
+		JLabel lblEscogeDireccion = new JLabel("Direccion:");
+		lblEscogeDireccion.setVisible(false);
+		JComboBox<String> escogeDireccion = new JComboBox<String>();
+		JButton btnCancelarSe = new JButton("Cancelar");
 		btnCancelarSe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textPrimeraSe.setText("");
@@ -1060,64 +1231,130 @@ public class Vista {
 				tipoSeccion.setEnabled(true);
 				tipoSeccion.setModel(new DefaultComboBoxModel<String>(Tipos));
 				tipoSeccion.updateUI();
-				cuentaSecciones=0;
+				lblTerceraSe.setVisible(false);
+				textTerceraSe.setVisible(false);
+				lblSegundaSe.setVisible(false);
+				textSegundaSe.setVisible(false);
+				lblPrimeraSe.setVisible(false);
+		 		textPrimeraSe.setVisible(false);
+		 		tipoSeccion.setVisible(false);
+		 		lblTipo.setVisible(false);
+		 		escogeDireccion.setVisible(false);
+		 		lblEscogeDireccion.setVisible(false);
+		 		cuentaSecciones=0;
+		 		btnConfirmarSe.setEnabled(true);
 			}
 		});
-		btnCancelarSe.setBounds(476, 166, 89, 23);
-		panel_AdminSuperSeccion.add(btnCancelarSe);
-		
-		
-		btnCancelarJefe.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				textDNIJefe.setText("");
-				textNombreJefe.setText("");
-				textApellidosJefe.setText("");
-				textGmailJefe.setText("");
-				porcentajeEmpresa.setValue(51);
-				passJefe.setText("");
-			}
-		});
-		btnCancelarJefe.setBounds(80, 265, 89, 23);
-		panel_AdminSuperSeccion.add(btnCancelarJefe);
-		
-		
-		btnCancelarSuper.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				textCodigoSuper.setText("");
-				textEmpresa.setText("");
-				textDireccion.setText("");
-				NumEmple.setValue(0);
-			}
-		});
-		btnCancelarSuper.setBounds(311, 161, 89, 23);
-		panel_AdminSuperSeccion.add(btnCancelarSuper);
-		
-		JButton btnCancelar = new JButton("Atras");
-		btnCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(JOptionPane.showConfirmDialog (null, "¿Estas seguro?.Si sales se perderán todos los datos","AVISO", 0)==0) {
-				btnCancelarSuper.doClick();
-				btnCancelarSe.doClick();
-				btnCancelarJefe.doClick();
-				paneles.setSelectedIndex(3);
-				lblErroresASS.setText("");
+		btnCancelarSe.setBounds(164, 268, 95, 23);
+		 panel_Seccion.add(btnCancelarSe);
+		 
+		 JButton btnAtrasSe = new JButton("Atras");
+		 btnAtrasSe.addActionListener(new ActionListener() {
+		 	public void actionPerformed(ActionEvent e) {
+		 		btnCancelarSe.doClick();
+		 		paneles.setSelectedIndex(3);
+		 	}
+		 });
+		 btnAtrasSe.setBounds(10, 391, 89, 23);
+		 panel_Seccion.add(btnAtrasSe);
+		 
+		 btnConfirmarSe.addActionListener(new ActionListener() {
+		 	public void actionPerformed(ActionEvent e) {
+		 		try {	
+		 			if(!textPrimeraSe.getText().equals("") && textPrimeraSe.isVisible() && supermercado.getArraySecciones().size()==0) {
+		 				seccion=new Seccion(supermercado.getCodigoSuper()+"1",tipoArticulo.valueOf(textPrimeraSe.getText()),0,null);
+		 					gs.insertarSeccion(supermercado, seccion);
+		 			} 
+		 			if(!textSegundaSe.getText().equals("") && textSegundaSe.isVisible()&& supermercado.getArraySecciones().size()==1) {
+		 				seccion=new Seccion(supermercado.getCodigoSuper()+"2",tipoArticulo.valueOf(textSegundaSe.getText()),0,null);
+		 					gs.insertarSeccion(supermercado, seccion);
+		 			}
+		 			if(!textSegundaSe.getText().equals("") && textTerceraSe.isVisible()&& supermercado.getArraySecciones().size()==2) {
+		 				seccion=new Seccion(supermercado.getCodigoSuper()+"3",tipoArticulo.valueOf(textTerceraSe.getText()),0,null);
+		 					gs.insertarSeccion(supermercado, seccion);
+		 			}
+		 			btnCancelarSe.doClick();
+		 			paneles.setSelectedIndex(3);
+		 		} catch (SQLException e1) {
+		 			// TODO Auto-generated catch block
+		 			e1.printStackTrace();
+		 		}
+		 	}
+		 });
+		 btnConfirmarSe.setBounds(580, 391, 112, 23);
+		 panel_Seccion.add(btnConfirmarSe);
+		 
+		 
+		 escogeSuper.addActionListener(new ActionListener() {
+		 	public void actionPerformed(ActionEvent e) {
+		 		escogeSuper.getItemAt(escogeSuper.getSelectedIndex());
+		 		escogeDireccion.setVisible(true);
+		 		lblEscogeDireccion.setVisible(true);
+		 		try {
+					escogeDireccion.setModel(new DefaultComboBoxModel<String>(mc.deArrayListAStringArrayDireccion(gsm.buscarSuperEmpresa(escogeSuper.getItemAt(escogeSuper.getSelectedIndex())))));
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ErroresDeOperaciones e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
-			}
-		});
-		btnCancelar.setBounds(163, 377, 89, 23);
-		panel_AdminSuperSeccion.add(btnCancelar);
-		
-		
-		lblErroresASS.setForeground(new Color(255, 0, 0));
-		lblErroresASS.setBounds(136, 323, 429, 14);
-		panel_AdminSuperSeccion.add(lblErroresASS);
-		
-		porcentajeEmpresa.setModel(new SpinnerNumberModel(Float.valueOf(51), Float.valueOf(51), Float.valueOf(100), Float.valueOf(1)));
-		porcentajeEmpresa.setBounds(177, 207, 46, 20);
-		panel_AdminSuperSeccion.add(porcentajeEmpresa);
+		 	}
+		 });
+		 escogeSuper.setBounds(286, 33, 178, 22);
+		 escogeDireccion.setVisible(false);
+		 panel_Seccion.add(escogeSuper);
+		 
+		 JLabel lblSuperPadre = new JLabel("Supermercado:");
+		 lblSuperPadre.setBounds(164, 37, 112, 14);
+		 panel_Seccion.add(lblSuperPadre);
+		 
+		 escogeDireccion.addActionListener(new ActionListener() {
+		 	public void actionPerformed(ActionEvent e) {
+		 		try {
+		 			lblPrimeraSe.setVisible(true);
+			 		textPrimeraSe.setVisible(true);
+			 		tipoSeccion.setVisible(true);
+			 		lblTipo.setVisible(true);
+					supermercado=gsm.buscarSuperEmpresaDireccion(escogeSuper.getItemAt(escogeSuper.getSelectedIndex()),escogeDireccion.getItemAt(escogeDireccion.getSelectedIndex()));
+					if(supermercado.getArraySecciones().size()>=1) {
+						textPrimeraSe.setText(String.valueOf(supermercado.getArraySecciones().get(0).getNombreSeccion()));
+						lblSegundaSe.setVisible(true);
+				 		textSegundaSe.setVisible(true);
+				 		Tipos=mc.modificarComboBox(Tipos, String.valueOf(supermercado.getArraySecciones().get(0).getNombreSeccion()));
+				 		tipoSeccion.setModel(new DefaultComboBoxModel<String>(Tipos));
+				 		cuentaSecciones++;
+					}
+					if(supermercado.getArraySecciones().size()==2) {
+				 		lblTerceraSe.setVisible(true);
+				 		textTerceraSe.setVisible(true);
+				 		textSegundaSe.setText(String.valueOf(supermercado.getArraySecciones().get(1).getNombreSeccion()));
+				 		Tipos=mc.modificarComboBox(Tipos, String.valueOf(supermercado.getArraySecciones().get(1).getNombreSeccion()));
+				 		tipoSeccion.setModel(new DefaultComboBoxModel<String>(Tipos));
+				 		cuentaSecciones++;
+					}
+					if(supermercado.getArraySecciones().size()==3) {
+				 		textTerceraSe.setText(String.valueOf(supermercado.getArraySecciones().get(2).getNombreSeccion()));
+				 		Tipos=mc.modificarComboBox(Tipos, String.valueOf(supermercado.getArraySecciones().get(2).getNombreSeccion()));
+				 		tipoSeccion.setModel(new DefaultComboBoxModel<String>(Tipos));
+				 		cuentaSecciones++;
+				 		btnConfirmarSe.setEnabled(false);
+					}
+				} catch (SQLException | ErroresDeOperaciones e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+		 	}
+		 });
+		 escogeDireccion.setBounds(286, 66, 178, 22);
+		 panel_Seccion.add(escogeDireccion);
+		 
+		 
+		 lblEscogeDireccion.setBounds(174, 70, 68, 14);
+		 panel_Seccion.add(lblEscogeDireccion);
 		
 		JPanel panel_Articulos = new JPanel();
-		paneles.addTab("Septima", null, panel_Articulos, null);
+		paneles.addTab("Novena", null, panel_Articulos, null);
 		panel_Articulos.setLayout(null);
 		
 		
@@ -1262,14 +1499,14 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 				if(tipoArticuloCombo.getSelectedItem().equals("Comida")) {
-						nuevaComida=new Comida(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, tipoArticulo.Comida, mc.deStringADate(datePicker_4.getJFormattedTextField().getText()), textProcedencia.getText());
-						ga.insertarArticulo(gs.buscarSeccionPorTipo(su, nuevaComida), nuevaComida);
+						nuevaComida=new Comida(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, mc.deStringADate(datePicker_4.getJFormattedTextField().getText()), textProcedencia.getText());
+						
 				}else if(tipoArticuloCombo.getSelectedItem().equals("Herramienta")) {
-						nuevaHe=new Herramienta(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, tipoArticulo.Herramienta, mc.pasarBoolean(chckElectrica.isSelected()), (Integer)Garantia.getValue());
-						ga.insertarArticulo(gs.buscarSeccionPorTipo(su, nuevaHe), nuevaHe);
+						nuevaHe=new Herramienta(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, mc.pasarBoolean(chckElectrica.isSelected()), (Integer)Garantia.getValue());
+					
 				}else if(tipoArticuloCombo.getSelectedItem().equals("Ropa")) {
-						nuevaRopa=new Ropa(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, tipoArticulo.Ropa, textTalla.getText(), textMarca.getText());
-						ga.insertarArticulo(gs.buscarSeccionPorTipo(su, nuevaRopa), nuevaRopa);
+						nuevaRopa=new Ropa(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, textTalla.getText(), textMarca.getText());
+						
 				}
 				tipoArticuloCombo.setModel(new DefaultComboBoxModel<String>(Tipos));
 				cv.vaciarCampos(panel_Articulos);
@@ -1279,9 +1516,6 @@ public class Vista {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					} catch (ParseException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
@@ -1304,7 +1538,7 @@ public class Vista {
 		panel_Articulos.add(btnCancelarArticulo);
 		
 		JPanel panel_Compras = new JPanel();
-		paneles.addTab("Octava", null, panel_Compras, null);
+		paneles.addTab("Decima", null, panel_Compras, null);
 		panel_Compras.setLayout(null);
 		
 		JComboBox<String>  BoxSuper = new JComboBox<String> ();

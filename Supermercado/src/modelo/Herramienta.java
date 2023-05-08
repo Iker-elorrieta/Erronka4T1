@@ -10,8 +10,8 @@ public class Herramienta extends Articulo{
 	private int garantia;
 	
 	public Herramienta(int idArticulo, String nombreArticulo, String rutaImagen,String descripcion, float precio,
-			int stockActual, tipoArticulo tipo, int electrica, int garantia) {
-		super(idArticulo, nombreArticulo, rutaImagen,descripcion, precio, stockActual, tipo);
+			int stockActual, int electrica, int garantia) {
+		super(idArticulo, nombreArticulo, rutaImagen,descripcion, precio, stockActual);
 		this.electrica = mc.pasarIntABoolean(electrica);
 		this.garantia = garantia;
 	}
@@ -32,7 +32,7 @@ public class Herramienta extends Articulo{
 	public String toString() {
 		return "Herramienta [electrica=" + electrica + ", garantia=" + garantia + ", idArticulo=" + idArticulo
 				+ ", nombreArticulo=" + nombreArticulo + ", rutaImagen=" + rutaImagen + ", precio=" + precio
-				+ ", stockActual=" + stockActual + ", tipo=" + tipo + "]";
+				+ ", stockActual=" + stockActual + " ]";
 	}
 	public Boolean getElectrica() {
 		return electrica;

@@ -61,21 +61,14 @@ public class GestorSupermercado {
 			comando.executeUpdate("DELETE FROM "+TABLAS.SUPERMERCADO+" WHERE "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"'");
 	}
 	public Supermercado buscarSupermercado(Jefe je) throws SQLException {
-		ArrayList<Seccion> listaSe=new ArrayList<Seccion>();
 		Supermercado su=null;
-		Seccion se=null;
 		Statement comando;
 		comando = (Statement) mc.conectarBaseDatos().createStatement();
 		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.SUPERMERCADO+" WHERE "+TABLAS.DNIJEFE+"='"+je.getDni()+"'");
 		while(carga.next()) {
 			su=new Supermercado(carga.getString(TABLAS.CODIGOSUPER),carga.getString(TABLAS.EMPRESA),carga.getString(TABLAS.DIRECCION),carga.getInt(TABLAS.NUMEROEMPLEADOS),null);
 		}
-		carga=comando.executeQuery("SELECT * FROM "+TABLAS.SECCION+" WHERE "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"'");
-		while(carga.next()) {
-			se=new Seccion(carga.getString(TABLAS.CODIGOSECCION), tipoArticulo.valueOf(carga.getString(TABLAS.TIPO)), null);
-			listaSe.add(se);
-		}
-		su.setArraySecciones(listaSe);
+		cogerSeccionesSuper(su);
 		return su;
 	}
 	public ArrayList<Supermercado> todoSupermercados(ArrayList<Persona> personas) throws SQLException{
@@ -88,5 +81,45 @@ public class GestorSupermercado {
 			}
 		}
 		return todos;
+	}
+	public ArrayList<Supermercado> buscarSuperEmpresa(String empresa) throws SQLException, ErroresDeOperaciones {
+		ArrayList<Supermercado> lista=new ArrayList<Supermercado>();
+		Supermercado su=null;
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.SUPERMERCADO+" WHERE "+TABLAS.EMPRESA+"='"+empresa+"'");
+		while(carga.next()) {
+			su=new Supermercado(carga.getString(TABLAS.CODIGOSUPER),carga.getString(TABLAS.EMPRESA),carga.getString(TABLAS.DIRECCION),carga.getInt(TABLAS.NUMEROEMPLEADOS),null);
+			lista.add(su);
+		}
+		if(su==null) {
+			throw new ErroresDeOperaciones("No se pudo encontrar el supermercado escogido");
+		}
+		su=cogerSeccionesSuper(su);
+		return lista;
+	}
+	public Supermercado buscarSuperEmpresaDireccion(String empresa,String direccion) throws SQLException, ErroresDeOperaciones {
+		Supermercado su=null;
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.SUPERMERCADO+" WHERE "+TABLAS.EMPRESA+"='"+empresa+"' AND "+TABLAS.DIRECCION+"='"+direccion+"'");
+		while(carga.next()) {
+			su=new Supermercado(carga.getString(TABLAS.CODIGOSUPER),carga.getString(TABLAS.EMPRESA),carga.getString(TABLAS.DIRECCION),carga.getInt(TABLAS.NUMEROEMPLEADOS),null);
+		}
+		if(su==null) {
+			throw new ErroresDeOperaciones("No se pudo encontrar el supermercado escogido");
+		}
+		su=cogerSeccionesSuper(su);
+		return su;
+	}
+	public Supermercado cogerSeccionesSuper(Supermercado su) throws SQLException{
+		ArrayList<Seccion> listaSe=new ArrayList<Seccion>();
+		Seccion se=null;
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.SECCION+" WHERE "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"'");
+		while(carga.next()) {
+			se=new Seccion(carga.getString(TABLAS.CODIGOSECCION), tipoArticulo.valueOf(carga.getString(TABLAS.TIPO)),carga.getInt(TABLAS.NUMAR), null);
+			listaSe.add(se);
+		}
+		su.setArraySecciones(listaSe);
+		return su;
 	}
 }

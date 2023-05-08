@@ -8,11 +8,10 @@ import java.sql.Date;
 import org.junit.jupiter.api.Test;
 
 import modelo.Comida;
-import modelo.tipoArticulo;
 
 class ComidaTest {
 
-Comida obj = new Comida(0, null, null, null, 0, 0, null, null, null);
+Comida obj = new Comida(0, null, null, null, 0, 0, null, null);
 	
 	@Test
 	void test_GettersSetters() {
@@ -22,7 +21,6 @@ Comida obj = new Comida(0, null, null, null, 0, 0, null, null, null);
 		obj.setPrecio((float)23.1);
 		obj.setProcedencia("japon");
 		obj.setStockActual(4);
-		obj.settipo(tipoArticulo.Comida);
 		obj.setRutaImagen("imagen.png");
 		obj.setDescripcion("des");
 		
@@ -32,7 +30,6 @@ Comida obj = new Comida(0, null, null, null, 0, 0, null, null, null);
 		assertTrue(obj.getPrecio()>0);
 		assertEquals(obj.getProcedencia(),"japon");
 		assertEquals(obj.getStockActual(),4);
-		assertEquals(obj.gettipo(),tipoArticulo.Comida);
 		assertEquals(obj.getRutaImagen(),"imagen.png");
 		assertEquals(obj.getDescripcion(),"des");
 	
@@ -40,8 +37,8 @@ Comida obj = new Comida(0, null, null, null, 0, 0, null, null, null);
 	
 	@Test
 	void test_equals() {
-		Comida obj1 = new Comida(0, null, null, null, 0, 0, null, null, null);
-		Comida obj2 = new Comida(0, null, null, null, 0, 0, null, null, null);
+		Comida obj1 = new Comida(0, null, null, null, 0, 0, null, null);
+		Comida obj2 = new Comida(0, null, null, null, 0, 0, null, null);
 		
 		obj1.setIdArticulo(2132);
 		obj2.setIdArticulo(2132);

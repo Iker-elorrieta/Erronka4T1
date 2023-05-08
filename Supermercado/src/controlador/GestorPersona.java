@@ -11,10 +11,12 @@ import java.util.regex.Pattern;
 import modelo.Cliente;
 import modelo.Jefe;
 import modelo.Persona;
+
 import modelo.tipoPersona;
 
 public class GestorPersona {
 	Metodos mc=new Metodos();
+	GestorSupermercado gsm=new GestorSupermercado();
 	private ArrayList<Persona> listaPersonas;
 	
 	public GestorPersona() {
@@ -179,5 +181,37 @@ public class GestorPersona {
 			}
 		}
 		return nueva;
+	}
+	public ArrayList<Jefe> cargarJefesSinSupermercado(int numSuper) throws SQLException, ErroresDeOperaciones {
+		ArrayList<Persona> lista=cargarPersonas();
+		ArrayList<Jefe> jefeSinSuper=new ArrayList<Jefe>();
+		String [] dniJefes=new String[numSuper];
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		ResultSet cuenta=comando.executeQuery("SELECT "+TABLAS.DNIJEFE+" FROM "+TABLAS.SUPERMERCADO);
+		int i=0;
+		while(cuenta.next()) {
+			dniJefes[i]=cuenta.getString(TABLAS.DNIJEFE);
+		}
+		Jefe temporal=null;
+		if((dniJefes[numSuper-1]==null)) {
+			throw new ErroresDeOperaciones("No hay Jefes disponibles");
+		}else{
+			for(Persona per:lista) {
+				if(per instanceof Jefe) {
+					temporal=(Jefe)per;
+					boolean noRepe=true;
+					for(int x=0;x<dniJefes.length;x++) {
+						if(dniJefes[x].equals(temporal.getDni())) {
+						noRepe=false;
+						}
+					}
+					if(noRepe==true) {
+						jefeSinSuper.add(temporal);
+					}
+				}
+			}
+		}
+		return jefeSinSuper;
+		
 	}
 }

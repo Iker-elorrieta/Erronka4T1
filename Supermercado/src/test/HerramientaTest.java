@@ -6,11 +6,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import modelo.Herramienta;
-import modelo.tipoArticulo;
 
 class HerramientaTest {
 
-Herramienta obj = new Herramienta(0, null, null, null, 0, 0, null, 0, 0);
+Herramienta obj = new Herramienta(0, null, null, null, 0, 0, 0, 0);
 	
 	@Test
 	void test_GettersSetters() {
@@ -20,7 +19,6 @@ Herramienta obj = new Herramienta(0, null, null, null, 0, 0, null, 0, 0);
 		obj.setNombreArticulo("KitKat");
 		obj.setPrecio((float)23.1);
 		obj.setStockActual(4);
-		obj.settipo(tipoArticulo.Comida);
 		obj.setRutaImagen("imagen.png");
 		obj.setDescripcion("des");
 		
@@ -31,7 +29,6 @@ Herramienta obj = new Herramienta(0, null, null, null, 0, 0, null, 0, 0);
 		assertEquals(obj.getNombreArticulo(),"KitKat");
 		assertTrue(obj.getPrecio()>0);
 		assertEquals(obj.getStockActual(),4);
-		assertEquals(obj.gettipo(),tipoArticulo.Comida);
 		assertEquals(obj.getRutaImagen(),"imagen.png");
 		assertEquals(obj.getDescripcion(),"des");
 	
@@ -39,8 +36,8 @@ Herramienta obj = new Herramienta(0, null, null, null, 0, 0, null, 0, 0);
 	
 	@Test
 	void test_equals() {
-		Herramienta obj1 = new Herramienta(0, null, null, null, 0, 0, null, 0, 0);
-		Herramienta obj2 = new Herramienta(0, null, null, null, 0, 0, null, 0, 0);
+		Herramienta obj1 = new Herramienta(0, null, null, null, 0, 0, 0, 0);
+		Herramienta obj2 = new Herramienta(0, null, null, null, 0, 0, 0, 0);
 		
 		obj1.setIdArticulo(2132);
 		obj2.setIdArticulo(2132);

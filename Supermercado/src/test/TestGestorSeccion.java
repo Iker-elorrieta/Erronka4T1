@@ -27,7 +27,7 @@ class TestGestorSeccion {
 		GestorPersona g1=new GestorPersona();
 		Jefe jefe=new Jefe("77777777C","Test","Test",Date.valueOf("2001-01-21"),"testJefe@gmail.com","12345",tipoPersona.Jefe,Date.valueOf("2019-09-09"),(float)55.5,0);
 		Supermercado su=new Supermercado("ABCDE","PruebaEmpresa","Errekamari",4,null);
-		Seccion se=new Seccion("OOOO",tipoArticulo.Herramienta,null);
+		Seccion se=new Seccion("OOOO",tipoArticulo.Herramienta,0,null);
 		try {
 			g.setListaSecciones(g.cargarSecciones());
 			assertTrue(g.getListaSecciones().size()>0);
@@ -43,7 +43,7 @@ class TestGestorSeccion {
 			assertEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getCodigoSeccion(),"OOOO");
 			assertEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getNombreSeccion(),tipoArticulo.Herramienta);
 			
-			se=new Seccion("OOOO",tipoArticulo.Ropa,null);
+			se=new Seccion("OOOO",tipoArticulo.Ropa,0,null);
 			g.cambiarSeccion(su, se);
 			g.setListaSecciones(g.cargarSecciones());
 			assertEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getCodigoSeccion(),"OOOO");

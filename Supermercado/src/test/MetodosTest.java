@@ -36,7 +36,7 @@ GestorPersona gp=new GestorPersona();
 	@Test
 	void test_guardarInventario(){
 		try {
-			Comida com = new Comida(ga.cargarArticulos().size()+1, "burger", "sgd", "dd", 10, 8, tipoArticulo.Comida, Date.valueOf("2015-02-02"), "japon");
+			Comida com = new Comida(ga.cargarArticulos().size()+1, "burger", "sgd", "dd", 10, 8, Date.valueOf("2015-02-02"), "japon");
 			ArrayList<Articulo> inventario = new ArrayList<Articulo>();
 			inventario.add(com);
 			mts.guardarInventario(inventario);

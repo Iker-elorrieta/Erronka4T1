@@ -14,7 +14,7 @@ import modelo.tipoArticulo;
 class SeccionTest {
 
 	ArrayList<Articulo> arrayArticulos = new ArrayList<Articulo>();
-Seccion obj = new Seccion(null, null, null);
+Seccion obj = new Seccion(null, null,0, null);
 	
 	@Test
 	void test_GettersSetters() {
@@ -29,8 +29,8 @@ Seccion obj = new Seccion(null, null, null);
 	
 	@Test
 	void test_equals() {
-		Seccion obj1 = new Seccion(null, null, null);
-		Seccion obj2 = new Seccion(null, null, null);
+		Seccion obj1 = new Seccion(null, null,0, null);
+		Seccion obj2 = new Seccion(null, null,0, null);
 		
 		obj1.setCodigoSeccion("HDGHAGS");
 		obj2.setCodigoSeccion("HDGHAGS");

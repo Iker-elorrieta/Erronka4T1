@@ -70,4 +70,32 @@ public class Metodos {
 		}
 		return nuevo;
 	}
+	public String[] deArrayListAStringArrayJefe(ArrayList<Jefe> lista) {
+		String [] jefes=new String[lista.size()];
+		for(int i=0;i<lista.size();i++) {
+			jefes[i]=lista.get(i).getDni();
+		}
+		return jefes;
+	}
+	public String[] deArrayListAStringArraySuper(ArrayList<Supermercado> lista) {
+		String [] superm=new String[lista.size()];
+		for(int i=0;i<lista.size();i++) {
+			superm[i]=lista.get(i).getEmpresa();
+		}
+		return superm;
+	}
+	public String[] deArrayListAStringArrayEmpresa(ArrayList<Supermercado> lista) {
+		String [] superm=new String[lista.size()];
+		for(int i=0;i<lista.size();i++) {
+			superm[i]=lista.get(i).getEmpresa();
+		}
+		return superm;
+	}
+	public String[] deArrayListAStringArrayDireccion(ArrayList<Supermercado> lista) {
+		String [] superm=new String[lista.size()];
+		for(int i=0;i<lista.size();i++) {
+			superm[i]=lista.get(i).getDireccion();
+		}
+		return superm;
+	}
 }

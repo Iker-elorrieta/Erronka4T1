@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import modelo.Articulo;
 import modelo.Seccion;
 import modelo.Supermercado;
 import modelo.tipoArticulo;
@@ -30,33 +29,25 @@ public class GestorSeccion {
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
 		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.SECCION);
 		while(carga.next()) {
-		sec=new Seccion(carga.getString(TABLAS.CODIGOSECCION),tipoArticulo.valueOf(carga.getString(TABLAS.TIPO)),null);
+		sec=new Seccion(carga.getString(TABLAS.CODIGOSECCION),tipoArticulo.valueOf(carga.getString(TABLAS.TIPO)),carga.getInt(TABLAS.NUMAR),null);
 		lista.add(sec);
 		}
 		return lista;
 	}
 	public void insertarSeccion(Supermercado su,Seccion se) throws SQLException {
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
-		comando.executeUpdate("INSERT INTO "+TABLAS.SECCION+" VALUES ('"+su.getCodigoSuper()+"','"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"')");
+		comando.executeUpdate("INSERT INTO "+TABLAS.SECCION+" VALUES ('"+su.getCodigoSuper()+"','"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"','"+se.getNumArticulo()+"')");
 	}
 	public void cambiarSeccion(Supermercado su,Seccion se) throws SQLException {
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
 		comando.executeUpdate("UPDATE "+TABLAS.SECCION+" SET "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"',"
-				+ " "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"', "+TABLAS.TIPO+"='"+se.getNombreSeccion()+"'"
+				+ " "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"', "+TABLAS.TIPO+"='"+se.getNombreSeccion()+"',"
+				+ " "+TABLAS.NUMAR+"='"+se.getNumArticulo()+"'"
 				+ " WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
 	}
 	public void borrarSeccion(Seccion se) throws SQLException {
 		Statement comando;
 		comando = (Statement) mc.conectarBaseDatos().createStatement();
 		comando.executeUpdate("DELETE FROM "+TABLAS.SECCION+" WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
-	}
-	public Seccion buscarSeccionPorTipo(Supermercado su,Articulo ar){
-		Seccion vuelta=null;
-		for(Seccion se: su.getArraySecciones()) {
-			if(se.getNombreSeccion().equals(ar.gettipo())) {
-				vuelta=se;
-			}
-		}
-		return vuelta;
 	}
 }

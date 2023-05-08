@@ -31,7 +31,6 @@ public class TABLAS {
 	public final static String DESCRIPCION="descripcion";
 	public final static String PRECIO="precio";
 	public final static String STOCK="stock";
-	public final static String TIPO="tipo";
 	public final static String TALLA="talla";
 	public final static String MARCA="marca";
 	public final static String FECHACADUCIDAD="fechaCaducidad";
@@ -41,6 +40,8 @@ public class TABLAS {
 	
 	public final static String SECCION="secciones";
 	public final static String CODIGOSECCION="codigoSeccion";
+	public final static String TIPO="tipo";
+	public final static String NUMAR="numAr";
 	
 	public final static String SUPERMERCADO="supermercados";
 	public final static String EMPRESA="empresa";

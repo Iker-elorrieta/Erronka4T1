@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -147,7 +148,14 @@ GestorSeccion gs=new GestorSeccion();
 	public void comprobarCampos(JPanel panel) throws ErroresDeOperaciones {
 		for(Component componente:panel.getComponents()) {
 			if(componente instanceof JTextField) {
-				if(((JTextField) componente).getText().equals("")) {
+				if(((JTextField) componente).getText().equals("") && componente.isVisible()) {
+					throw new ErroresDeOperaciones("Alguno de los campos esta vacio");
+				}
+				
+			}
+			if(componente instanceof JComboBox) {
+				JComboBox<?> combo=(JComboBox<?>) componente;
+			if(combo.getItemAt(combo.getSelectedIndex())==null  && componente.isVisible()) {
 					throw new ErroresDeOperaciones("Alguno de los campos esta vacio");
 				}
 			}

@@ -6,10 +6,12 @@ import java.util.Objects;
 public class Seccion {
 	private String codigoSeccion;
 	private tipoArticulo nombreSeccion;
+	private int numArticulo;
 	private ArrayList<Articulo> arrayArticulos;
 	
-	public Seccion(String codigoSeccion, tipoArticulo nombreSeccion, ArrayList<Articulo> arrayArticulos) {
+	public Seccion(String codigoSeccion, tipoArticulo nombreSeccion, int numArticulo, ArrayList<Articulo> arrayArticulos) {
 		super();
+		this.numArticulo=numArticulo;
 		this.codigoSeccion = codigoSeccion;
 		this.nombreSeccion = nombreSeccion;
 		this.arrayArticulos = arrayArticulos;
@@ -30,7 +32,7 @@ public class Seccion {
 	}
 	@Override
 	public String toString() {
-		return "Seccion [codigoSeccion=" + codigoSeccion + ", nombreSeccion=" + nombreSeccion + "]";
+		return "Seccion [codigoSeccion=" + codigoSeccion + ", nombreSeccion=" + nombreSeccion + ", numArticulo="+numArticulo+"]";
 	}
 	public String getCodigoSeccion() {
 		return codigoSeccion;
@@ -50,4 +52,12 @@ public class Seccion {
 	public void setArrayArticulos(ArrayList<Articulo> arrayArticulos) {
 		this.arrayArticulos = arrayArticulos;
 	}
+
+	public int getNumArticulo() {
+		return numArticulo;
+	}
+	public void setNumArticulo(int numArticulo) {
+		this.numArticulo = numArticulo;
+	}
+	
 }

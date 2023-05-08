@@ -33,10 +33,10 @@ class TestGestorArticulo {
 		Jefe jefe=new Jefe("77777777C","Test","Test",Date.valueOf("2001-01-21"),"testJefe@gmail.com","12345",tipoPersona.Jefe,Date.valueOf("2019-09-09"),(float)55.5,0);
 		
 		Supermercado su=new Supermercado("ABCDE","PruebaEmpresa","Errekamari",4,null);
-		Seccion se=new Seccion("OOOO",tipoArticulo.Herramienta,null);
-		Ropa ro=new Ropa(0, "Chanclas", "chanclas.png", "", (float)5.88, 99, tipoArticulo.Ropa, "XL", "Supreme");
-		Comida co=new Comida(0, "Fruta del dragon", "fdd.png", "", (float)3.49, 99, tipoArticulo.Comida, Date.valueOf("2023-12-31"),"Brasil");
-		Herramienta he=new Herramienta(0, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, tipoArticulo.Herramienta, 1, 4);
+		Seccion se=new Seccion("OOOO",tipoArticulo.Herramienta,0,null);
+		Ropa ro=new Ropa(0, "Chanclas", "chanclas.png", "", (float)5.88, 99, "XL", "Supreme");
+		Comida co=new Comida(0, "Fruta del dragon", "fdd.png", "", (float)3.49, 99, Date.valueOf("2023-12-31"),"Brasil");
+		Herramienta he=new Herramienta(0, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 1, 4);
 		try {
 			ga.setListaArticulos(ga.cargarArticulos());
 			assertTrue(ga.getListaArticulos().size()>0);
@@ -57,9 +57,9 @@ class TestGestorArticulo {
 			ga.setListaArticulos(ga.cargarArticulos());
 			assertEquals(ga.getListaArticulos().size(),(antesDeInsertar+3));
 			
-			ro=new Ropa(0, "Chanclas", "chanclas.png", "", (float)5.88, 99, tipoArticulo.Ropa, "S", "Mercadona");
-			co=new Comida(0, "Fruta del dragon", "fdd.png", "", (float)3.49, 99, tipoArticulo.Comida, Date.valueOf("2023-12-31"),"Cuenca");
-			he=new Herramienta(0, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, tipoArticulo.Herramienta, 0, 2);
+			ro=new Ropa(0, "Chanclas", "chanclas.png", "", (float)5.88, 99, "S", "Mercadona");
+			co=new Comida(0, "Fruta del dragon", "fdd.png", "", (float)3.49, 99, Date.valueOf("2023-12-31"),"Cuenca");
+			he=new Herramienta(0, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 0, 2);
 			ga.cambiarArticulo(se, he);
 			ga.cambiarArticulo(se, co);
 			ga.cambiarArticulo(se, ro);

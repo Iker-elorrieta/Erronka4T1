@@ -7,9 +7,8 @@ public abstract class Articulo {
 	protected String descripcion;
 	protected float precio;
 	protected int stockActual;
-	protected tipoArticulo tipo;
 	
-	public Articulo(int idArticulo, String nombreArticulo, String rutaImagen,String descripcion, float precio,int stockActual, tipoArticulo tipo) {
+	public Articulo(int idArticulo, String nombreArticulo, String rutaImagen,String descripcion, float precio,int stockActual) {
 		super();
 		this.idArticulo = idArticulo;
 		this.nombreArticulo = nombreArticulo;
@@ -17,7 +16,6 @@ public abstract class Articulo {
 		this.descripcion=descripcion;
 		this.precio = precio;
 		this.stockActual = stockActual;
-		this.tipo = tipo;
 	}
 	public String getDescripcion() {
 		return descripcion;
@@ -40,9 +38,6 @@ public abstract class Articulo {
 	public int getStockActual() {
 		return stockActual;
 	}
-	public tipoArticulo gettipo() {
-		return tipo;
-	}
 	public void setIdArticulo(int idArticulo) {
 		this.idArticulo = idArticulo;
 	}
@@ -57,8 +52,5 @@ public abstract class Articulo {
 	}
 	public void setStockActual(int stockActual) {
 		this.stockActual = stockActual;
-	}
-	public void settipo(tipoArticulo tipo) {
-		this.tipo = tipo;
 	}
 }

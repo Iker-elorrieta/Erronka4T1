@@ -6,11 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import modelo.Ropa;
-import modelo.tipoArticulo;
-
 class RopaTest {
 
-Ropa obj = new Ropa(0, null, null, null, 0, 0, null, null, null);
+Ropa obj = new Ropa(0, null, null, null, 0, 0, null, null);
 	
 	@Test
 	void test_GettersSetters() {
@@ -20,7 +18,6 @@ Ropa obj = new Ropa(0, null, null, null, 0, 0, null, null, null);
 		obj.setNombreArticulo("KitKat");
 		obj.setPrecio((float)23.1);
 		obj.setStockActual(4);
-		obj.settipo(tipoArticulo.Comida);
 		obj.setRutaImagen("imagen.png");
 		obj.setDescripcion("des");
 		
@@ -30,15 +27,14 @@ Ropa obj = new Ropa(0, null, null, null, 0, 0, null, null, null);
 		assertEquals(obj.getNombreArticulo(),"KitKat");
 		assertTrue(obj.getPrecio()>0);
 		assertEquals(obj.getStockActual(),4);
-		assertEquals(obj.gettipo(),tipoArticulo.Comida);
 		assertEquals(obj.getRutaImagen(),"imagen.png");
 		assertEquals(obj.getDescripcion(),"des");
 	}
 	
 	@Test
 	void test_equals() {
-		Ropa obj1 = new Ropa(0, null, null, null, 0, 0, null, null, null);
-		Ropa obj2 = new Ropa(0, null, null, null, 0, 0, null, null, null);
+		Ropa obj1 = new Ropa(0, null, null, null, 0, 0, null, null);
+		Ropa obj2 = new Ropa(0, null, null, null, 0, 0, null, null);
 		
 		obj1.setIdArticulo(2132);
 		obj2.setIdArticulo(2132);

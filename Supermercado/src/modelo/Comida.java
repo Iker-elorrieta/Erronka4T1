@@ -10,8 +10,8 @@ public class Comida extends Articulo{
 	private Date fechaCaducidad;
 	private String procedencia;
 	
-	public Comida(int idArticulo, String nombreArticulo, String rutaImagen,String descripcion, float precio,int stockActual, tipoArticulo tipo, Date fechaCaducidad, String procedencia) {
-		super(idArticulo, nombreArticulo, rutaImagen,descripcion, precio, stockActual, tipo);
+	public Comida(int idArticulo, String nombreArticulo, String rutaImagen,String descripcion, float precio,int stockActual, Date fechaCaducidad, String procedencia) {
+		super(idArticulo, nombreArticulo, rutaImagen,descripcion, precio, stockActual);
 		this.fechaCaducidad = fechaCaducidad;
 		this.procedencia = procedencia;
 	}
@@ -36,8 +36,7 @@ public class Comida extends Articulo{
 	public String toString() {
 		return "Comida [fechaCaducidad=" + fechaCaducidad + ", procedencia="
 				+ procedencia + ", idArticulo=" + idArticulo + ", nombreArticulo=" + nombreArticulo + ", rutaImagen="
-				+ rutaImagen + ", precio=" + precio + ", stockActual=" + stockActual
-				+ ", tipo=" + tipo + "]";
+				+ rutaImagen + ", precio=" + precio + ", stockActual=" + stockActual+"]";
 	}
 	public String getFechaCaducidad() {
 		return mc.formatearFecha(fechaCaducidad);
