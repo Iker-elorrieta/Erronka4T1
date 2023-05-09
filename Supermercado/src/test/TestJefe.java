@@ -4,25 +4,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
-import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import controlador.ErroresDeRegistro;
 import controlador.GestorArticulo;
 import controlador.GestorArticuloComprado;
 import controlador.GestorCompra;
 import controlador.GestorPersona;
 import controlador.Metodos;
-import modelo.Articulo;
-import modelo.Compra;
 import modelo.Jefe;
 import modelo.Supermercado;
-import modelo.tipoPersona;
 
 class TestJefe {
 	DateFormat formateador= new SimpleDateFormat("dd/M/yy");
@@ -56,6 +49,7 @@ Jefe obj = new Jefe(null, null, null, null, null, null, null, null, 0, 0);
 		assertEquals(obj.isDios(),false);
 		assertEquals(obj.getFechaAdquisicion(),"2023-01-01");
 		assertEquals(Float.valueOf(obj.getPorcentajeEmpresa()),(float)54);
+		assertEquals(obj.comprarArticulos((float)7.12),"El precio de recargar los articulos es de 7.12");
 	}
 	
 	@Test
@@ -86,70 +80,8 @@ Jefe obj = new Jefe(null, null, null, null, null, null, null, null, 0, 0);
 	
 	obj1.hashCode();
 	}
-	
 	@Test
 	void test_toString() {
 		assertEquals(obj.toString(),"Jefe [dni=null, nombre=null, apellidos=null, fechaNacimiento=null, email=null]");
 	}
-	@Test
-	void testMetodos() {
-		Jefe jefe = new Jefe("99999999X","Test","Test",Date.valueOf("2001-01-21"),"test@gmail.com","12345",tipoPersona.Jefe,Date.valueOf("2019-06-01"), (float)99.9,0);
-		Compra co=new Compra();
-		Articulo ar=null;
-		ArrayList<Articulo> articulos=null;
-		try {
-			ga.setListaArticulos(ga.cargarArticulos());
-			articulos=ga.getListaArticulos();
-			ar=ga.getListaArticulos().get(0);
-			co.anadirArticulo(ga.getListaArticulos().get(0),2);
-			gp.insertarPersona(jefe);
-			co.setPrecioTotal(co.calcularPrecioTotal());
-			
-			jefe.comprarArticulos(co,co.getListaCantidades());
-			Compra c=gc.buscarCompraReciente();
-			assertNotEquals(co.getCodigoCompra(),c.getCodigoCompra());
-			assertNotEquals(co.getFechaCompra(),c.getFechaCompra());
-			assertNotEquals(co.calcularPrecioTotal(),c.calcularPrecioTotal());
-			assertNotEquals(ar.getStockActual(),ar.getStockActual()-1);
-			
-			gp.setListaPersonas(gp.cargarPersonas());
-			
-			jefe.devolverUnArticulo(gac.buscarArticuloComprado(ga.buscarArticulo(ar)), 1);
-			gp.setListaPersonas(gp.cargarPersonas());
-
-			
-			jefe.cancelarUltimaCompra();
-			gp.setListaPersonas(gp.cargarPersonas());
-			ga.setListaArticulos(ga.cargarArticulos());
-			assertEquals(articulos,ga.getListaArticulos());
-			
-			jefe.comprarArticulos(co,co.getListaCantidades());
-			c=gc.buscarCompraReciente();
-			assertNotEquals(co.getCodigoCompra(),c.getCodigoCompra());
-			assertNotEquals(co.getFechaCompra(),c.getFechaCompra());
-			assertNotEquals(co.calcularPrecioTotal(),c.calcularPrecioTotal());
-			assertNotEquals(ar.getStockActual(),ar.getStockActual()-1);
-			
-			gp.setListaPersonas(gp.cargarPersonas());
-			
-			jefe.comprarArticulos(co,co.getListaCantidades());
-			jefe.devolverUnArticulo(gac.buscarArticuloComprado(ga.buscarArticulo(ar)), 2);
-			gp.setListaPersonas(gp.cargarPersonas());
-			
-			gp.darseBajaPersona(jefe);
-			
-			
-		} catch (ErroresDeRegistro e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-
 }

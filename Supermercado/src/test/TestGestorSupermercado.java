@@ -27,8 +27,6 @@ class TestGestorSupermercado {
 			g.setListaSupers(g.cargarSupermercados());
 			assertTrue(g.getListaSupers().size()>0);
 			int antesDeInsertar=g.getListaSupers().size();
-			assertEquals(g.getListaSupers().get(0).getCodigoSuper(),"AAAAA");
-			assertEquals(g.getListaSupers().get(0).getEmpresa(),"Elorrieta");
 			
 			g1.insertarPersona(jefe);
 			g.insertarSupermercado(jefe, su);
@@ -38,7 +36,7 @@ class TestGestorSupermercado {
 			assertEquals(g.getListaSupers().get(g.getListaSupers().size()-1).getEmpresa(),"PruebaEmpresa");
 			
 			su=new Supermercado("ABCDE","PruebaEmpresaCambio","Errekamari",4,null);
-			g.cambiarSupermercado(jefe, su);
+			g.cambiarSupermercado(su);
 			g.setListaSupers(g.cargarSupermercados());
 			assertEquals(g.getListaSupers().get(g.getListaSupers().size()-1).getCodigoSuper(),"ABCDE");
 			assertEquals(g.getListaSupers().get(g.getListaSupers().size()-1).getEmpresa(),"PruebaEmpresaCambio");

@@ -38,9 +38,9 @@ public class GestorSeccion {
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
 		comando.executeUpdate("INSERT INTO "+TABLAS.SECCION+" VALUES ('"+su.getCodigoSuper()+"','"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"','"+se.getNumArticulo()+"')");
 	}
-	public void cambiarSeccion(Supermercado su,Seccion se) throws SQLException {
+	public void cambiarSeccion(Seccion se) throws SQLException {
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
-		comando.executeUpdate("UPDATE "+TABLAS.SECCION+" SET "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"',"
+		comando.executeUpdate("UPDATE "+TABLAS.SECCION+" SET "
 				+ " "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"', "+TABLAS.TIPO+"='"+se.getNombreSeccion()+"',"
 				+ " "+TABLAS.NUMAR+"='"+se.getNumArticulo()+"'"
 				+ " WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");

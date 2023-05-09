@@ -58,7 +58,7 @@ Seccion obj = new Seccion(null, null,0, null);
 	
 	@Test
 	void test_toString() {
-		assertEquals(obj.toString(),"Seccion [codigoSeccion=null, nombreSeccion=null]");
+		assertEquals(obj.toString(),"Seccion [codigoSeccion=null, nombreSeccion=null, numArticulo=0]");
 	}
 
 }

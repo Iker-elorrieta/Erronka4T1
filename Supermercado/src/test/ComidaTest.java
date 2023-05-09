@@ -24,7 +24,7 @@ Comida obj = new Comida(0, null, null, null, 0, 0, null, null);
 		obj.setRutaImagen("imagen.png");
 		obj.setDescripcion("des");
 		
-		assertEquals(obj.getFechaCaducidad(),Date.valueOf("2039-12-01"));
+		assertEquals(obj.getFechaCaducidad(),"2039-12-01");
 		assertEquals(obj.getIdArticulo(),232);
 		assertEquals(obj.getNombreArticulo(),"KitKat");
 		assertTrue(obj.getPrecio()>0);
@@ -66,7 +66,8 @@ Comida obj = new Comida(0, null, null, null, 0, 0, null, null);
 	
 	@Test
 	void test_toString() {
-		assertEquals(obj.toString(),"Comida [fechaCaducidad=null, procedencia=null, idArticulo=0, nombreArticulo=null, rutaImagen=null, precio=0.0, stockActual=0, tipo=null]");
+		assertEquals(obj.toString(),"Comida [fechaCaducidad=null, procedencia=null, idArticulo=0, nombreArticulo=null, rutaImagen=null, precio=0.0, stockActual=0]");
 	}
 
 }
+

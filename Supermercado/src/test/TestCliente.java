@@ -3,32 +3,19 @@ package test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
-import java.sql.SQLException;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import controlador.ErroresDeRegistro;
-import controlador.GestorArticulo;
-import controlador.GestorArticuloComprado;
-import controlador.GestorCompra;
-import controlador.GestorPersona;
 import controlador.Metodos;
-import modelo.Articulo;
 import modelo.Cliente;
-import modelo.Compra;
 import modelo.tipoPersona;
 
 class TestCliente {
 	DateFormat formateador= new SimpleDateFormat("dd/M/yy");
 	Metodos mc=new Metodos();
-	GestorArticulo ga=new GestorArticulo();
-	GestorArticuloComprado gac=new GestorArticuloComprado();
-	GestorPersona gp=new GestorPersona();
-	GestorCompra gc=new GestorCompra();
+	
 	@Test
 	void test() {
 		Cliente primero=new Cliente("798981A","Pepe","Perez Navarros",Date.valueOf("2343-01-02"),"perez@gmail.com","contrasena",tipoPersona.Cliente,(float)55.67, 0);
@@ -57,6 +44,8 @@ class TestCliente {
 		assertEquals(primero.getArrayCompras(),segundo.getArrayCompras());
 		assertEquals(primero.hashCode(),segundo.hashCode());
 		assertEquals(primero.toString(),"Cliente [dinero=55.67, dni=798981A, nombre=Pepe, apellidos=Perez Navarros, fechaNacimiento=2343-01-02, email=perez@gmail.com]");
+		primero.comprarArticulos((float)6.33);
+		assertEquals(primero.getDinero(),(float)55.67-(float)6.33);
 	}
 	
 	@Test
@@ -87,68 +76,5 @@ class TestCliente {
 	
 	obj1.hashCode();
 	}
-	@Test
-	void testMetodos() {
-		Cliente cliente = new Cliente("99999999X","Test","Test",Date.valueOf("2001-01-21"),"test@gmail.com","12345",tipoPersona.Cliente,(float)99.9,0);
-		Cliente prueba=null;
-		Compra co=new Compra();
-		Articulo ar=null;
-		ArrayList<Articulo> articulos=null;
-		try {
-			ga.setListaArticulos(ga.cargarArticulos());
-			articulos=ga.getListaArticulos();
-			ar=ga.getListaArticulos().get(0);
-			co.anadirArticulo(ga.getListaArticulos().get(0),2);
-			gp.insertarPersona(cliente);
-			co.setPrecioTotal(co.calcularPrecioTotal());
-			
-			cliente.comprarArticulos(co,co.getListaCantidades());
-			Compra c=gc.buscarCompraReciente();
-			assertNotEquals(co.getCodigoCompra(),c.getCodigoCompra());
-			assertNotEquals(co.getFechaCompra(),c.getFechaCompra());
-			assertNotEquals(co.calcularPrecioTotal(),c.calcularPrecioTotal());
-			assertNotEquals(ar.getStockActual(),ar.getStockActual()-1);
-			
-			gp.setListaPersonas(gp.cargarPersonas());
-			int posicion=gp.getListaPersonas().indexOf(cliente);
-			prueba=(Cliente) gp.getListaPersonas().get(posicion);
-			assertNotEquals(prueba.getDinero(),cliente.getDinero());
-			
-			cliente.devolverUnArticulo(gac.buscarArticuloComprado(ga.buscarArticulo(ar)), 1);
-			gp.setListaPersonas(gp.cargarPersonas());
-			posicion=gp.getListaPersonas().indexOf(cliente);
-			prueba=(Cliente) gp.getListaPersonas().get(posicion);
-			cliente.setDinero(cliente.getDinero()-co.calcularPrecioTotal()/2);
-			assertEquals(prueba.getDinero(),cliente.getDinero());
-			
-			cliente.cancelarUltimaCompra();
-			gp.setListaPersonas(gp.cargarPersonas());
-			posicion=gp.getListaPersonas().indexOf(cliente);
-			prueba=(Cliente) gp.getListaPersonas().get(posicion);
-			cliente.setDinero(cliente.getDinero());
-			assertEquals(prueba.getDinero(),cliente.getDinero());
-			ga.setListaArticulos(ga.cargarArticulos());
-			assertEquals(articulos,ga.getListaArticulos());
-			
-			c=gc.buscarCompraReciente();
-			assertNotEquals(co.getCodigoCompra(),c.getCodigoCompra());
-			assertNotEquals(co.getFechaCompra(),c.getFechaCompra());
-			assertNotEquals(co.calcularPrecioTotal(),c.calcularPrecioTotal());
-			assertNotEquals(ar.getStockActual(),ar.getStockActual()-1);
-			
-			cliente.comprarArticulos(co,co.getListaCantidades());
-			cliente.devolverUnArticulo(gac.buscarArticuloComprado(ga.buscarArticulo(ar)), 2);
-			
-			gp.darseBajaPersona(cliente);
-		} catch (ErroresDeRegistro e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	
 }

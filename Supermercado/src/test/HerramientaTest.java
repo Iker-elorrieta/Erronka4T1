@@ -65,7 +65,8 @@ Herramienta obj = new Herramienta(0, null, null, null, 0, 0, 0, 0);
 	
 	@Test
 	void test_toString() {
-		assertEquals(obj.toString(),"Herramienta [electrica=false, garantia=0, idArticulo=0, nombreArticulo=null, rutaImagen=null, precio=0.0, stockActual=0, tipo=null]");
+		assertEquals(obj.toString(),"Herramienta [electrica=false, garantia=0, idArticulo=0, nombreArticulo=null, rutaImagen=null, precio=0.0, stockActual=0 ]");
 	}
 
 }
+

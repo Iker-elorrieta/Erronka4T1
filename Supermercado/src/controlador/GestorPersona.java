@@ -3,12 +3,16 @@ package controlador;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import modelo.ArticuloComprado;
 import modelo.Cliente;
+import modelo.Compra;
 import modelo.Jefe;
 import modelo.Persona;
 
@@ -212,6 +216,78 @@ public class GestorPersona {
 			}
 		}
 		return jefeSinSuper;
-		
+	}
+	public int insertarCompraYCobrar(Persona per,Compra compra) throws SQLException, ParseException {
+		// TODO Auto-generated method stub
+		Metodos mc=new Metodos();
+		Cliente cli=null;
+		Statement comando;
+			comando = (Statement) mc.conectarBaseDatos().createStatement();
+			comando.executeUpdate("INSERT INTO "+TABLAS.COMPRAS+" ("+TABLAS.DNI+","+TABLAS.PRECIOFINAL+","+TABLAS.FECHACOMPRA+")"
+					+ " VALUES ('"+per.getDni()+"','"+compra.getPrecioTotal()+"','"+LocalDateTime.now()+"')");
+			if(per instanceof Cliente) {
+				cli=(Cliente) per;
+				comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"-"+compra.calcularPrecioTotal()+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");
+			}
+			ResultSet cargar=comando.executeQuery("SELECT "+TABLAS.CODIGOCOMPRA+" FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.DNI+"='"+per.getDni()+"' ORDER BY "+TABLAS.FECHACOMPRA+" LIMIT 1");
+			int cod=0;
+			while(cargar.next()) {
+				cod=cargar.getInt(TABLAS.CODIGOCOMPRA);
+			}
+			return cod;
+	}
+	public void insertarArticulos(ArrayList<ArticuloComprado> lista,int cod) throws SQLException {
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		for(ArticuloComprado ar:lista) {
+			comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULOSCOMPRADOS+" VALUES ('"+cod+"','"+ar.getIdArticulo()+"','"+ar.getCantidad()+"','"+ar.getPrecioArt()+"')");
+			comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.STOCK+"=("+TABLAS.STOCK+"-"+ar.getCantidad()+") WHERE "+TABLAS.IDARTICULO+"='"+ar.getIdArticulo()+"'");
+			}
+	}
+	public void cancelarArticulos(Compra com) throws SQLException {
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		ArrayList<ArticuloComprado> lista=new ArrayList<ArticuloComprado>();
+		ResultSet ca=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
+		while(ca.next()) {
+			ArticuloComprado arc=new ArticuloComprado(ca.getInt(TABLAS.CODIGOCOMPRA),ca.getInt(TABLAS.IDARTICULO),ca.getInt(TABLAS.CANTIDAD),ca.getFloat(TABLAS.PRECIOART));
+			lista.add(arc);
+		}
+		for(ArticuloComprado arc: lista) {
+		comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.STOCK+"=("+TABLAS.STOCK+"+"+arc.getCantidad()+") WHERE "+TABLAS.IDARTICULO+"='"+arc.getIdArticulo()+"'");
+		}
+	}
+	public void cancelarCompra(Compra com) throws SQLException {
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		Statement comandoDos = (Statement) mc.conectarBaseDatos().createStatement();
+		ResultSet cargaDinero=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
+		while(cargaDinero.next()) {
+			comandoDos.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"+"+cargaDinero.getFloat(TABLAS.PRECIOFINAL)+")");
+			comandoDos.executeUpdate("DELETE FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+cargaDinero.getInt(TABLAS.CODIGOCOMPRA)+"'");
+		}
+	}
+	public void devolverUnArticulo(Persona per,ArticuloComprado arc,int numeroDevolver) throws SQLException {
+		Metodos mc=new Metodos();
+		Cliente cli=null;
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		Statement comandoDos = (Statement) mc.conectarBaseDatos().createStatement();
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+arc.getCodigoCompra()+"' AND "+TABLAS.IDARTICULO+"='"+arc.getIdArticulo()+"'");
+		while(carga.next()) {
+			if(per instanceof Cliente) {
+				cli=(Cliente) per;
+			comandoDos.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"-"+carga.getInt(TABLAS.CANTIDAD)*carga.getFloat(TABLAS.PRECIOART)+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");
+			}	
+		if(carga.getInt(TABLAS.CANTIDAD)<=numeroDevolver) {
+				comandoDos.execute("DELETE FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.IDARTICULO+"="+arc.getIdArticulo()+" AND "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra()+"");
+		}else {
+			comandoDos.execute("UPDATE "+TABLAS.ARTICULOSCOMPRADOS+" SET "+TABLAS.CANTIDAD+"=("+carga.getInt(TABLAS.CANTIDAD)+"-"+numeroDevolver+")");
+		}
+		}
+		int numArc=0;
+		ResultSet cargatres=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra()+"");
+		while(cargatres.next()) {
+			numArc++;
+		}
+		if(numArc==0) {
+			comandoDos.execute("DELETE FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+arc.getCodigoCompra()+"'");
+		}
 	}
 }
