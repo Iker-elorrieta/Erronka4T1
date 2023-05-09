@@ -12,22 +12,22 @@ import java.sql.ResultSet;
 
 import org.junit.jupiter.api.Test;
 
-import controlador.ErroresDeLogin;
-import controlador.ErroresDeOperaciones;
-import controlador.ErroresDeRegistro;
-import controlador.GestorArticulo;
-import controlador.GestorArticuloComprado;
-import controlador.GestorCompra;
-import controlador.GestorPersona;
 import controlador.Metodos;
-import controlador.TABLAS;
+import excepciones.ErroresDeLogin;
+import excepciones.ErroresDeOperaciones;
+import excepciones.ErroresDeRegistro;
+import gestores.GestorArticulo;
+import gestores.GestorArticuloComprado;
+import gestores.GestorCompra;
+import gestores.GestorPersona;
 import modelo.Articulo;
 import modelo.ArticuloComprado;
 import modelo.Cliente;
 import modelo.Compra;
 import modelo.Jefe;
 import modelo.Persona;
-import modelo.tipoPersona;
+import otros.tipoPersona;
+import referencias.TABLAS;
 
 class TestGestorPersona {
 	Metodos mc=new Metodos();

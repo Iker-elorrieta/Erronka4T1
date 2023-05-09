@@ -7,13 +7,13 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
 
-import controlador.ErroresDeRegistro;
-import controlador.GestorPersona;
-import controlador.GestorSupermercado;
 import controlador.Metodos;
+import excepciones.ErroresDeRegistro;
+import gestores.GestorPersona;
+import gestores.GestorSupermercado;
 import modelo.Jefe;
 import modelo.Supermercado;
-import modelo.tipoPersona;
+import otros.tipoPersona;
 
 class TestGestorSupermercado {
 	Metodos mc=new Metodos();

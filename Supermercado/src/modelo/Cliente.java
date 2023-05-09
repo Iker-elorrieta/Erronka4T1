@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
+import otros.tipoPersona;
+
 
 public class Cliente extends Persona {
 	private float dinero;

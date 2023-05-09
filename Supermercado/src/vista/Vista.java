@@ -6,20 +6,30 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JPanel;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+
 import javax.swing.JTextField;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import controlador.*;
+import excepciones.ErroresDeLogin;
+import excepciones.ErroresDeOperaciones;
+import excepciones.ErroresDeRegistro;
+import gestores.GestorArticulo;
+import gestores.GestorPersona;
+import gestores.GestorSeccion;
+import gestores.GestorSupermercado;
 import modelo.*;
+import otros.DateLabelFormatter;
+import otros.tipoArticulo;
+import otros.tipoPersona;
 
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
@@ -33,7 +43,6 @@ import java.awt.event.ActionEvent;
 import java.awt.Color;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.border.Border;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.JCheckBox;
@@ -80,7 +89,6 @@ public class Vista {
 	
 	private int manejaCambio=0;
 	private int cuentaSecciones=0;
-	
 	private Comida nuevaComida;
 	private Ropa nuevaRopa;
 	private Herramienta nuevaHerramienta;
@@ -148,7 +156,7 @@ public class Vista {
 		}
 		
 		JTabbedPane paneles = new JTabbedPane(JTabbedPane.TOP);
-		paneles.setBounds(0, -28, 707, 481);
+		paneles.setBounds(0, 0, 707, 453);
 		frame.getContentPane().add(paneles);
 		
 		JPanel panel_Bienvenido = new JPanel();
@@ -226,10 +234,11 @@ public class Vista {
 		panel_PerfilUtilidades.add(datePicker_1);
 		datePicker_1.setEnabled(false);
 		
+		JLabel lblModifica = new JLabel("Modificaciones");
 		JButton btnAnadirSecciones = new JButton("Secciones");
 		JButton btnPaginaSuper = new JButton("Supermercado");
 		JButton btnInfo = new JButton("Datos");
-		JLabel lblCrear = new JLabel("Anadir");
+		JLabel lblCrear = new JLabel("Creacion");
 		JButton btnCreacion = new JButton("Administrador");
 		JButton btnAnadirArticulo = new JButton("Articulos");
 		JLabel lblSaludo = new JLabel("");
@@ -258,9 +267,10 @@ public class Vista {
 							btnCreacion.setVisible(false);
 							btnAnadirArticulo.setVisible(false);
 							btnPaginaSuper.setVisible(false);
-							btnAnadirSecciones.setVisible(true);
+							btnAnadirSecciones.setVisible(false);
 							btnInfo.setVisible(false);
 							paneles.setSelectedIndex(3);
+							lblModifica.setVisible(false);
 					textDineroActual.setText(String.valueOf(cliente.getDinero()));
 						}
 					}else {
@@ -269,6 +279,10 @@ public class Vista {
 						btnCreacion.setVisible(true);
 						btnAnadirArticulo.setVisible(true);
 						btnInfo.setVisible(true);
+						btnPaginaSuper.setVisible(true);
+						btnAnadirSecciones.setVisible(true);
+						btnInfo.setVisible(true);
+						lblModifica.setVisible(true);
 						paneles.setSelectedIndex(3);
 					}
 				} catch (ErroresDeLogin e1) {
@@ -634,7 +648,7 @@ public class Vista {
 		
 		
 		lblCrear.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblCrear.setBounds(420, 59, 66, 14);
+		lblCrear.setBounds(405, 59, 81, 14);
 		panel_PerfilUtilidades.add(lblCrear);
 		
 		JLabel lblErrorSeleccion = new JLabel("");
@@ -681,22 +695,49 @@ public class Vista {
 		btnAnadirSecciones.setBounds(377, 165, 134, 23);
 		panel_PerfilUtilidades.add(btnAnadirSecciones);
 		
+		lblModifica.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblModifica.setBounds(558, 61, 110, 14);
+		panel_PerfilUtilidades.add(lblModifica);
+		
+		JScrollPane compras = new JScrollPane();
+		JButton btnComprar = new JButton("Comprar");
+		btnComprar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					listaArticulos=ga.cargarArticulos();
+					compras.setViewportView(cv.mostarArticulos(listaArticulos));
+					compras.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+					paneles.setSelectedIndex(9);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		btnComprar.setBounds(579, 391, 89, 23);
+		panel_PerfilUtilidades.add(btnComprar);
+		
 		JPanel panel_Otros = new JPanel();
 		panel_Otros.setLayout(null);
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 49, 682, 245);
+		scrollPane.setBounds(10, 39, 682, 238);
 		panel_Otros.add(scrollPane);
-		
+		JButton btnAceptar = new JButton("Aceptar");
+		JTextArea cambiaDe = new JTextArea();
+		JButton btnDescrip = new JButton("Descripcion");
 		JButton btnBloquea = new JButton("Bloquear");
 		JButton btnDesbloquea = new JButton("Desbloquear");
 		paneles.addTab("Quinta", null, panel_Otros, null);
 		JButton verArticulos = new JButton("Articulos");
-		verArticulos.setBounds(304, 5, 89, 23);
+		verArticulos.setBounds(479, 5, 89, 23);
 		verArticulos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					btnAceptar.setVisible(false);
 					btnBloquea.setVisible(false);
 					btnDesbloquea.setVisible(false);
+					btnDescrip.setVisible(true);
 					manejaCambio=3;
 					tabla=cv.cargarTabla(listaArticulos);
 					scrollPane.setViewportView(tabla);
@@ -716,11 +757,14 @@ public class Vista {
 		btnVerUsuarios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					btnAceptar.setVisible(false);
+				cambiaDe.setVisible(false);
 				manejaCambio=1;
 				tabla=cv.tablaUsuarios(usuarios);
 				scrollPane.setViewportView(tabla);
 				btnBloquea.setVisible(true);
 				btnDesbloquea.setVisible(true);
+				btnDescrip.setVisible(false);
 				} catch (SQLException ex1) {
 					// TODO Auto-generated catch block
 					ex1.getMessage();
@@ -731,14 +775,6 @@ public class Vista {
 			}
 		});
 		panel_Otros.add(btnVerUsuarios);
-		
-		JButton btnEjecutarCambios = new JButton("Confirmar");
-		btnEjecutarCambios.setBounds(578, 391, 103, 23);
-		btnEjecutarCambios.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		panel_Otros.add(btnEjecutarCambios);
 		
 		JButton btnAtras1 = new JButton("Atras");
 		btnAtras1.addActionListener(new ActionListener() {
@@ -755,11 +791,13 @@ public class Vista {
 		btnVerSuper.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					cambiaDe.setVisible(false);
 					btnBloquea.setVisible(false);
 					btnDesbloquea.setVisible(false);
 					manejaCambio=2;
 					tabla=cv.tablaSupermercados();
 					scrollPane.setViewportView(tabla);
+					btnDescrip.setVisible(false);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -780,7 +818,7 @@ public class Vista {
 				}
 			}
 		});
-		btnDesbloquea.setBounds(153, 305, 122, 23);
+		btnDesbloquea.setBounds(233, 391, 113, 23);
 		panel_Otros.add(btnDesbloquea);
 		btnDesbloquea.setVisible(false);
 		
@@ -796,7 +834,7 @@ public class Vista {
 				}
 			}
 		});
-		btnBloquea.setBounds(400, 305, 97, 23);
+		btnBloquea.setBounds(364, 391, 97, 23);
 		panel_Otros.add(btnBloquea);
 		btnBloquea.setVisible(false);
 		JButton btnVerSecciones = new JButton("Secciones");
@@ -826,25 +864,28 @@ public class Vista {
 				}
 			}
 		});
-		btnBorrar.setBounds(400, 391, 97, 23);
+		btnBorrar.setBounds(471, 391, 97, 23);
 		panel_Otros.add(btnBorrar);
 		
 		
 		btnVerSecciones.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					btnAceptar.setVisible(false);
+					cambiaDe.setVisible(false);
 					btnBloquea.setVisible(false);
 					btnDesbloquea.setVisible(false);
 					manejaCambio=4;
 					tabla=cv.tablaSecciones();
 					scrollPane.setViewportView(tabla);
+					btnDescrip.setVisible(false);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
-		btnVerSecciones.setBounds(454, 5, 103, 23);
+		btnVerSecciones.setBounds(319, 5, 103, 23);
 		panel_Otros.add(btnVerSecciones);
 		
 		JButton btnModificar = new JButton("Modificar");
@@ -873,11 +914,68 @@ public class Vista {
 				} catch (ErroresDeOperaciones e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
-		btnModificar.setBounds(164, 391, 103, 23);
+		btnModificar.setBounds(109, 391, 103, 23);
 		panel_Otros.add(btnModificar);
+		
+		btnDescrip.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					btnAceptar.setVisible(true);
+					cambiaDe.setVisible(true);
+					cambiaDe.setText(cv.descripcion(tabla, listaArticulos));
+					tabla.setEnabled(false);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		cambiaDe.setLineWrap(true);
+		cambiaDe.setBounds(128, 288, 507, 92);
+		cambiaDe.setVisible(false);
+		panel_Otros.add(cambiaDe);
+		
+		btnDescrip.setBounds(10, 288, 103, 23);
+		btnDescrip.setVisible(false);
+		panel_Otros.add(btnDescrip);
+		
+		
+		btnAceptar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					tabla=cv.anadirDescripcion(tabla,cambiaDe.getText(),listaArticulos);
+					tabla.updateUI();
+					btnAceptar.setVisible(false);
+					cambiaDe.setText("");
+					cambiaDe.setVisible(false);
+					tabla.setEnabled(true);
+					
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		btnAceptar.setBounds(10, 340, 103, 23);
+		btnAceptar.setVisible(false);
+		panel_Otros.add(btnAceptar);
+		
+		JButton btnCargarStocks = new JButton("Recargas");
+		btnCargarStocks.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		btnCargarStocks.setBounds(603, 5, 89, 23);
+		panel_Otros.add(btnCargarStocks);
 		
 		UtilDateModel model2 = new UtilDateModel();
 		//model.setDate(2022, 5, 6);
@@ -1406,11 +1504,8 @@ public class Vista {
 		panel_Articulos.add(lblDescripcion);
 		
 		JTextArea textDescripcion = new JTextArea();
-		 Border innerBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
-	        Border outerBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-	        Border compoundBorder = BorderFactory.createCompoundBorder(outerBorder, innerBorder);
-	        textDescripcion.setBorder(compoundBorder);
-		textDescripcion.setBounds(10, 141, 208, 198);
+		textDescripcion.setLineWrap(true);
+		textDescripcion.setBounds(10, 141, 234, 227);
 		panel_Articulos.add(textDescripcion);
 		
 		JLabel lblImagen = new JLabel("Imagen y formato:");
@@ -1418,16 +1513,16 @@ public class Vista {
 		panel_Articulos.add(lblImagen);
 		
 		textImagen = new JTextField();
-		textImagen.setBounds(228, 125, 181, 20);
+		textImagen.setBounds(272, 125, 161, 20);
 		panel_Articulos.add(textImagen);
 		textImagen.setColumns(10);
 		
 		JLabel lblPrecio = new JLabel("Precio:");
-		lblPrecio.setBounds(228, 175, 46, 14);
+		lblPrecio.setBounds(254, 175, 46, 14);
 		panel_Articulos.add(lblPrecio);
 		
 		textPrecio = new JTextField();
-		textPrecio.setBounds(284, 172, 135, 20);
+		textPrecio.setBounds(318, 172, 115, 20);
 		panel_Articulos.add(textPrecio);
 		textPrecio.setColumns(10);
 		
@@ -1463,29 +1558,29 @@ public class Vista {
 			}
 		});
 		tipoArticuloCombo.setModel(new DefaultComboBoxModel<String>(Tipos));
-		tipoArticuloCombo.setBounds(288, 217, 131, 22);
+		tipoArticuloCombo.setBounds(323, 217, 110, 22);
 		panel_Articulos.add(tipoArticuloCombo);
 		
 		JLabel lblSeccion = new JLabel("Seccion:");
-		lblSeccion.setBounds(228, 221, 66, 14);
+		lblSeccion.setBounds(254, 221, 66, 14);
 		panel_Articulos.add(lblSeccion);
 		
 		JLabel lblTalla = new JLabel("Talla:");
-		lblTalla.setBounds(429, 83, 46, 14);
+		lblTalla.setBounds(472, 83, 46, 14);
 		panel_Articulos.add(lblTalla);
 		
 		textTalla = new JTextField();
-		textTalla.setBounds(515, 80, 123, 20);
+		textTalla.setBounds(543, 80, 123, 20);
 		panel_Articulos.add(textTalla);
 		textTalla.setColumns(10);
 		textTalla.setVisible(false);
 		
 		JLabel lblMarca = new JLabel("Marca:");
-		lblMarca.setBounds(429, 128, 46, 14);
+		lblMarca.setBounds(472, 128, 46, 14);
 		panel_Articulos.add(lblMarca);
 		
 		textMarca = new JTextField();
-		textMarca.setBounds(515, 125, 123, 20);
+		textMarca.setBounds(543, 125, 123, 20);
 		panel_Articulos.add(textMarca);
 		textMarca.setColumns(10);
 		textMarca.setVisible(false);
@@ -1495,26 +1590,26 @@ public class Vista {
 		panel_Articulos.add(lblFechaDeCaducidad);
 		
 		JLabel lblProcedencia = new JLabel("Procedencia:");
-		lblProcedencia.setBounds(429, 236, 84, 14);
+		lblProcedencia.setBounds(449, 236, 84, 14);
 		panel_Articulos.add(lblProcedencia);
 		
 		textProcedencia = new JTextField();
-		textProcedencia.setBounds(515, 233, 123, 20);
+		textProcedencia.setBounds(543, 233, 123, 20);
 		panel_Articulos.add(textProcedencia);
 		textProcedencia.setColumns(10);
 		textProcedencia.setVisible(false);
 		
-		chckElectrica.setBounds(497, 267, 97, 23);
+		chckElectrica.setBounds(553, 260, 97, 23);
 		panel_Articulos.add(chckElectrica);
 		chckElectrica.setVisible(false);
 		
 		
 		Garantia.setModel(new SpinnerNumberModel(2, 2, 5, 1));
-		Garantia.setBounds(564, 297, 30, 20);
+		Garantia.setBounds(588, 297, 30, 20);
 		panel_Articulos.add(Garantia);
 		
 		JLabel lblGarantia = new JLabel("Garantia:");
-		lblGarantia.setBounds(429, 300, 60, 14);
+		lblGarantia.setBounds(471, 300, 60, 14);
 		panel_Articulos.add(lblGarantia);
 		
 		UtilDateModel modelx = new UtilDateModel();
@@ -1522,7 +1617,7 @@ public class Vista {
 		Properties px = new Properties();
 		JDatePanelImpl datePanelx = new JDatePanelImpl(modelx, px);
 		datePicker_4 = new JDatePickerImpl(datePanelx, new DateLabelFormatter());
-		datePicker_4.setBounds(513, 200, 125, 20);
+		datePicker_4.setBounds(541, 199, 125, 20);
 		panel_Articulos.add(datePicker_4);
 		datePicker_4.setVisible(false);
 		JLabel lblErroresArti = new JLabel("");
@@ -1590,41 +1685,9 @@ public class Vista {
 		BoxSeccion.setBounds(199, 44, 125, 22);
 		panel_Compras.add(BoxSeccion);
 		
-		JScrollPane compras = new JScrollPane();
-		compras.setBounds(10, 74, 682, 260);
+		
+		compras.setBounds(10, 71, 682, 260);
 		panel_Compras.add(compras);
-		
-		JPanel panel_1 = new JPanel();
-		compras.setViewportView(panel_1);
-		panel_1.setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setBounds(10, 11, 146, 113);
-		panel_1.add(lblNewLabel);
-		
-		JLabel lblNombreAr = new JLabel("Nombre:");
-		lblNombreAr.setBounds(166, 21, 60, 14);
-		panel_1.add(lblNombreAr);
-		
-		JLabel lblPrecioAr = new JLabel("Precio:");
-		lblPrecioAr.setBounds(166, 60, 46, 14);
-		panel_1.add(lblPrecioAr);
-		
-		JLabel lblStockAr = new JLabel("Stock:");
-		lblStockAr.setBounds(166, 95, 46, 14);
-		panel_1.add(lblStockAr);
-		
-		JLabel lblAtributoUno = new JLabel("Atributo1");
-		lblAtributoUno.setBounds(302, 21, 67, 14);
-		panel_1.add(lblAtributoUno);
-		
-		JLabel lblAtributoDos = new JLabel("Atributo2");
-		lblAtributoDos.setBounds(302, 60, 46, 14);
-		panel_1.add(lblAtributoDos);
-		
-		JLabel lblDescripcionAr = new JLabel("Descripcion:");
-		lblDescripcionAr.setBounds(404, 11, 94, 14);
-		panel_1.add(lblDescripcionAr);
 		
 	}
 }

@@ -3,6 +3,8 @@ package modelo;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import otros.tipoArticulo;
+
 public class Seccion {
 	private String codigoSeccion;
 	private tipoArticulo nombreSeccion;

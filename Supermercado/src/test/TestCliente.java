@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import controlador.Metodos;
 import modelo.Cliente;
-import modelo.tipoPersona;
+import otros.tipoPersona;
 
 class TestCliente {
 	DateFormat formateador= new SimpleDateFormat("dd/M/yy");

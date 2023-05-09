@@ -3,6 +3,8 @@ package modelo;
 import java.util.Date;
 
 import controlador.Metodos;
+import otros.Comprador;
+import otros.tipoPersona;
 
 public abstract class Persona implements Comprador{
 	Metodos mc=new Metodos();

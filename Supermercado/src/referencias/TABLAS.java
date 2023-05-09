@@ -1,4 +1,4 @@
-package controlador;
+package referencias;
 
 public class TABLAS {
 	public final static String PERSONAS="personas";

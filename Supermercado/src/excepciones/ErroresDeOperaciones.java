@@ -1,4 +1,4 @@
-package controlador;
+package excepciones;
 
 public class ErroresDeOperaciones extends Exception {
 

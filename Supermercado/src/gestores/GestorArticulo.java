@@ -1,15 +1,17 @@
-package controlador;
+package gestores;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import controlador.Metodos;
 import modelo.Articulo;
 import modelo.Comida;
 import modelo.Herramienta;
 import modelo.Ropa;
 import modelo.Seccion;
+import referencias.TABLAS;
 
 
 public class GestorArticulo {
