@@ -17,6 +17,7 @@ import controlador.TABLAS;
 
 public class Cliente extends Persona {
 	Metodos mc=new Metodos();
+	
 	private float dinero;
 	private boolean bloqueado;
 	private ArrayList<Compra> arrayCompras;
