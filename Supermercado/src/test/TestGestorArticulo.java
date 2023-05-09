@@ -3,7 +3,9 @@ package test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +15,7 @@ import controlador.GestorPersona;
 import controlador.GestorSeccion;
 import controlador.GestorSupermercado;
 import controlador.Metodos;
+import controlador.TABLAS;
 import modelo.Comida;
 import modelo.Herramienta;
 import modelo.Jefe;
@@ -57,12 +60,23 @@ class TestGestorArticulo {
 			ga.setListaArticulos(ga.cargarArticulos());
 			assertEquals(ga.getListaArticulos().size(),(antesDeInsertar+3));
 			
-			ro=new Ropa(0, "Chanclas", "chanclas.png", "", (float)5.88, 99, "S", "Mercadona");
-			co=new Comida(0, "Fruta del dragon", "fdd.png", "", (float)3.49, 99, Date.valueOf("2023-12-31"),"Cuenca");
-			he=new Herramienta(0, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 0, 2);
-			ga.cambiarArticulo(se, he);
-			ga.cambiarArticulo(se, co);
-			ga.cambiarArticulo(se, ro);
+			
+			Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+			ResultSet cargaHe=comando.executeQuery("SELECT "+TABLAS.IDARTICULO+" FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.ELECTRICA+" OR "+TABLAS.GARANTIA+" IS NOT NULL ORDER BY "+TABLAS.IDARTICULO+" DESC LIMIT 1");
+			while(cargaHe.next()) {
+				he=new Herramienta(cargaHe.getInt(TABLAS.IDARTICULO), "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 0, 2);
+			}
+			ResultSet cargaRo=comando.executeQuery("SELECT "+TABLAS.IDARTICULO+" FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.TALLA+" OR "+TABLAS.MARCA+" IS NOT NULL ORDER BY "+TABLAS.IDARTICULO+" DESC LIMIT 1");
+			while(cargaRo.next()) {
+			ro=new Ropa(cargaRo.getInt(TABLAS.IDARTICULO), "Chanclas", "chanclas.png", "", (float)5.88, 99, "S", "Mercadona");
+			}
+			ResultSet cargaCo=comando.executeQuery("SELECT "+TABLAS.IDARTICULO+" FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.FECHACADUCIDAD+" OR "+TABLAS.PROCEDENCIA+" IS NOT NULL ORDER BY "+TABLAS.IDARTICULO+" DESC LIMIT 1");
+			while(cargaCo.next()) {
+				co=new Comida(cargaCo.getInt(TABLAS.IDARTICULO), "Fruta del dragon", "fdd.png", "", (float)3.49, 99, Date.valueOf("2023-12-31"),"Cuenca");
+			}
+			ga.cambiarArticulo(he);
+			ga.cambiarArticulo(co);
+			ga.cambiarArticulo(ro);
 			ga.setListaArticulos(ga.cargarArticulos());
 			Ropa r=null;
 			Herramienta h=null;

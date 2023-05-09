@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Compra {
 private int codigoCompra;
-private float precioTotal;
+private float precioFinal;
 private LocalDateTime fechaCompra;
 private ArrayList<ArticuloComprado> listaCantidades;
 private ArrayList<Articulo> arrayArticulos;
@@ -14,18 +14,14 @@ private ArrayList<Articulo> arrayArticulos;
 public Compra(int codigoCompra, float precioTotal, LocalDateTime fechaCompra) {
 	super();
 	this.codigoCompra = codigoCompra;
-	this.precioTotal = precioTotal;
+	this.precioFinal = precioTotal;
 	this.fechaCompra = fechaCompra;
 	arrayArticulos = new ArrayList<Articulo>();
 	listaCantidades=new ArrayList<ArticuloComprado>();
-}public Compra(float precioTotal) {
-	super();
-	this.precioTotal = precioTotal;
-	arrayArticulos = new ArrayList<Articulo>();
-	listaCantidades=new ArrayList<ArticuloComprado>();
 }
-public Compra() {
-	super();
+public Compra(float f) {
+	// TODO Auto-generated constructor stub
+	this.precioFinal = f;
 	arrayArticulos = new ArrayList<Articulo>();
 	listaCantidades=new ArrayList<ArticuloComprado>();
 }
@@ -45,7 +41,7 @@ public boolean equals(Object obj) {
 
 @Override
 public String toString() {
-	return "Compra [codigoCompra=" + codigoCompra + ", precioTotal=" + precioTotal + ", fechaCompra=" + fechaCompra + "]";
+	return "Compra [codigoCompra=" + codigoCompra + ", precioTotal=" + precioFinal + ", fechaCompra=" + fechaCompra + "]";
 }
 
 public ArrayList<ArticuloComprado> getListaCantidades() {
@@ -68,7 +64,7 @@ public float calcularPrecioTotal() {
 	return calcularPrecio;
 }
 public float getPrecioTotal() {
-	return precioTotal;
+	return precioFinal;
 }
 public LocalDateTime getFechaCompra() {
 	return fechaCompra;
@@ -80,7 +76,7 @@ public void setArrayArticulos(ArrayList<Articulo> arrayArticulos) {
 	this.arrayArticulos = arrayArticulos;
 }
 public void setPrecioTotal(float precioTotal) {
-	this.precioTotal = precioTotal;
+	this.precioFinal = precioTotal;
 }
 public void setFechaCompra(LocalDateTime fechaCompra) {
 	this.fechaCompra = fechaCompra;

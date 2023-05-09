@@ -62,7 +62,7 @@ Ropa obj = new Ropa(0, null, null, null, 0, 0, null, null);
 	
 	@Test
 	void test_toString() {
-		assertEquals(obj.toString(),"Ropa [talla=null, marca=null, idArticulo=0, nombreArticulo=null, rutaImagen=null, precio=0.0, stockActual=0, tipo=null]");
+		assertEquals(obj.toString(),"Ropa [talla=null, marca=null, idArticulo=0, nombreArticulo=null, rutaImagen=null, precio=0.0, stockActual=0 ]");
 	}
 
 }

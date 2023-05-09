@@ -47,13 +47,12 @@ public class GestorSupermercado {
 				+ "'"+su.getDireccion()+"',"
 				+ "'"+su.getNumEmpleados()+"')");
 	}
-	public void cambiarSupermercado(Jefe je,Supermercado su) throws SQLException {
+	public void cambiarSupermercado(Supermercado su) throws SQLException {
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
 		comando.executeUpdate("UPDATE "+TABLAS.SUPERMERCADO+
-				" SET "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"',"
-				+ " "+TABLAS.DIRECCION+"='"+su.getDireccion()+"', "+TABLAS.EMPRESA+"='"+su.getEmpresa()+"',"
-				+ " "+TABLAS.NUMEROEMPLEADOS+"='"+su.getNumEmpleados()+"',"
-				+ " "+TABLAS.DNIJEFE+"='"+je.getDni()+"' WHERE "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"'");
+				" SET "+TABLAS.DIRECCION+"='"+su.getDireccion()+"', "+TABLAS.EMPRESA+"='"+su.getEmpresa()+"',"
+				+ " "+TABLAS.NUMEROEMPLEADOS+"='"+su.getNumEmpleados()+"' "
+				+ " WHERE "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"'");
 	}
 	public void borrarSupermercado(Supermercado su) throws SQLException {
 		Statement comando;

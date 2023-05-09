@@ -84,18 +84,27 @@ public class Metodos {
 		}
 		return superm;
 	}
-	public String[] deArrayListAStringArrayEmpresa(ArrayList<Supermercado> lista) {
-		String [] superm=new String[lista.size()];
-		for(int i=0;i<lista.size();i++) {
-			superm[i]=lista.get(i).getEmpresa();
-		}
-		return superm;
-	}
 	public String[] deArrayListAStringArrayDireccion(ArrayList<Supermercado> lista) {
 		String [] superm=new String[lista.size()];
 		for(int i=0;i<lista.size();i++) {
 			superm[i]=lista.get(i).getDireccion();
 		}
 		return superm;
+	}
+	public String[] deArrayListAStringArrayNombreSeccion(ArrayList<Seccion> lista) {
+		String [] superm=new String[lista.size()];
+		for(int i=0;i<lista.size();i++) {
+			superm[i]=String.valueOf(lista.get(i).getNombreSeccion());
+		}
+		return superm;
+	}
+	public Seccion cogeSeccion(ArrayList<Seccion> lista,String campo) {
+		Seccion vuelta=null;
+		for(Seccion se:lista) {
+			if(se.getNombreSeccion().equals(tipoArticulo.valueOf(campo))) {
+				vuelta=se;
+			}
+		}
+		return vuelta;
 	}
 }

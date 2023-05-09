@@ -44,7 +44,7 @@ class TestGestorSeccion {
 			assertEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getNombreSeccion(),tipoArticulo.Herramienta);
 			
 			se=new Seccion("OOOO",tipoArticulo.Ropa,0,null);
-			g.cambiarSeccion(su, se);
+			g.cambiarSeccion(se);
 			g.setListaSecciones(g.cargarSecciones());
 			assertEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getCodigoSeccion(),"OOOO");
 			assertEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getNombreSeccion(),tipoArticulo.Ropa);

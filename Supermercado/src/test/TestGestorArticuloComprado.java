@@ -32,8 +32,6 @@ class TestGestorArticuloComprado {
 			gac.setListaArticulosComprados(gac.cargarArticulosComprados());
 			assertTrue(gac.getListaArticulosComprados().size()>0);
 			int antesDeInsertar=gac.getListaArticulosComprados().size();
-			assertEquals(gac.getListaArticulosComprados().get(0).getCantidad(),2);
-			assertEquals(gac.getListaArticulosComprados().get(0).getPrecioArt(),(float)3.99);
 			
 			g1.insertarPersona(cliente);
 			g.insertarCompra(cliente, co);

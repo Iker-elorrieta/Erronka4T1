@@ -69,39 +69,45 @@ public class GestorArticulo {
 		if (ar instanceof Comida){
 			Comida co=(Comida) ar;
 			comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.FECHACADUCIDAD+"='"+co.getFechaCaducidad()+"',"
-					+ " "+TABLAS.PROCEDENCIA+"='"+co.getProcedencia()+"' WHERE "+TABLAS.NOMBREARTICULO+"='"+co.getNombreArticulo()+"'");
+					+ " "+TABLAS.PROCEDENCIA+"='"+co.getProcedencia()+"' WHERE "+TABLAS.NOMBREARTICULO+"='"+co.getNombreArticulo()+"'"
+					+ " AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			comando.executeUpdate("UPDATE "+TABLAS.SECCION+" SET "+TABLAS.NUMAR+"=("+TABLAS.NUMAR+"+"+1+") WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
 		}else if(ar instanceof Herramienta) {
 			Herramienta he=(Herramienta) ar;
 			comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.ELECTRICA+"='"+mc.pasarBoolean(he.getElectrica())+"',"
-					+ " "+TABLAS.GARANTIA+"='"+he.getGarantia()+"' WHERE "+TABLAS.NOMBREARTICULO+"='"+he.getNombreArticulo()+"'");
+					+ " "+TABLAS.GARANTIA+"='"+he.getGarantia()+"' WHERE "+TABLAS.NOMBREARTICULO+"='"+he.getNombreArticulo()+"'"
+					+ "AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			comando.executeUpdate("UPDATE "+TABLAS.SECCION+" SET "+TABLAS.NUMAR+"=("+TABLAS.NUMAR+"+"+1+") WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
 		}else {
 			 Ropa ro=(Ropa) ar;
 			comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.TALLA+"='"+ro.getTalla()+"',"
-					+ " "+TABLAS.MARCA+"='"+ro.getMarca()+"' WHERE "+TABLAS.NOMBREARTICULO+"='"+ro.getNombreArticulo()+"'");
+					+ " "+TABLAS.MARCA+"='"+ro.getMarca()+"' WHERE "+TABLAS.NOMBREARTICULO+"='"+ro.getNombreArticulo()+"'"
+					+ "AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			comando.executeUpdate("UPDATE "+TABLAS.SECCION+" SET "+TABLAS.NUMAR+"=("+TABLAS.NUMAR+"+"+1+") WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
 		}
 	}
-	public void cambiarArticulo(Seccion se, Articulo ar) throws SQLException {
+	public void cambiarArticulo(Articulo ar) throws SQLException {
 		Ropa ro=null;
 		Comida co=null;
 		Herramienta he=null;
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
 		comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "
-				+ " "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"', "+TABLAS.NOMBREARTICULO+"='"+ar.getNombreArticulo()+"',"
+				+ " "+TABLAS.NOMBREARTICULO+"='"+ar.getNombreArticulo()+"',"
 				+ " "+TABLAS.RUTAIMAGEN+"='"+ar.getRutaImagen()+"', "+TABLAS.DESCRIPCION+"='"+ar.getDescripcion()+"',"
-				+ " "+TABLAS.PRECIO+"='"+ar.getPrecio()+"', "+TABLAS.STOCK+"='"+ar.getStockActual()+"',"
-				+ " WHERE "+TABLAS.NOMBREARTICULO+"='"+ar.getNombreArticulo()+"'");
+				+ " "+TABLAS.PRECIO+"='"+ar.getPrecio()+"', "+TABLAS.STOCK+"='"+ar.getStockActual()+"'"
+				+ " WHERE "+TABLAS.IDARTICULO+"="+ar.getIdArticulo());
 		if(ar instanceof Ropa) {
 			ro=(Ropa) ar;
 			comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.TALLA+"='"+ro.getTalla()+"', "+TABLAS.MARCA+"='"+ro.getMarca()+"' "
-					+ " WHERE "+TABLAS.NOMBREARTICULO+"='"+ro.getNombreArticulo()+"'");
+					+ " WHERE "+TABLAS.IDARTICULO+"="+ar.getIdArticulo());
 		}else if( ar instanceof Herramienta) {
 			he=(Herramienta) ar;
-			comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.ELECTRICA+"='"+mc.pasarBoolean(he.getElectrica())+"',"
-					+ " "+TABLAS.GARANTIA+"='"+he.getGarantia()+"' WHERE "+TABLAS.NOMBREARTICULO+"='"+he.getNombreArticulo()+"'");
+			comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.ELECTRICA+"="+mc.pasarBoolean(he.getElectrica())+","
+					+ " "+TABLAS.GARANTIA+"="+he.getGarantia()+"  WHERE "+TABLAS.IDARTICULO+"="+ar.getIdArticulo());
 		}else {
 			co=(Comida) ar;
 			comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.FECHACADUCIDAD+"='"+co.getFechaCaducidad()+"',"
-					+ " "+TABLAS.PROCEDENCIA+"='"+co.getProcedencia()+"' WHERE "+TABLAS.NOMBREARTICULO+"='"+co.getNombreArticulo()+"'");
+					+ " "+TABLAS.PROCEDENCIA+"='"+co.getProcedencia()+"' WHERE "+TABLAS.IDARTICULO+"="+ar.getIdArticulo());
 		}
 	}
 	public void borrarArticulo(Articulo ar) throws SQLException {

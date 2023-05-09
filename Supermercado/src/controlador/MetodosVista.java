@@ -19,6 +19,7 @@ import modelo.Persona;
 import modelo.Ropa;
 import modelo.Seccion;
 import modelo.Supermercado;
+import modelo.tipoArticulo;
 import modelo.tipoPersona;
 
 public class MetodosVista {
@@ -33,7 +34,7 @@ GestorSeccion gs=new GestorSeccion();
 		Comida co=null;
 		Ropa ro=null;
 		Herramienta he=null;
-		String[][] datosTabla = new String[listaArticulos.size()][13];
+		String[][] datosTabla = new String[listaArticulos.size()][10];
 		for(int i = 0;i<listaArticulos.size();i++){
 			datosTabla[i][0] = String.valueOf(listaArticulos.get(i).getNombreArticulo());
 			datosTabla[i][1] = String.valueOf(listaArticulos.get(i).getRutaImagen());
@@ -54,7 +55,7 @@ GestorSeccion gs=new GestorSeccion();
 				}else {
 					datosTabla[i][8] = "No";
 				}
-				datosTabla[i][8] = String.valueOf(he.getGarantia());
+				datosTabla[i][9] = String.valueOf(he.getGarantia());
 			}
 		}
 		JTable table = new JTable();
@@ -102,7 +103,7 @@ GestorSeccion gs=new GestorSeccion();
 		return table;
 	}
 	public JTable tablaSupermercados() throws SQLException {
-		ArrayList<Supermercado> lista=gsm.todoSupermercados(gp.cargarPersonas());
+		ArrayList<Supermercado> lista=gsm.cargarSupermercados();
 		String[][] datosTabla = new String[lista.size()][4];
 		for(int i = 0;i<lista.size();i++){
 			datosTabla[i][0] = String.valueOf(lista.get(i).getCodigoSuper());
@@ -125,26 +126,18 @@ GestorSeccion gs=new GestorSeccion();
 		for(int i = 0;i<lista.size();i++) {
 				datosTabla[i][0]=lista.get(i).getCodigoSeccion();
 				datosTabla[i][1]=String.valueOf(lista.get(i).getNombreSeccion());
+				datosTabla[i][2]=String.valueOf(lista.get(i).getNumArticulo());
 		}
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
 			new String[] {
-				TABLAS.CODIGOSECCION,TABLAS.TIPO
+				TABLAS.CODIGOSECCION,TABLAS.TIPO,TABLAS.NUMAR
 			}
 		));
 		return table;
 	}
-	public ArrayList<Persona> realizarCambios(JTable tabla,ArrayList<Persona> lista) throws ErroresDeOperaciones, SQLException {
-		int fila=0;
-		for(Persona per: lista) {
-			per.setNombre((String) tabla.getModel().getValueAt(fila, 0));
-			per.setApellidos((String) tabla.getModel().getValueAt(fila, 1));
-			per.setEmail((String) tabla.getModel().getValueAt(fila, 2));
-			fila++;
-		};
-		return lista;
-}
+	
 	public void comprobarCampos(JPanel panel) throws ErroresDeOperaciones {
 		for(Component componente:panel.getComponents()) {
 			if(componente instanceof JTextField) {
@@ -177,6 +170,50 @@ GestorSeccion gs=new GestorSeccion();
 		if(lista.get(tabla.getSelectedRow()) instanceof Cliente) {
 		gp.cambiarEstadoUsuario((Cliente)lista.get(tabla.getSelectedRow()), accion);
 		}
+	}
+	public void borrarSupermercadoTabla(JTable tabla,ArrayList<Supermercado> lista) throws SQLException {
+		gsm.borrarSupermercado(lista.get(tabla.getSelectedRow()));
+	}
+	public void borrarSeccionTabla(JTable tabla,ArrayList<Seccion> lista) throws SQLException {
+		gs.borrarSeccion(lista.get(tabla.getSelectedRow()));
+}
+	public void borrarArticuloTabla(JTable tabla, ArrayList<Articulo> lista) throws SQLException {
+		// TODO Auto-generated method stub
+		ga.borrarArticulo(lista.get(tabla.getSelectedRow()));
+	}
+	
+	public ArrayList<Persona> realizarCambios(JTable tabla,ArrayList<Persona> lista) throws ErroresDeOperaciones, SQLException {
+		int fila=0;
+		for(Persona per: lista) {
+			per.setNombre((String) tabla.getModel().getValueAt(fila, 0));
+			per.setApellidos((String) tabla.getModel().getValueAt(fila, 1));
+			per.setEmail((String) tabla.getModel().getValueAt(fila, 2));
+			fila++;
+		};
+		return lista;
+}
+	public void modificarSupermercadoTabla(JTable tabla,ArrayList<Supermercado> lista) throws SQLException {
+		int fila=0;
+		for(Supermercado su: lista) {
+			su.setEmpresa((String) tabla.getModel().getValueAt(fila, 1));
+			su.setDireccion((String) tabla.getModel().getValueAt(fila, 2));
+			su.setNumEmpleados(Integer.parseInt((String) tabla.getModel().getValueAt(fila, 3)));
+			gsm.cambiarSupermercado(su);
+			fila++;
+		};
+	}
+	public void modificarSeccionTabla(JTable tabla,ArrayList<Seccion> lista) throws SQLException {
+		int fila=0;
+		for(Seccion se: lista) {
+			se.setNombreSeccion(tipoArticulo.valueOf((String) tabla.getModel().getValueAt(fila, 1)));
+			se.setNumArticulo(Integer.parseInt((String) tabla.getModel().getValueAt(fila, 2)));
+			gs.cambiarSeccion(se);
+			fila++;
+		};
+	}
+	public void modificarArticuloTabla(JTable tabla, ArrayList<Articulo> lista) throws SQLException {
+	// TODO Auto-generated method stub
+		ga.cambiarArticulo(lista.get(tabla.getSelectedRow()));
 	}
 }
 
