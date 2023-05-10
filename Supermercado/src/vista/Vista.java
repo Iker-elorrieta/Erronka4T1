@@ -86,9 +86,9 @@ public class Vista {
 	private JTextField textTalla;
 	private JTextField textMarca;
 	private JTextField textProcedencia;
+	private JTextField textBuscador;
 	
-	private int manejaCambio=0;
-	private int cuentaSecciones=0;
+	private Compra carrito=new Compra();
 	private Comida nuevaComida;
 	private Ropa nuevaRopa;
 	private Herramienta nuevaHerramienta;
@@ -96,21 +96,29 @@ public class Vista {
 	private Jefe nuevoJefe;
 	private Supermercado supermercado;
 	private Seccion seccion;
-	private Boolean cambios=true;
+	
 	private Jefe admin;
-	private ArrayList<Articulo> listaArticulos;
-	private ArrayList<Persona> usuarios;
 	private Persona login;
 	private Cliente cliente;
+	private Supermercado su;
+	
+	private int manejaCambio=0;
+	private int cuentaSecciones=0;
+	private Boolean cambios=true;
+	private String [] Tipos={"Comida","Herramienta","Ropa"};
+	
+	private ArrayList<Articulo> listaArticulos;
+	private ArrayList<Persona> usuarios;
+	private ArrayList<Supermercado> supermercados;
+	private ArrayList<Seccion> seccionesDelSuper;
+	
 	private Metodos mc=new Metodos();
 	private MetodosVista cv = new MetodosVista();
 	private GestorPersona gp=new GestorPersona();
-	private String [] Tipos={"Comida","Herramienta","Ropa"};
 	private GestorSupermercado gsm=new GestorSupermercado();
 	private GestorSeccion gs=new GestorSeccion();
-	private Supermercado su;
-	
 	private GestorArticulo ga=new GestorArticulo();
+	
 	/**
 	private GestorArticuloComprado gac=new GestorArticuloComprado();
 	private GestorCompra gc=new GestorCompra();
@@ -140,6 +148,8 @@ public class Vista {
 	public Vista() {
 		try {
 			usuarios=gp.cargarPersonas();
+			supermercados=gsm.cargarSupermercados();
+			listaArticulos=ga.cargarArticulos();
 			initialize();
 		} catch (SQLException e3) {
 			// TODO Auto-generated catch block
@@ -157,7 +167,7 @@ public class Vista {
 		frame.getContentPane().setLayout(null);
 		
 		JTabbedPane paneles = new JTabbedPane(JTabbedPane.TOP);
-		paneles.setBounds(0, -30, 707, 483);
+		paneles.setBounds(0, -26, 707, 479);
 		frame.getContentPane().add(paneles);
 		
 		
@@ -197,14 +207,6 @@ public class Vista {
 		lblCreaCuen.setBounds(227, 227, 239, 14);
 		panel_Bienvenido.add(lblCreaCuen);
 		
-		JButton btnInvi = new JButton("Invitado");
-		btnInvi.setBounds(283, 316, 89, 23);
-		panel_Bienvenido.add(btnInvi);
-		
-		JLabel lblInvi = new JLabel("Si solo va a mirar nuestros productos pulse el botón de Invitado.");
-		lblInvi.setBounds(182, 291, 362, 14);
-		panel_Bienvenido.add(lblInvi);
-		
 		JPanel panel_IniciarSesion = new JPanel();
 		paneles.addTab("Segundo", null, panel_IniciarSesion, null);
 		panel_IniciarSesion.setLayout(null);
@@ -228,7 +230,6 @@ public class Vista {
 		
 		JPanel panel_PerfilUtilidades = new JPanel();
 		UtilDateModel modelo = new UtilDateModel();
-		//model.setDate(2022, 5, 6);
 		Properties po = new Properties();
 		JDatePanelImpl datePanelo = new JDatePanelImpl(modelo, po);
 		datePicker_1 = new JDatePickerImpl(datePanelo, new DateLabelFormatter());
@@ -1691,26 +1692,112 @@ public class Vista {
 		paneles.addTab("Decima", null, panel_Compras, null);
 		panel_Compras.setLayout(null);
 		
-		JComboBox<String>  BoxSuper = new JComboBox<String> ();
-		BoxSuper.setBounds(199, 11, 125, 22);
-		panel_Compras.add(BoxSuper);
+		JLabel lblPrecioTotal = new JLabel("Precio de su carrito:");
+		JComboBox<String> boxSeccion = new JComboBox<String>();
+		JScrollPane buscaArticulos=new JScrollPane();
+		buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
+		JComboBox<String>  boxSuper = new JComboBox<String> ();
+		boxSuper.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					supermercados=gsm.cogerSeccionesMultiplesSu(supermercados);
+					seccionesDelSuper=supermercados.get(boxSuper.getSelectedIndex()).getArraySecciones();
+					boxSeccion.setModel(new DefaultComboBoxModel<String>(mc.deArrayListAStringArrayNombreSeccion(seccionesDelSuper)));
+					boxSeccion.setVisible(true);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		boxSuper.setModel(new DefaultComboBoxModel<String>(mc.deArrayListAStringArraySuper(supermercados)));
+		boxSuper.setBounds(10, 11, 125, 22);
+		panel_Compras.add(boxSuper);
 		
-		JComboBox<String> BoxSeccion = new JComboBox<String>();
-		BoxSeccion.setBounds(199, 44, 125, 22);
-		panel_Compras.add(BoxSeccion);
+		boxSeccion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					listaArticulos=ga.cargarArticulosPorSeccion(seccionesDelSuper.get(boxSeccion.getSelectedIndex()));
+					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		boxSeccion.setVisible(false);
+		boxSeccion.setBounds(10, 44, 125, 22);
+		panel_Compras.add(boxSeccion);
 		
 		
-		try {
-			listaArticulos=ga.cargarArticulos();
-			
-		} catch (SQLException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-		JScrollPane buscaArticulos=new JScrollPane(cv.mostarArticulos(listaArticulos));
 		buscaArticulos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		buscaArticulos.setBounds(10, 77, 669, 346);
+		buscaArticulos.setBounds(0, 77, 702, 324);
 		panel_Compras.add(buscaArticulos);
+		
+		textBuscador = new JTextField();
+		textBuscador.setBounds(354, 26, 207, 20);
+		panel_Compras.add(textBuscador);
+		textBuscador.setColumns(10);
+		
+		JButton btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					listaArticulos=ga.buscarArticulosPorNombre(textBuscador.getText());
+					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnBuscar.setBounds(255, 25, 89, 23);
+		panel_Compras.add(btnBuscar);
+		
+		JButton btnTodo = new JButton("Todo");
+		btnTodo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					listaArticulos=ga.cargarArticulos();
+					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
+					boxSeccion.setVisible(false);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		btnTodo.setBounds(156, 25, 89, 23);
+		panel_Compras.add(btnTodo);
+		
+		JButton btnAtrasCom = new JButton("Atras");
+		btnAtrasCom.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				paneles.setSelectedIndex(3);
+			}
+		});
+		btnAtrasCom.setBounds(10, 402, 89, 23);
+		panel_Compras.add(btnAtrasCom);
+		
+		JButton btnVerCarrito = new JButton("Carrito");
+		btnVerCarrito.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				buscaArticulos.setViewportView(cv.mostrarCarrito(carrito,lblPrecioTotal));
+			}
+		});
+		btnVerCarrito.setBounds(571, 25, 89, 23);
+		panel_Compras.add(btnVerCarrito);
+		
+		
+		lblPrecioTotal.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblPrecioTotal.setBounds(265, 404, 189, 14);
+		panel_Compras.add(lblPrecioTotal);
+		
+		JButton btnRealizarCompra = new JButton("Comprar");
+		btnRealizarCompra.setBounds(603, 402, 89, 23);
+		panel_Compras.add(btnRealizarCompra);
 		
 		
 	}

@@ -124,4 +124,10 @@ public class GestorSupermercado {
 		su.setArraySecciones(listaSe);
 		return su;
 	}
+	public ArrayList<Supermercado> cogerSeccionesMultiplesSu(ArrayList<Supermercado> lista) throws SQLException{
+		for(Supermercado su:lista) {
+			su=cogerSeccionesSuper(su);
+		}
+		return lista;
+	}
 }

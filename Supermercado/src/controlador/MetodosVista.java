@@ -3,6 +3,8 @@ package controlador;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
@@ -29,6 +32,7 @@ import gestores.GestorSupermercado;
 import modelo.Articulo;
 import modelo.Cliente;
 import modelo.Comida;
+import modelo.Compra;
 import modelo.Herramienta;
 import modelo.Jefe;
 import modelo.Persona;
@@ -314,115 +318,198 @@ GestorSeccion gs=new GestorSeccion();
 		tabla.getModel().setValueAt(lista.get(tabla.getSelectedRow()).getDescripcion(), tabla.getSelectedRow(), 2);
 		return tabla;
 	}
-	public JPanel mostarArticulos(ArrayList<Articulo> lista) {
+	public JPanel mostrarArticulos(ArrayList<Articulo> lista,Compra carrito,JLabel verPrecio) {
+		
 		JPanel panel_Comprar = new JPanel();
 		Comida co=null;
 		Ropa ro=null;
 		Herramienta he=null;
-		int largo=145;
-		int conta=0;
+		
 		for(Articulo ar:lista) {
-				ImageIcon imagenIcono = new ImageIcon(".\\Imagenes\\"+ar.getRutaImagen());
-		        Image imagen = imagenIcono.getImage();
-		        Image imagenRedimensionada = imagen.getScaledInstance(146, 132, java.awt.Image.SCALE_SMOOTH);
-		        ImageIcon imagenRedimensionadaIcono = new ImageIcon(imagenRedimensionada);
-				JLabel lblImagenAr = new JLabel(imagenRedimensionadaIcono);
-				lblImagenAr.setBounds(10, 11+(largo*conta), 146, 132);
-				panel_Comprar.add(lblImagenAr);
-				panel_Comprar.setLayout(null);
+			ImageIcon imagenIcono = new ImageIcon(".\\Imagenes\\"+ar.getRutaImagen());
+			Image imagen = imagenIcono.getImage();
+			Image imagenRedimensionada = imagen.getScaledInstance(146, 132, java.awt.Image.SCALE_SMOOTH);
+			ImageIcon imagenRedimensionadaIcono = new ImageIcon(imagenRedimensionada);
+			JLabel lblImagenAr = new JLabel(imagenRedimensionadaIcono);
+			lblImagenAr.setBounds(0, 0, 152, 152);
+			panel_Comprar.add(lblImagenAr);
+						
+			JPanel panelAtributos = new JPanel();
+			panelAtributos.setBounds(152, 0, 248, 152);
+			panel_Comprar.add(panelAtributos);
+			panelAtributos.setLayout(null);
+			
+			
+			JLabel lblNombreAr = new JLabel("Nombre: "+ar.getNombreArticulo());
+			lblNombreAr.setBounds(10, 0, 207, 14);
+			panelAtributos.add(lblNombreAr);
+			
+			JLabel lblPrecioAr = new JLabel("Precio: "+ar.getPrecio());
+			lblPrecioAr.setBounds(10, 11, 207, 14);
+			panelAtributos.add(lblPrecioAr);
+			
+			JLabel lblStockAr = new JLabel("Stock: "+ar.getStockActual());
+			lblStockAr.setBounds(10, 25, 207, 14);
+			panelAtributos.add(lblStockAr);
+			if(ar instanceof Comida) {
+				co=(Comida)ar;
+			JLabel lblAtributoDos = new JLabel("Procedencia :"+co.getProcedencia());
+			lblAtributoDos.setBounds(10, 36, 207, 14);
+			panelAtributos.add(lblAtributoDos);
+			
+			JLabel lblAtributoUno = new JLabel("Fecha de caducidad: "+co.getFechaCaducidad());
+			lblAtributoUno.setBounds(10, 50, 207, 14);
+			panelAtributos.add(lblAtributoUno);
+			}
+			if(ar instanceof Ropa) {
+				ro=(Ropa)ar;
+				JLabel lblAtributoDos = new JLabel("Talla :"+ro.getTalla());
+				lblAtributoDos.setBounds(10, 36, 207, 14);
+				panelAtributos.add(lblAtributoDos);
 				
-				JLabel lblNombreAr = new JLabel("Nombre:");
-				lblNombreAr.setBounds(166, 21+(largo*conta), 60, 14);
-				panel_Comprar.add(lblNombreAr);
+				JLabel lblAtributoUno = new JLabel("Marca: "+ro.getMarca());
+				lblAtributoUno.setBounds(10, 50, 207, 14);
+				panelAtributos.add(lblAtributoUno);
+			}
+			if(ar instanceof Herramienta) {
+				he=(Herramienta)ar;
+				JLabel lblAtributoDos = new JLabel("Electrica :"+he.getElectrica());
+				lblAtributoDos.setBounds(10, 36, 207, 14);
+				panelAtributos.add(lblAtributoDos);
 				
-				JLabel lblPrecioAr = new JLabel("Precio: "+ar.getPrecio());
-				lblPrecioAr.setBounds(166, 70+(largo*conta), 46, 14);
-				panel_Comprar.add(lblPrecioAr);
-				
-				JLabel lblStockAr = new JLabel("Stock: "+ar.getStockActual());
-				lblStockAr.setBounds(166, 95+(largo*conta), 94, 14);
-				panel_Comprar.add(lblStockAr);
-				
-				JLabel lblDescripcionAr = new JLabel("Descripcion:");
-				lblDescripcionAr.setBounds(436, 21+(largo*conta), 94, 14);
-				panel_Comprar.add(lblDescripcionAr);
-				
-				JLabel lblMuestraNombre = new JLabel(ar.getNombreArticulo());
-				lblMuestraNombre.setBounds(166, 46+(largo*conta), 131, 14);
-				panel_Comprar.add(lblMuestraNombre);
-				
-				if(ar instanceof Comida) {
-					co=(Comida)ar;
-				JLabel lblAtributoUno = new JLabel("Fecha de caducidad:");
-				lblAtributoUno.setBounds(302, 21+(largo*conta), 67, 14);
-				panel_Comprar.add(lblAtributoUno);
-				
-				JLabel lblAtributoDos = new JLabel("Procedencia:");
-				lblAtributoDos.setBounds(302, 70+(largo*conta), 46, 14);
-				panel_Comprar.add(lblAtributoDos);
-				
-				JLabel lblMostrarAtributo1 = new JLabel(co.getFechaCaducidad());
-				lblMostrarAtributo1.setBounds(302, 46+(largo*conta), 124, 25);
-				panel_Comprar.add(lblMostrarAtributo1);
-				
-				JLabel lblMostrarAtributo2 = new JLabel(co.getProcedencia());
-				lblMostrarAtributo2.setBounds(302, 95+(largo*conta), 124, 25);
-				panel_Comprar.add(lblMostrarAtributo2);
+				JLabel lblAtributoUno = new JLabel("Garantia: "+he.getGarantia());
+				lblAtributoUno.setBounds(10, 50, 207, 14);
+				panelAtributos.add(lblAtributoUno);
+			}
+										
+			JSpinner cantidad = new JSpinner();
+			cantidad.setBounds(123, 70, 39, 20);
+			panelAtributos.add(cantidad);
+			cantidad.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+			
+			JButton btnCogerArticulo = new JButton("Anadir");
+			btnCogerArticulo.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					carrito.anadirArticulo(ar, (Integer)cantidad.getValue());
+					carrito.setPrecioTotal(carrito.calcularPrecioTotal());
+					verPrecio.setText("Precio del carrito: "+carrito.getPrecioTotal());
 				}
-				if(ar instanceof Ropa) {
-					ro=(Ropa)ar;
-				JLabel lblAtributoUno = new JLabel("Talla:");
-				lblAtributoUno.setBounds(302, 21+(largo*conta), 67, 25);
-				panel_Comprar.add(lblAtributoUno);
-				
-				JLabel lblAtributoDos = new JLabel("Marca:");
-				lblAtributoDos.setBounds(302, 70+(largo*conta), 46, 25);
-				panel_Comprar.add(lblAtributoDos);
-				
-				JLabel lblMostrarAtributo1 = new JLabel(ro.getTalla());
-				lblMostrarAtributo1.setBounds(302, 46+(largo*conta), 124, 25);
-				panel_Comprar.add(lblMostrarAtributo1);
-				
-				JLabel lblMostrarAtributo2 = new JLabel(ro.getMarca());
-				lblMostrarAtributo2.setBounds(302, 95+(largo*conta), 124, 25);
-				panel_Comprar.add(lblMostrarAtributo2);
-				}
-				if(ar instanceof Herramienta) {
-					he=(Herramienta)ar;
-				JLabel lblAtributoUno = new JLabel("Electrica:");
-				lblAtributoUno.setBounds(302, 21+(largo*conta), 67, 25);
-				panel_Comprar.add(lblAtributoUno);
-				
-				JLabel lblAtributoDos = new JLabel("Garantia:");
-				lblAtributoDos.setBounds(302, 70+(largo*conta), 46, 25);
-				panel_Comprar.add(lblAtributoDos);
-				
-				JLabel lblMostrarAtributo1 = new JLabel(String.valueOf(he.getElectrica()));
-				lblMostrarAtributo1.setBounds(302, 46+(largo*conta), 124, 25);
-				panel_Comprar.add(lblMostrarAtributo1);
-				
-				JLabel lblMostrarAtributo2 = new JLabel(String.valueOf(he.getGarantia()));
-				lblMostrarAtributo2.setBounds(302, 95+(largo*conta), 124, 25);
-				panel_Comprar.add(lblMostrarAtributo2);
-				}
-				
-				JLabel lblMostrarDes = new JLabel(ar.getDescripcion());
-				lblMostrarDes.setBounds(436, 46+(largo*conta), 234, 97);
-				panel_Comprar.add(lblMostrarDes);
-				
-				JButton btnCogerArticulo = new JButton("Anadir");
-				btnCogerArticulo.setBounds(208, 120+(largo*conta), 89, 23);
-				panel_Comprar.add(btnCogerArticulo);
-				
-				JSpinner cantidad = new JSpinner();
-				cantidad.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-				cantidad.setBounds(396, 120+(largo*conta), 30, 20);
-				panel_Comprar.add(cantidad);
-				conta++;
+			});
+			btnCogerArticulo.setBounds(10, 69, 74, 23);
+			panelAtributos.add(btnCogerArticulo);
+			
+			JPanel panel = new JPanel();
+			panel.setBounds(402, 0, 248, 152);
+			panel_Comprar.add(panel);
+			panel.setLayout(null);
+			JLabel lblDescripcionAr = new JLabel("Descripcion:");
+			lblDescripcionAr.setBounds(10, 11, 175, 14);
+			panel.add(lblDescripcionAr);
+			
+			JTextArea muestraDes = new JTextArea(ar.getDescripcion());
+			muestraDes.setLineWrap(true);
+			muestraDes.setEnabled(false);
+			muestraDes.setEditable(false);
+			muestraDes.setBounds(10, 36, 207, 125);
+			panel.add(muestraDes);
 		}	
-		panel_Comprar.setLayout(new GridLayout(0, 13));
+		panel_Comprar.setLayout(new GridLayout(0, 3));
+		carrito.setPrecioTotal(carrito.calcularPrecioTotal());
+		verPrecio.setText("Precio del carrito: "+carrito.getPrecioTotal());
 		return panel_Comprar;
 	}
+	public JPanel mostrarCarrito(Compra carrito,JLabel verPrecio) {
+		JPanel panel_Comprar = new JPanel();
+		Comida co=null;
+		Ropa ro=null;
+		Herramienta he=null;
+		int contador=0;
+		for(Articulo ar:carrito.getArrayArticulos()) {
+			ImageIcon imagenIcono = new ImageIcon(".\\Imagenes\\"+ar.getRutaImagen());
+			Image imagen = imagenIcono.getImage();
+			Image imagenRedimensionada = imagen.getScaledInstance(146, 132, java.awt.Image.SCALE_SMOOTH);
+			ImageIcon imagenRedimensionadaIcono = new ImageIcon(imagenRedimensionada);
+			JLabel lblImagenAr = new JLabel(imagenRedimensionadaIcono);
+			lblImagenAr.setBounds(0, 0, 152, 152);
+			panel_Comprar.add(lblImagenAr);
+						
+			JPanel panelAtributos = new JPanel();
+			panelAtributos.setBounds(152, 0, 248, 152);
+			panel_Comprar.add(panelAtributos);
+			panelAtributos.setLayout(null);
+			
+			JLabel lblNombreAr = new JLabel("Nombre: "+ar.getNombreArticulo());
+			lblNombreAr.setBounds(10, 0, 207, 14);
+			panelAtributos.add(lblNombreAr);
+			
+			JLabel lblPrecioAr = new JLabel("Precio: "+ar.getPrecio());
+			lblPrecioAr.setBounds(10, 11, 207, 14);
+			panelAtributos.add(lblPrecioAr);
+			
+			JLabel lblStockAr = new JLabel("Stock: "+ar.getStockActual());
+			lblStockAr.setBounds(10, 25, 207, 14);
+			panelAtributos.add(lblStockAr);
+			if(ar instanceof Comida) {
+				co=(Comida)ar;
+			JLabel lblAtributoDos = new JLabel("Procedencia :"+co.getProcedencia());
+			lblAtributoDos.setBounds(10, 36, 207, 14);
+			panelAtributos.add(lblAtributoDos);
+			
+			JLabel lblAtributoUno = new JLabel("Fecha de caducidad: "+co.getFechaCaducidad());
+			lblAtributoUno.setBounds(10, 50, 207, 14);
+			panelAtributos.add(lblAtributoUno);
+			}
+			if(ar instanceof Ropa) {
+				ro=(Ropa)ar;
+				JLabel lblAtributoDos = new JLabel("Talla :"+ro.getTalla());
+				lblAtributoDos.setBounds(10, 36, 207, 14);
+				panelAtributos.add(lblAtributoDos);
+				
+				JLabel lblAtributoUno = new JLabel("Marca: "+ro.getMarca());
+				lblAtributoUno.setBounds(10, 50, 207, 14);
+				panelAtributos.add(lblAtributoUno);
+			}
+			if(ar instanceof Herramienta) {
+				he=(Herramienta)ar;
+				JLabel lblAtributoDos = new JLabel("Electrica :"+he.getElectrica());
+				lblAtributoDos.setBounds(10, 36, 207, 14);
+				panelAtributos.add(lblAtributoDos);
+				
+				JLabel lblAtributoUno = new JLabel("Garantia: "+he.getGarantia());
+				lblAtributoUno.setBounds(10, 50, 207, 14);
+				panelAtributos.add(lblAtributoUno);
+			}
+							
+			JButton btnCogerArticulo = new JButton("Anadir");
+			btnCogerArticulo.setBounds(10, 69, 74, 23);
+			panelAtributos.add(btnCogerArticulo);
+							
+			JLabel cantidad = new JLabel("Cantidad :"+carrito.getListaCantidades().get(contador).getCantidad());
+			cantidad.setBounds(123, 70, 75, 20);
+			panelAtributos.add(cantidad);
+			
+			JPanel panel = new JPanel();
+			panel.setBounds(402, 0, 248, 152);
+			panel_Comprar.add(panel);
+			panel.setLayout(null);
+			JLabel lblDescripcionAr = new JLabel("Descripcion:");
+			lblDescripcionAr.setBounds(10, 11, 175, 14);
+			panel.add(lblDescripcionAr);
+			
+			JTextArea muestraDes = new JTextArea(ar.getDescripcion());
+			muestraDes.setLineWrap(true);
+			muestraDes.setEnabled(false);
+			muestraDes.setEditable(false);
+			muestraDes.setBounds(10, 36, 207, 125);
+			panel.add(muestraDes);
+			contador++;
+		}	
+		carrito.setPrecioTotal(carrito.calcularPrecioTotal());
+		verPrecio.setText("Precio del carrito: "+carrito.getPrecioTotal());
+		panel_Comprar.setLayout(new GridLayout(0, 3));
+		return panel_Comprar;
+	}
+	
 }
 
 

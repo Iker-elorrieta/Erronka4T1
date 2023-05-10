@@ -87,8 +87,19 @@ public void setFechaCompra(LocalDateTime fechaCompra) {
 	this.fechaCompra = fechaCompra;
 }
 public void anadirArticulo(Articulo ar,int cantidad) {
+	boolean repetido=false;
+	for(ArticuloComprado arc:listaCantidades) {
+		if(ar.getIdArticulo()==arc.getIdArticulo()) {
+			arc.setCantidad(arc.getCantidad()+cantidad);
+			repetido=true;
+			calcularPrecioTotal();
+		}
+	}
+	if(!repetido) {
 	arrayArticulos.add(ar);
 	ArticuloComprado arc=new ArticuloComprado(0, ar.getIdArticulo(), cantidad, ar.getPrecio());
 	listaCantidades.add(arc);
+	calcularPrecioTotal();
+	}
 }
 }

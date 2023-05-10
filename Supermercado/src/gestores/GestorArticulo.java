@@ -11,6 +11,7 @@ import modelo.Comida;
 import modelo.Herramienta;
 import modelo.Ropa;
 import modelo.Seccion;
+import otros.tipoArticulo;
 import referencias.TABLAS;
 
 
@@ -34,7 +35,7 @@ public class GestorArticulo {
 		Comida co=null;
 		Ropa ro=null;
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
-		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.ELECTRICA+" OR "+TABLAS.GARANTIA+" IS NOT NULL");
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.ELECTRICA+" AND "+TABLAS.GARANTIA+" IS NOT NULL");
 		while(carga.next()) {
 		he=new Herramienta(carga.getInt(TABLAS.IDARTICULO),carga.getString(TABLAS.NOMBREARTICULO),
 				carga.getString(TABLAS.RUTAIMAGEN),carga.getString(TABLAS.DESCRIPCION),
@@ -42,7 +43,7 @@ public class GestorArticulo {
 				carga.getInt(TABLAS.ELECTRICA),carga.getInt(TABLAS.GARANTIA));
 		lista.add(he);
 		}
-		ResultSet cargaC=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.FECHACADUCIDAD+" OR "+TABLAS.PROCEDENCIA+" IS NOT NULL");
+		ResultSet cargaC=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.FECHACADUCIDAD+" AND "+TABLAS.PROCEDENCIA+" IS NOT NULL");
 		while(cargaC.next()) {
 		co=new Comida(cargaC.getInt(TABLAS.IDARTICULO),cargaC.getString(TABLAS.NOMBREARTICULO),
 				cargaC.getString(TABLAS.RUTAIMAGEN),cargaC.getString(TABLAS.DESCRIPCION),
@@ -50,7 +51,7 @@ public class GestorArticulo {
 				cargaC.getDate(TABLAS.FECHACADUCIDAD),cargaC.getString(TABLAS.PROCEDENCIA));
 		lista.add(co);
 		}
-		ResultSet cargaR=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.TALLA+" OR "+TABLAS.MARCA+" IS NOT NULL");
+		ResultSet cargaR=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.TALLA+" AND "+TABLAS.MARCA+" IS NOT NULL");
 		while(cargaR.next()) {
 		ro=new Ropa(cargaR.getInt(TABLAS.IDARTICULO),cargaR.getString(TABLAS.NOMBREARTICULO),
 				cargaR.getString(TABLAS.RUTAIMAGEN),cargaR.getString(TABLAS.DESCRIPCION),
@@ -127,5 +128,77 @@ public class GestorArticulo {
 		}
 		return a;
 	}
+	public ArrayList<Articulo> cargarArticulosPorSeccion(Seccion se) throws SQLException{
+		ArrayList<Articulo> lista=new ArrayList<Articulo>();
+		Herramienta he=null;
+		Comida co=null;
+		Ropa ro=null;
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		
+		if(se.getNombreSeccion().equals(tipoArticulo.Herramienta)) {
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+		while(carga.next()) {
+		he=new Herramienta(carga.getInt(TABLAS.IDARTICULO),carga.getString(TABLAS.NOMBREARTICULO),
+				carga.getString(TABLAS.RUTAIMAGEN),carga.getString(TABLAS.DESCRIPCION),
+				carga.getFloat(TABLAS.PRECIO),carga.getInt(TABLAS.STOCK),
+				carga.getInt(TABLAS.ELECTRICA),carga.getInt(TABLAS.GARANTIA));
+		lista.add(he);
+			}
+		}
+		if(se.getNombreSeccion().equals(tipoArticulo.Comida)) {
+		ResultSet cargaC=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+		while(cargaC.next()) {
+		co=new Comida(cargaC.getInt(TABLAS.IDARTICULO),cargaC.getString(TABLAS.NOMBREARTICULO),
+				cargaC.getString(TABLAS.RUTAIMAGEN),cargaC.getString(TABLAS.DESCRIPCION),
+				cargaC.getFloat(TABLAS.PRECIO),cargaC.getInt(TABLAS.STOCK),
+				cargaC.getDate(TABLAS.FECHACADUCIDAD),cargaC.getString(TABLAS.PROCEDENCIA));
+		lista.add(co);
+			}
+		}
+		if(se.getNombreSeccion().equals(tipoArticulo.Ropa)) {
+		ResultSet cargaR=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+		while(cargaR.next()) {
+		ro=new Ropa(cargaR.getInt(TABLAS.IDARTICULO),cargaR.getString(TABLAS.NOMBREARTICULO),
+				cargaR.getString(TABLAS.RUTAIMAGEN),cargaR.getString(TABLAS.DESCRIPCION),
+				cargaR.getFloat(TABLAS.PRECIO),cargaR.getInt(TABLAS.STOCK),
+				cargaR.getString(TABLAS.TALLA),cargaR.getString(TABLAS.MARCA));
+		lista.add(ro);
+			}
+		}
+		return lista;
+	}
+	public ArrayList<Articulo> buscarArticulosPorNombre(String busqueda) throws SQLException{
+		ArrayList<Articulo> lista=new ArrayList<Articulo>();
+		Herramienta he=null;
+		Comida co=null;
+		Ropa ro=null;
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.ELECTRICA+" AND "+TABLAS.GARANTIA+" IS NOT NULL AND "+TABLAS.NOMBREARTICULO+" LIKE '%"+busqueda+"%'");
+		while(carga.next()) {
+		he=new Herramienta(carga.getInt(TABLAS.IDARTICULO),carga.getString(TABLAS.NOMBREARTICULO),
+				carga.getString(TABLAS.RUTAIMAGEN),carga.getString(TABLAS.DESCRIPCION),
+				carga.getFloat(TABLAS.PRECIO),carga.getInt(TABLAS.STOCK),
+				carga.getInt(TABLAS.ELECTRICA),carga.getInt(TABLAS.GARANTIA));
+		lista.add(he);
+		}
+		ResultSet cargaC=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.FECHACADUCIDAD+" AND "+TABLAS.PROCEDENCIA+" IS NOT NULL AND "+TABLAS.NOMBREARTICULO+" LIKE '%"+busqueda+"%'");
+		while(cargaC.next()) {
+		co=new Comida(cargaC.getInt(TABLAS.IDARTICULO),cargaC.getString(TABLAS.NOMBREARTICULO),
+				cargaC.getString(TABLAS.RUTAIMAGEN),cargaC.getString(TABLAS.DESCRIPCION),
+				cargaC.getFloat(TABLAS.PRECIO),cargaC.getInt(TABLAS.STOCK),
+				cargaC.getDate(TABLAS.FECHACADUCIDAD),cargaC.getString(TABLAS.PROCEDENCIA));
+		lista.add(co);
+		}
+		ResultSet cargaR=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.TALLA+" AND "+TABLAS.MARCA+" IS NOT NULL AND "+TABLAS.NOMBREARTICULO+" LIKE '%"+busqueda+"%'");
+		while(cargaR.next()) {
+		ro=new Ropa(cargaR.getInt(TABLAS.IDARTICULO),cargaR.getString(TABLAS.NOMBREARTICULO),
+				cargaR.getString(TABLAS.RUTAIMAGEN),cargaR.getString(TABLAS.DESCRIPCION),
+				cargaR.getFloat(TABLAS.PRECIO),cargaR.getInt(TABLAS.STOCK),
+				cargaR.getString(TABLAS.TALLA),cargaR.getString(TABLAS.MARCA));
+		lista.add(ro);
+		}
+		return lista;
+	}
+	
 }
 

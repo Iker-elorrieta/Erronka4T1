@@ -124,3 +124,5 @@ FROM articulos a JOIN secciones se ON se.codigoSeccion=a.codigoSeccion JOIN supe
 WHERE stock<100;
 END;//
 DELIMITER ;
+
+ALTER EVENT RecargaArticulos ENABLE;
