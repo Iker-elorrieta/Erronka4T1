@@ -1,4 +1,4 @@
-package controlador;
+package gestores;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,13 +10,17 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import controlador.Metodos;
+import excepciones.ErroresDeLogin;
+import excepciones.ErroresDeOperaciones;
+import excepciones.ErroresDeRegistro;
 import modelo.ArticuloComprado;
 import modelo.Cliente;
 import modelo.Compra;
 import modelo.Jefe;
 import modelo.Persona;
-
-import modelo.tipoPersona;
+import otros.tipoPersona;
+import referencias.TABLAS;
 
 public class GestorPersona {
 	Metodos mc=new Metodos();
@@ -291,4 +295,3 @@ public class GestorPersona {
 		}
 	}
 }
-	

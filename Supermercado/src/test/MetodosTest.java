@@ -12,6 +12,8 @@ import java.util.Calendar;
 import org.junit.jupiter.api.Test;
 
 import controlador.*;
+import gestores.GestorArticulo;
+import gestores.GestorPersona;
 import modelo.*;
 
 

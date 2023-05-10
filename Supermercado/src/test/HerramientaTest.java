@@ -69,3 +69,4 @@ Herramienta obj = new Herramienta(0, null, null, null, 0, 0, 0, 0);
 	}
 
 }
+

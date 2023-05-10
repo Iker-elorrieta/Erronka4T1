@@ -1,4 +1,4 @@
-package controlador;
+package referencias;
 
 public class TABLAS {
 	public final static String PERSONAS="personas";
@@ -55,4 +55,9 @@ public class TABLAS {
 	public final static String EMPLEADO="Empleado";
 	public final static String JEFE="Jefe";
 	public final static String CLIENTE="Cliente";
+	
+	public final static String ARTICULOSRECARGAR="articulosrecargar";
+	public final static String STOCKNECESARIO="stockNecesario";
+	public final static String PRECIOTOTAL="precioTotal";
+	public final static String ENCARGADO="encargado";
 }

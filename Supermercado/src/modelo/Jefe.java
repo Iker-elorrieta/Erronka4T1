@@ -3,6 +3,7 @@ package modelo;
 import java.util.Date;
 import java.util.Objects;
 
+import otros.tipoPersona;
 public class Jefe extends Persona{
 	private Date fechaAdquisicion;
 	private float porcentajeEmpresa;

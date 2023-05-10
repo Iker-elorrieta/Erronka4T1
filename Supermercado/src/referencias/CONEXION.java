@@ -1,4 +1,4 @@
-package controlador;
+package referencias;
 
 public class CONEXION {
 	public static final String URL = "jdbc:mysql://localhost/reto4";

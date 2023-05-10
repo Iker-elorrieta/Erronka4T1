@@ -8,15 +8,15 @@ import java.text.ParseException;
 
 import org.junit.jupiter.api.Test;
 
-import controlador.ErroresDeRegistro;
-import controlador.GestorArticuloComprado;
-import controlador.GestorCompra;
-import controlador.GestorPersona;
 import controlador.Metodos;
+import excepciones.ErroresDeRegistro;
+import gestores.GestorArticuloComprado;
+import gestores.GestorCompra;
+import gestores.GestorPersona;
 import modelo.ArticuloComprado;
 import modelo.Cliente;
 import modelo.Compra;
-import modelo.tipoPersona;
+import otros.tipoPersona;
 
 class TestGestorArticuloComprado {
 	Metodos mc=new Metodos();

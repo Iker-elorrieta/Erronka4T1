@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import modelo.Articulo;
 import modelo.Seccion;
-import modelo.tipoArticulo;
+import otros.tipoArticulo;
 
 class SeccionTest {
 

@@ -33,6 +33,8 @@ Compra obj = new Compra(212, 12313, myObj);
 		assertEquals(Double.valueOf(obj.getPrecioTotal()),(float)64.2);
 		assertTrue(obj.calcularPrecioTotal()!=obj.getPrecioTotal());
 		obj=new Compra(22);
+		Compra obj2=new Compra();
+		assertNotEquals(obj.getPrecioTotal(),obj2.getPrecioTotal());
 	}
 	
 	@Test

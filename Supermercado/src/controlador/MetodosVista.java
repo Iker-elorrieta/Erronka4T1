@@ -1,15 +1,31 @@
 package controlador;
 
 import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
 
+import excepciones.ErroresDeOperaciones;
+import gestores.GestorArticulo;
+import gestores.GestorPersona;
+import gestores.GestorSeccion;
+import gestores.GestorSupermercado;
 import modelo.Articulo;
 import modelo.Cliente;
 import modelo.Comida;
@@ -19,8 +35,10 @@ import modelo.Persona;
 import modelo.Ropa;
 import modelo.Seccion;
 import modelo.Supermercado;
-import modelo.tipoArticulo;
-import modelo.tipoPersona;
+import otros.tipoArticulo;
+import otros.tipoPersona;
+import referencias.TABLAS;
+
 
 public class MetodosVista {
 Metodos mts = new Metodos();
@@ -34,7 +52,7 @@ GestorSeccion gs=new GestorSeccion();
 		Comida co=null;
 		Ropa ro=null;
 		Herramienta he=null;
-		String[][] datosTabla = new String[listaArticulos.size()][10];
+		String[][] datosTabla = new String[listaArticulos.size()][6];
 		for(int i = 0;i<listaArticulos.size();i++){
 			datosTabla[i][0] = String.valueOf(listaArticulos.get(i).getNombreArticulo());
 			datosTabla[i][1] = String.valueOf(listaArticulos.get(i).getRutaImagen());
@@ -42,8 +60,8 @@ GestorSeccion gs=new GestorSeccion();
 			datosTabla[i][3] = String.valueOf(listaArticulos.get(i).getPrecio());
 			if(listaArticulos.get(i) instanceof Comida) {
 				co=(Comida)listaArticulos.get(i);
-				datosTabla[i][6] = co.getFechaCaducidad();
-				datosTabla[i][7] = co.getProcedencia();
+				datosTabla[i][4] = co.getFechaCaducidad();
+				datosTabla[i][5] = co.getProcedencia();
 			}else if(listaArticulos.get(i) instanceof Ropa) {
 				ro=(Ropa) listaArticulos.get(i);
 				datosTabla[i][4] = ro.getTalla();
@@ -51,21 +69,53 @@ GestorSeccion gs=new GestorSeccion();
 			}else if(listaArticulos.get(i) instanceof Herramienta) {
 				he=(Herramienta) listaArticulos.get(i);
 				if(he.getElectrica()) {
-					datosTabla[i][8] = "Si";
+					datosTabla[i][4] = "Si";
 				}else {
-					datosTabla[i][8] = "No";
+					datosTabla[i][4] = "No";
 				}
-				datosTabla[i][9] = String.valueOf(he.getGarantia());
+
+				datosTabla[i][5] = String.valueOf(he.getGarantia());
 			}
 		}
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
 			new String[] {
-				TABLAS.NOMBREARTICULO, TABLAS.RUTAIMAGEN, TABLAS.DESCRIPCION, TABLAS.PRECIO,TABLAS.TALLA,TABLAS.MARCA,TABLAS.FECHACADUCIDAD,TABLAS.PROCEDENCIA,TABLAS.ELECTRICA,TABLAS.GARANTIA
+				TABLAS.NOMBREARTICULO, TABLAS.RUTAIMAGEN, TABLAS.DESCRIPCION, TABLAS.PRECIO,"Atributo 1","Atributo 2"
 			}
 		));
 		return table;
+	}
+	public JTable tablaRecargArticulos() throws SQLException {
+			Statement comando = (Statement) mts.conectarBaseDatos().createStatement();
+			ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSRECARGAR);
+			int numFilas=0;
+			while(carga.next()) {
+				numFilas++;
+			}
+		String[][] datosTabla = new String[numFilas][6];
+		int cuenta=0;
+		carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSRECARGAR);
+		while(carga.next()) {
+			datosTabla[cuenta][0]=carga.getString(TABLAS.ENCARGADO);
+			datosTabla[cuenta][1]=carga.getString(TABLAS.IDARTICULO);
+			datosTabla[cuenta][2]=carga.getString(TABLAS.NOMBREARTICULO);
+			datosTabla[cuenta][3]=carga.getString(TABLAS.PRECIO);
+			datosTabla[cuenta][4]=carga.getString(TABLAS.STOCKNECESARIO);
+			datosTabla[cuenta][5]=carga.getString(TABLAS.PRECIOTOTAL);
+		}
+		JTable table = new JTable();
+		table.setModel(new DefaultTableModel(
+			datosTabla,
+			new String[] {
+				"Encargado", TABLAS.IDARTICULO, TABLAS.NOMBREARTICULO, TABLAS.PRECIO,"Stock necesario","Precio total"
+			}
+		));
+		return table;
+	}
+	public String descripcion(JTable tabla,ArrayList<Articulo> listaArticulos) throws SQLException {
+		listaArticulos = ga.cargarArticulos();
+		return listaArticulos.get(tabla.getSelectedRow()).getDescripcion();
 	}
 	public JTable tablaUsuarios(ArrayList<Persona> listaUsuarios) throws SQLException {
 		listaUsuarios=gp.cargarPersonas();
@@ -144,7 +194,6 @@ GestorSeccion gs=new GestorSeccion();
 				if(((JTextField) componente).getText().equals("") && componente.isVisible()) {
 					throw new ErroresDeOperaciones("Alguno de los campos esta vacio");
 				}
-				
 			}
 			if(componente instanceof JComboBox) {
 				JComboBox<?> combo=(JComboBox<?>) componente;
@@ -176,6 +225,7 @@ GestorSeccion gs=new GestorSeccion();
 	}
 	public void borrarSeccionTabla(JTable tabla,ArrayList<Seccion> lista) throws SQLException {
 		gs.borrarSeccion(lista.get(tabla.getSelectedRow()));
+
 }
 	public void borrarArticuloTabla(JTable tabla, ArrayList<Articulo> lista) throws SQLException {
 		// TODO Auto-generated method stub
@@ -211,9 +261,168 @@ GestorSeccion gs=new GestorSeccion();
 			fila++;
 		};
 	}
-	public void modificarArticuloTabla(JTable tabla, ArrayList<Articulo> lista) throws SQLException {
+	public void modificarArticuloTabla(JTable tabla, ArrayList<Articulo> lista) throws SQLException, ParseException {
 	// TODO Auto-generated method stub
-		ga.cambiarArticulo(lista.get(tabla.getSelectedRow()));
+		int fila=0;
+		Ropa ro=null;
+		Comida co=null;
+		Herramienta he=null;
+		for(Articulo ar:lista) {
+			ar.setNombreArticulo((String) tabla.getModel().getValueAt(fila, 0));
+			ar.setRutaImagen((String) tabla.getModel().getValueAt(fila, 1));
+			ar.setDescripcion((String) tabla.getModel().getValueAt(fila, 2));
+			ar.setPrecio(Float.valueOf((String) tabla.getModel().getValueAt(fila, 3)));
+			if(ar instanceof Ropa) {
+				ro=(Ropa) ar;
+				ro.setTalla((String) tabla.getModel().getValueAt(fila, 4));
+				ro.setMarca((String) tabla.getModel().getValueAt(fila, 5));
+				ga.cambiarArticulo(ro);
+			}
+			if(ar instanceof Comida) {
+				co=(Comida)ar;
+				co.setFechaCaducidad(mts.deStringADate(((String) tabla.getModel().getValueAt(fila, 4))));
+				co.setProcedencia((String) tabla.getModel().getValueAt(fila, 5));
+				ga.cambiarArticulo(co);
+			}
+			if(ar instanceof Herramienta) {
+				he=(Herramienta) ar;
+				if(tabla.getModel().getValueAt(fila, 4).equals("Si")|tabla.getModel().getValueAt(fila, 4).equals("si")) {
+					he.setElectrica(true);
+				}else if(tabla.getModel().getValueAt(fila, 4).equals("No")|tabla.getModel().getValueAt(fila, 4).equals("no")){
+					he.setElectrica(false);
+				}
+				he.setGarantia(Integer.parseInt(((String) tabla.getModel().getValueAt(fila, 5))));
+				ga.cambiarArticulo(he);
+			}
+			fila++;
+		}
+	}
+	public void recargarStocks(JTable tabla, ArrayList<Articulo> lista) throws SQLException {
+		lista=ga.cargarArticulos();
+		for(Articulo ar:lista) {
+			if(Integer.parseInt((String) tabla.getModel().getValueAt(tabla.getSelectedRow(), 1))==ar.getIdArticulo()) {
+				ar.setStockActual(100);
+				ga.cambiarArticulo(ar);
+				JOptionPane.showMessageDialog(null, "Este recarga de stocks costo "+(String) tabla.getModel().getValueAt(tabla.getSelectedRow(), 5));
+			}
+		}
+	}
+	public JTable anadirDescripcion(JTable tabla, String text, ArrayList<Articulo> lista) throws SQLException {
+		// TODO Auto-generated method stub
+		lista=ga.cargarArticulos();
+		lista.get(tabla.getSelectedRow()).setDescripcion(text);
+		tabla.getModel().setValueAt(lista.get(tabla.getSelectedRow()).getDescripcion(), tabla.getSelectedRow(), 2);
+		return tabla;
+	}
+	public JPanel mostarArticulos(ArrayList<Articulo> lista) {
+		JPanel panel_Comprar = new JPanel();
+		Comida co=null;
+		Ropa ro=null;
+		Herramienta he=null;
+		int largo=145;
+		int conta=0;
+		for(Articulo ar:lista) {
+				ImageIcon imagenIcono = new ImageIcon(".\\Imagenes\\"+ar.getRutaImagen());
+		        Image imagen = imagenIcono.getImage();
+		        Image imagenRedimensionada = imagen.getScaledInstance(146, 132, java.awt.Image.SCALE_SMOOTH);
+		        ImageIcon imagenRedimensionadaIcono = new ImageIcon(imagenRedimensionada);
+				JLabel lblImagenAr = new JLabel(imagenRedimensionadaIcono);
+				lblImagenAr.setBounds(10, 11+(largo*conta), 146, 132);
+				panel_Comprar.add(lblImagenAr);
+				panel_Comprar.setLayout(null);
+				
+				JLabel lblNombreAr = new JLabel("Nombre:");
+				lblNombreAr.setBounds(166, 21+(largo*conta), 60, 14);
+				panel_Comprar.add(lblNombreAr);
+				
+				JLabel lblPrecioAr = new JLabel("Precio: "+ar.getPrecio());
+				lblPrecioAr.setBounds(166, 70+(largo*conta), 46, 14);
+				panel_Comprar.add(lblPrecioAr);
+				
+				JLabel lblStockAr = new JLabel("Stock: "+ar.getStockActual());
+				lblStockAr.setBounds(166, 95+(largo*conta), 94, 14);
+				panel_Comprar.add(lblStockAr);
+				
+				JLabel lblDescripcionAr = new JLabel("Descripcion:");
+				lblDescripcionAr.setBounds(436, 21+(largo*conta), 94, 14);
+				panel_Comprar.add(lblDescripcionAr);
+				
+				JLabel lblMuestraNombre = new JLabel(ar.getNombreArticulo());
+				lblMuestraNombre.setBounds(166, 46+(largo*conta), 131, 14);
+				panel_Comprar.add(lblMuestraNombre);
+				
+				if(ar instanceof Comida) {
+					co=(Comida)ar;
+				JLabel lblAtributoUno = new JLabel("Fecha de caducidad:");
+				lblAtributoUno.setBounds(302, 21+(largo*conta), 67, 14);
+				panel_Comprar.add(lblAtributoUno);
+				
+				JLabel lblAtributoDos = new JLabel("Procedencia:");
+				lblAtributoDos.setBounds(302, 70+(largo*conta), 46, 14);
+				panel_Comprar.add(lblAtributoDos);
+				
+				JLabel lblMostrarAtributo1 = new JLabel(co.getFechaCaducidad());
+				lblMostrarAtributo1.setBounds(302, 46+(largo*conta), 124, 25);
+				panel_Comprar.add(lblMostrarAtributo1);
+				
+				JLabel lblMostrarAtributo2 = new JLabel(co.getProcedencia());
+				lblMostrarAtributo2.setBounds(302, 95+(largo*conta), 124, 25);
+				panel_Comprar.add(lblMostrarAtributo2);
+				}
+				if(ar instanceof Ropa) {
+					ro=(Ropa)ar;
+				JLabel lblAtributoUno = new JLabel("Talla:");
+				lblAtributoUno.setBounds(302, 21+(largo*conta), 67, 25);
+				panel_Comprar.add(lblAtributoUno);
+				
+				JLabel lblAtributoDos = new JLabel("Marca:");
+				lblAtributoDos.setBounds(302, 70+(largo*conta), 46, 25);
+				panel_Comprar.add(lblAtributoDos);
+				
+				JLabel lblMostrarAtributo1 = new JLabel(ro.getTalla());
+				lblMostrarAtributo1.setBounds(302, 46+(largo*conta), 124, 25);
+				panel_Comprar.add(lblMostrarAtributo1);
+				
+				JLabel lblMostrarAtributo2 = new JLabel(ro.getMarca());
+				lblMostrarAtributo2.setBounds(302, 95+(largo*conta), 124, 25);
+				panel_Comprar.add(lblMostrarAtributo2);
+				}
+				if(ar instanceof Herramienta) {
+					he=(Herramienta)ar;
+				JLabel lblAtributoUno = new JLabel("Electrica:");
+				lblAtributoUno.setBounds(302, 21+(largo*conta), 67, 25);
+				panel_Comprar.add(lblAtributoUno);
+				
+				JLabel lblAtributoDos = new JLabel("Garantia:");
+				lblAtributoDos.setBounds(302, 70+(largo*conta), 46, 25);
+				panel_Comprar.add(lblAtributoDos);
+				
+				JLabel lblMostrarAtributo1 = new JLabel(String.valueOf(he.getElectrica()));
+				lblMostrarAtributo1.setBounds(302, 46+(largo*conta), 124, 25);
+				panel_Comprar.add(lblMostrarAtributo1);
+				
+				JLabel lblMostrarAtributo2 = new JLabel(String.valueOf(he.getGarantia()));
+				lblMostrarAtributo2.setBounds(302, 95+(largo*conta), 124, 25);
+				panel_Comprar.add(lblMostrarAtributo2);
+				}
+				
+				JLabel lblMostrarDes = new JLabel(ar.getDescripcion());
+				lblMostrarDes.setBounds(436, 46+(largo*conta), 234, 97);
+				panel_Comprar.add(lblMostrarDes);
+				
+				JButton btnCogerArticulo = new JButton("Anadir");
+				btnCogerArticulo.setBounds(208, 120+(largo*conta), 89, 23);
+				panel_Comprar.add(btnCogerArticulo);
+				
+				JSpinner cantidad = new JSpinner();
+				cantidad.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+				cantidad.setBounds(396, 120+(largo*conta), 30, 20);
+				panel_Comprar.add(cantidad);
+				conta++;
+		}	
+		panel_Comprar.setLayout(new GridLayout(0, 13));
+		return panel_Comprar;
 	}
 }
+
 

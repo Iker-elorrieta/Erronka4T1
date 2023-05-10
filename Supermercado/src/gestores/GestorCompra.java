@@ -1,4 +1,4 @@
-package controlador;
+package gestores;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,9 +7,11 @@ import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import controlador.Metodos;
 import modelo.Cliente;
 import modelo.Compra;
 import modelo.Persona;
+import referencias.TABLAS;
 
 public class GestorCompra {
 	Metodos mc=new Metodos();

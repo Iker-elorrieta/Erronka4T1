@@ -9,11 +9,12 @@ import java.text.SimpleDateFormat;
 
 import org.junit.jupiter.api.Test;
 
-import controlador.GestorArticulo;
-import controlador.GestorArticuloComprado;
-import controlador.GestorCompra;
-import controlador.GestorPersona;
 import controlador.Metodos;
+import gestores.GestorArticulo;
+import gestores.GestorArticuloComprado;
+import gestores.GestorCompra;
+import gestores.GestorPersona;
+
 import modelo.Jefe;
 import modelo.Supermercado;
 

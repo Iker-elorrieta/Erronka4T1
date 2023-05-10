@@ -8,7 +8,7 @@ import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 
-import modelo.DateLabelFormatter;
+import otros.DateLabelFormatter;
 
 class TestDateLabelFormatter {
 

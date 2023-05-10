@@ -25,6 +25,11 @@ public Compra(float f) {
 	arrayArticulos = new ArrayList<Articulo>();
 	listaCantidades=new ArrayList<ArticuloComprado>();
 }
+public Compra() {
+	// TODO Auto-generated constructor stub
+	arrayArticulos = new ArrayList<Articulo>();
+	listaCantidades=new ArrayList<ArticuloComprado>();
+}
 @Override
 public int hashCode() {
 	return Objects.hash(codigoCompra);

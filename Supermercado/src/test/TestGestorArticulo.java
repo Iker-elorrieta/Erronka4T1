@@ -9,21 +9,21 @@ import java.sql.Statement;
 
 import org.junit.jupiter.api.Test;
 
-import controlador.ErroresDeRegistro;
-import controlador.GestorArticulo;
-import controlador.GestorPersona;
-import controlador.GestorSeccion;
-import controlador.GestorSupermercado;
 import controlador.Metodos;
-import controlador.TABLAS;
+import excepciones.ErroresDeRegistro;
+import gestores.GestorArticulo;
+import gestores.GestorPersona;
+import gestores.GestorSeccion;
+import gestores.GestorSupermercado;
 import modelo.Comida;
 import modelo.Herramienta;
 import modelo.Jefe;
 import modelo.Ropa;
 import modelo.Seccion;
 import modelo.Supermercado;
-import modelo.tipoArticulo;
-import modelo.tipoPersona;
+import otros.tipoArticulo;
+import otros.tipoPersona;
+import referencias.TABLAS;
 
 class TestGestorArticulo {
 	Metodos mc=new Metodos();

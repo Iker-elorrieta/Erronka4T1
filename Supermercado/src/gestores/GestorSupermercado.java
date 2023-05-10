@@ -1,15 +1,18 @@
-package controlador;
+package gestores;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import controlador.Metodos;
+import excepciones.ErroresDeOperaciones;
 import modelo.Jefe;
 import modelo.Persona;
 import modelo.Seccion;
 import modelo.Supermercado;
-import modelo.tipoArticulo;
+import otros.tipoArticulo;
+import referencias.TABLAS;
 
 public class GestorSupermercado {
 	Metodos mc=new Metodos();

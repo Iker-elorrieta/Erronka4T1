@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import modelo.*;
+import otros.tipoArticulo;
+import referencias.CONEXION;
 
 public class Metodos {
 	private String [] Tipos= {"Comida","Herramienta","Ropa"}; 
