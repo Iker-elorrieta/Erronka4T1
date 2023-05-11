@@ -92,8 +92,7 @@ public class Vista {
 	private JTable tabla;
 	private JTable tablaApoyo;
 	
-	private Compra carrito=new Compra();
-	private Compra devolucion=new Compra();
+	
 	private Comida nuevaComida;
 	private Ropa nuevaRopa;
 	private Herramienta nuevaHerramienta;
@@ -102,7 +101,9 @@ public class Vista {
 	private Supermercado supermercado;
 	private Seccion seccion;
 	private ArticuloComprado arDevolver;
+	private Compra devolucion=new Compra();
 	
+	private Compra carrito=new Compra();
 	private Jefe admin;
 	private Persona login;
 	private Cliente cliente;
@@ -128,7 +129,6 @@ public class Vista {
 	private GestorArticulo ga=new GestorArticulo();
 	private GestorCompra gc=new GestorCompra();
 	private GestorArticuloComprado gac=new GestorArticuloComprado();
-	
 	
 	/**
 	 * Launch the application.
@@ -172,6 +172,7 @@ public class Vista {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
+		Color customColor = new Color(18,20,28); 
 		JTabbedPane paneles = new JTabbedPane(JTabbedPane.TOP);
 		paneles.setBounds(0, 0, 724, 453);
 		frame.getContentPane().add(paneles);
@@ -179,6 +180,7 @@ public class Vista {
 		JPanel panel_Bienvenido = new JPanel();
 		paneles.addTab("Primera", null, panel_Bienvenido, null);
 		panel_Bienvenido.setLayout(null);
+		panel_Bienvenido.setBackground(customColor);
 		
 		JButton btnIniSes = new JButton("Iniciar sesion");
 		btnIniSes.addActionListener(new ActionListener() {
@@ -214,6 +216,7 @@ public class Vista {
 		JPanel panel_IniciarSesion = new JPanel();
 		paneles.addTab("Segundo", null, panel_IniciarSesion, null);
 		panel_IniciarSesion.setLayout(null);
+		panel_IniciarSesion.setBackground(customColor);
 		
 		cemail = new JTextField();
 		cemail.setBounds(231, 107, 181, 20);
@@ -241,6 +244,7 @@ public class Vista {
 		datePicker_1.setBounds(156, 104, 125, 20);
 		panel_PerfilUtilidades.add(datePicker_1);
 		datePicker_1.setEnabled(false);
+		panel_PerfilUtilidades.setBackground(customColor);
 		
 		JLabel lblModifica = new JLabel("Modificaciones");
 		JButton btnAnadirSecciones = new JButton("Secciones");
@@ -321,6 +325,7 @@ public class Vista {
 		JPanel panel_Registrarse = new JPanel();
 		paneles.addTab("Tercera", null, panel_Registrarse, null);
 		panel_Registrarse.setLayout(null);
+		panel_Registrarse.setBackground(customColor);
 		
 		JLabel lblDni = new JLabel("DNI:");
 		lblDni.setBounds(10, 22, 46, 14);
@@ -439,7 +444,6 @@ public class Vista {
 		lblErroresLogin.setForeground(new Color(255, 0, 0));
 		lblErroresLogin.setBounds(212, 286, 188, 14);
 		panel_Registrarse.add(lblErroresLogin);
-		
 		
 		paneles.addTab("Cuarta", null, panel_PerfilUtilidades, null);
 		panel_PerfilUtilidades.setLayout(null);
@@ -665,7 +669,6 @@ public class Vista {
 		panel_PerfilUtilidades.add(lblErrorSeleccion);
 		
 		JComboBox<String> escogeJefe = new JComboBox<String>();
-		
 		btnPaginaSuper.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -685,10 +688,7 @@ public class Vista {
 		btnPaginaSuper.setBounds(377, 131, 134, 23);
 		panel_PerfilUtilidades.add(btnPaginaSuper);
 		
-		
-		
 		JComboBox<String> escogeSuper = new JComboBox<String>();
-		
 		btnAnadirSecciones.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -707,15 +707,10 @@ public class Vista {
 		lblModifica.setBounds(558, 61, 110, 14);
 		panel_PerfilUtilidades.add(lblModifica);
 		
-		
 		JButton btnComprar = new JButton("Comprar");
 		btnComprar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-					
 					paneles.setSelectedIndex(9);
-				
-				
 			}
 		});
 		btnComprar.setBounds(579, 391, 89, 23);
@@ -745,9 +740,12 @@ public class Vista {
 		
 		JPanel panel_Otros = new JPanel();
 		panel_Otros.setLayout(null);
+		panel_Otros.setBackground(customColor);
+		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 39, 682, 238);
+		scrollPane.setBounds(10, 39, 699, 238);
 		panel_Otros.add(scrollPane);
+		
 		JButton btnAceptar = new JButton("Aceptar");
 		JTextArea cambiaDe = new JTextArea();
 		JButton btnDescrip = new JButton("Descripcion");
@@ -843,10 +841,9 @@ public class Vista {
 				}
 			}
 		});
-		btnDesbloquea.setBounds(233, 391, 113, 23);
+		btnDesbloquea.setBounds(138, 391, 113, 23);
 		panel_Otros.add(btnDesbloquea);
 		btnDesbloquea.setVisible(false);
-		
 		
 		btnBloquea.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -859,7 +856,7 @@ public class Vista {
 				}
 			}
 		});
-		btnBloquea.setBounds(364, 391, 97, 23);
+		btnBloquea.setBounds(471, 391, 97, 23);
 		panel_Otros.add(btnBloquea);
 		btnBloquea.setVisible(false);
 		JButton btnVerSecciones = new JButton("Secciones");
@@ -889,9 +886,8 @@ public class Vista {
 				}
 			}
 		});
-		btnBorrar.setBounds(471, 391, 97, 23);
+		btnBorrar.setBounds(612, 391, 97, 23);
 		panel_Otros.add(btnBorrar);
-		
 		
 		btnVerSecciones.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -910,7 +906,7 @@ public class Vista {
 				}
 			}
 		});
-		btnVerSecciones.setBounds(319, 5, 103, 23);
+		btnVerSecciones.setBounds(327, 5, 103, 23);
 		panel_Otros.add(btnVerSecciones);
 		
 		JButton btnCargarStocks = new JButton("Recargas");
@@ -950,7 +946,7 @@ public class Vista {
 				}
 			}
 		});
-		btnModificar.setBounds(109, 391, 103, 23);
+		btnModificar.setBounds(308, 391, 103, 23);
 		panel_Otros.add(btnModificar);
 		
 		btnDescrip.addActionListener(new ActionListener() {
@@ -976,7 +972,6 @@ public class Vista {
 		btnDescrip.setVisible(false);
 		panel_Otros.add(btnDescrip);
 		
-		
 		btnAceptar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -998,7 +993,6 @@ public class Vista {
 		btnAceptar.setVisible(false);
 		panel_Otros.add(btnAceptar);
 		
-		
 		btnCargarStocks.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -1015,22 +1009,21 @@ public class Vista {
 				}
 			}
 		});
-		btnCargarStocks.setBounds(603, 5, 89, 23);
+		btnCargarStocks.setBounds(620, 5, 89, 23);
 		panel_Otros.add(btnCargarStocks);
 		
 		UtilDateModel model2 = new UtilDateModel();
-		//model.setDate(2022, 5, 6);
 		Properties p2 = new Properties();
 		JDatePanelImpl datePanel2 = new JDatePanelImpl(model2, p2);
-		
 		UtilDateModel model3 = new UtilDateModel();
-		//model.setDate(2022, 5, 6);
 		Properties p3 = new Properties();
 		JDatePanelImpl datePanel3 = new JDatePanelImpl(model3, p3);
 		
 		JPanel panel_Admin = new JPanel();
 		paneles.addTab("Sexta", null, panel_Admin, null);
 		panel_Admin.setLayout(null);
+		panel_Admin.setBackground(customColor);
+		
 		datePicker_3 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
 		datePicker_3.getJFormattedTextField().setEnabled(false);
 		datePicker_3.setBounds(295, 145, 125, 20);
@@ -1039,8 +1032,6 @@ public class Vista {
 		datePicker_2.getJFormattedTextField().setEnabled(false);
 		datePicker_2.setBounds(295, 176, 125, 20);
 		panel_Admin.add(datePicker_2);
-		
-		
 		
 		textDNIJefe = new JTextField();
 		textDNIJefe.setBounds(305, 24, 115, 20);
@@ -1153,7 +1144,6 @@ public class Vista {
 		btnCancelarJefe.setBounds(295, 377, 89, 23);
 		panel_Admin.add(btnCancelarJefe);
 		
-		
 		JButton btnCancelar = new JButton("Atras");
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1165,7 +1155,6 @@ public class Vista {
 		btnCancelar.setBounds(10, 377, 89, 23);
 		panel_Admin.add(btnCancelar);
 		
-		
 		lblErroresASS.setForeground(new Color(255, 0, 0));
 		lblErroresASS.setBounds(136, 323, 429, 14);
 		panel_Admin.add(lblErroresASS);
@@ -1174,16 +1163,10 @@ public class Vista {
 		porcentajeEmpresa.setBounds(358, 207, 46, 20);
 		panel_Admin.add(porcentajeEmpresa);
 		
-		
-		
-		
-		
-		
-		
-		
 		JPanel panel_Supermercado = new JPanel();
 		paneles.addTab("Septima", null, panel_Supermercado, null);
 		panel_Supermercado.setLayout(null);
+		panel_Supermercado.setBackground(customColor);
 		
 		JButton btnCancelarSuper = new JButton("Cancelar");
 		btnCancelarSuper.setBounds(304, 278, 89, 23);
@@ -1235,7 +1218,6 @@ public class Vista {
 		JButton btnConfirmarSupermercado = new JButton("Confirmar");
 		btnConfirmarSupermercado.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				try {
 					cv.comprobarCampos(panel_Supermercado);
 					supermercado=new Supermercado(textCodigoSuper.getText(),textEmpresa.getText(),textDireccion.getText(),(Integer) NumEmple.getValue(),null);
@@ -1254,7 +1236,6 @@ public class Vista {
 		btnConfirmarSupermercado.setBounds(588, 391, 104, 23);
 		panel_Supermercado.add(btnConfirmarSupermercado);
 		
-		
 		btnAtrasSuper.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelarSuper.doClick();
@@ -1272,7 +1253,6 @@ public class Vista {
 		lblJefe.setBounds(221, 41, 115, 14);
 		panel_Supermercado.add(lblJefe);
 		
-		
 		lblErroresSuper.setForeground(new Color(255, 0, 0));
 		lblErroresSuper.setBounds(259, 220, 201, 14);
 		panel_Supermercado.add(lblErroresSuper);
@@ -1289,6 +1269,7 @@ public class Vista {
 		JPanel panel_Seccion = new JPanel();
 		paneles.addTab("Octava", null, panel_Seccion, null);
 		panel_Seccion.setLayout(null);
+		panel_Seccion.setBackground(customColor);
 		
 		JLabel lblCreaSecciones = new JLabel("Creacion de Secciones");
 		lblCreaSecciones.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -1454,7 +1435,6 @@ public class Vista {
 		 btnConfirmarSe.setBounds(580, 391, 112, 23);
 		 panel_Seccion.add(btnConfirmarSe);
 		 
-		 
 		 escogeSuper.addActionListener(new ActionListener() {
 		 	public void actionPerformed(ActionEvent e) {
 		 		escogeSuper.getItemAt(escogeSuper.getSelectedIndex());
@@ -1567,8 +1547,8 @@ public class Vista {
 		panel_Articulos.add(textPrecio);
 		textPrecio.setColumns(10);
 		
-		JSpinner Garantia = new JSpinner();
-		Garantia.setVisible(false);
+		JSpinner garantia = new JSpinner();
+		garantia.setVisible(false);
 		JCheckBox chckElectrica = new JCheckBox("Electrica");
 		
 		tipoArticuloCombo.addActionListener(new ActionListener() {
@@ -1577,19 +1557,19 @@ public class Vista {
 				if(tipoArticuloCombo.getSelectedItem().equals("Comida")) {
 					datePicker_4.setVisible(true);
 					textProcedencia.setVisible(true);
-					Garantia.setVisible(false);
+					garantia.setVisible(false);
 					chckElectrica.setVisible(false);
 					textTalla.setVisible(false);
 					textMarca.setVisible(false);
 				}else if(tipoArticuloCombo.getSelectedItem().equals("Herramienta")){
-					Garantia.setVisible(true);
+					garantia.setVisible(true);
 					chckElectrica.setVisible(true);
 					datePicker_4.setVisible(false);
 					textProcedencia.setVisible(false);
 					textTalla.setVisible(false);
 					textMarca.setVisible(false);
 				}else {
-					Garantia.setVisible(false);
+					garantia.setVisible(false);
 					chckElectrica.setVisible(false);
 					datePicker_4.setVisible(false);
 					textProcedencia.setVisible(false);
@@ -1603,6 +1583,7 @@ public class Vista {
 		panel_Articulos.add(tipoArticuloCombo);
 		
 		JLabel lblSeccion = new JLabel("Seccion:");
+		lblSeccion.setForeground(new Color(255, 255, 255));
 		lblSeccion.setBounds(254, 221, 66, 14);
 		panel_Articulos.add(lblSeccion);
 		
@@ -1639,22 +1620,22 @@ public class Vista {
 		panel_Articulos.add(textProcedencia);
 		textProcedencia.setColumns(10);
 		textProcedencia.setVisible(false);
+		panel_Articulos.setBackground(customColor);
 		
 		chckElectrica.setBounds(553, 260, 97, 23);
 		panel_Articulos.add(chckElectrica);
 		chckElectrica.setVisible(false);
 		
 		
-		Garantia.setModel(new SpinnerNumberModel(2, 2, 5, 1));
-		Garantia.setBounds(588, 297, 30, 20);
-		panel_Articulos.add(Garantia);
+		garantia.setModel(new SpinnerNumberModel(2, 2, 5, 1));
+		garantia.setBounds(588, 297, 30, 20);
+		panel_Articulos.add(garantia);
 		
 		JLabel lblGarantia = new JLabel("Garantia:");
 		lblGarantia.setBounds(471, 300, 60, 14);
 		panel_Articulos.add(lblGarantia);
 		
 		UtilDateModel modelx = new UtilDateModel();
-		//model.setDate(2022, 5, 6);
 		Properties px = new Properties();
 		JDatePanelImpl datePanelx = new JDatePanelImpl(modelx, px);
 		datePicker_4 = new JDatePickerImpl(datePanelx, new DateLabelFormatter());
@@ -1671,7 +1652,7 @@ public class Vista {
 						nuevaComida=new Comida(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, mc.deStringADate(datePicker_4.getJFormattedTextField().getText()), textProcedencia.getText());
 						ga.insertarArticulo(insercion, nuevaComida);
 				}else if(tipoArticuloCombo.getSelectedItem().equals("Herramienta")) {
-						nuevaHerramienta=new Herramienta(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, mc.pasarBoolean(chckElectrica.isSelected()), (Integer)Garantia.getValue());
+						nuevaHerramienta=new Herramienta(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, mc.pasarBoolean(chckElectrica.isSelected()), (Integer)garantia.getValue());
 						ga.insertarArticulo(insercion, nuevaHerramienta);
 				}else if(tipoArticuloCombo.getSelectedItem().equals("Ropa")) {
 						nuevaRopa=new Ropa(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, textTalla.getText(), textMarca.getText());
@@ -1717,6 +1698,7 @@ public class Vista {
 		JPanel panel_Compras = new JPanel();
 		paneles.addTab("Decima", null, panel_Compras, null);
 		panel_Compras.setLayout(null);
+		panel_Compras.setBackground(customColor);
 		
 		JLabel lblPrecioTotal = new JLabel("Precio de su carrito:");
 		JComboBox<String> boxSeccion = new JComboBox<String>();
@@ -1756,7 +1738,6 @@ public class Vista {
 		boxSeccion.setBounds(10, 44, 125, 22);
 		panel_Compras.add(boxSeccion);
 		
-		
 		buscaArticulos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		buscaArticulos.setBounds(0, 77, 702, 324);
 		panel_Compras.add(buscaArticulos);
@@ -1770,8 +1751,13 @@ public class Vista {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					if(textBuscador.getText().equals("")) {
+						listaArticulos=ga.cargarArticulos();
+						buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
+					}else {
 					listaArticulos=ga.buscarArticulosPorNombre(textBuscador.getText(),listaArticulos);
 					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
+					}
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -1799,7 +1785,6 @@ public class Vista {
 		btnVerCarrito.setBounds(571, 25, 89, 23);
 		panel_Compras.add(btnVerCarrito);
 		
-		
 		lblPrecioTotal.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblPrecioTotal.setBounds(265, 404, 228, 14);
 		panel_Compras.add(lblPrecioTotal);
@@ -1821,27 +1806,27 @@ public class Vista {
 		btnRealizarCompra.setBounds(603, 402, 89, 23);
 		panel_Compras.add(btnRealizarCompra);
 		
-		JPanel panel = new JPanel();
-		paneles.addTab("Undecima", null, panel, null);
-		panel.setLayout(null);
-		
+		JPanel panelHistorial = new JPanel();
+		paneles.addTab("Undecima", null, panelHistorial, null);
+		panelHistorial.setLayout(null);
+		panelHistorial.setBackground(customColor);
 		
 		historialCompras.setBounds(0, 46, 376, 300);
-		panel.add(historialCompras);
+		panelHistorial.add(historialCompras);
 		
 		JLabel lblHistorial = new JLabel("Historial de Compras");
 		lblHistorial.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblHistorial.setBounds(0, 21, 222, 14);
-		panel.add(lblHistorial);
+		panelHistorial.add(lblHistorial);
 		
 		JScrollPane articulosComprados = new JScrollPane();
 		articulosComprados.setBounds(379, 46, 313, 300);
-		panel.add(articulosComprados);
+		panelHistorial.add(articulosComprados);
 		
 		JLabel lblArticulosComprados = new JLabel("Articulos comprados");
 		lblArticulosComprados.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblArticulosComprados.setBounds(379, 21, 200, 14);
-		panel.add(lblArticulosComprados);
+		panelHistorial.add(lblArticulosComprados);
 		
 		JButton btnAtrasHis = new JButton("Atras");
 		btnAtrasHis.addActionListener(new ActionListener() {
@@ -1850,7 +1835,7 @@ public class Vista {
 			}
 		});
 		btnAtrasHis.setBounds(10, 391, 89, 23);
-		panel.add(btnAtrasHis);
+		panelHistorial.add(btnAtrasHis);
 		
 		JButton btnVerArticulosCom = new JButton("Seleccionar");
 		btnVerArticulosCom.addActionListener(new ActionListener() {
@@ -1867,7 +1852,7 @@ public class Vista {
 			}
 		});
 		btnVerArticulosCom.setBounds(273, 357, 103, 23);
-		panel.add(btnVerArticulosCom);
+		panelHistorial.add(btnVerArticulosCom);
 		
 		JButton btnCancelarCompra = new JButton("Devolver");
 		btnCancelarCompra.addActionListener(new ActionListener() {
@@ -1890,7 +1875,7 @@ public class Vista {
 			}
 		});
 		btnCancelarCompra.setBounds(10, 357, 103, 23);
-		panel.add(btnCancelarCompra);
+		panelHistorial.add(btnCancelarCompra);
 		
 		JSpinner cantidadDevolver = new JSpinner();
 		JButton btnSeleccionarArCom = new JButton("Modificar");
@@ -1902,12 +1887,12 @@ public class Vista {
 			}
 		});
 		btnSeleccionarArCom.setBounds(389, 357, 97, 23);
-		panel.add(btnSeleccionarArCom);
+		panelHistorial.add(btnSeleccionarArCom);
 		
 		
 		cantidadDevolver.setModel(new SpinnerNumberModel(0, 0, 0, 1));
 		cantidadDevolver.setBounds(534, 358, 45, 20);
-		panel.add(cantidadDevolver);
+		panelHistorial.add(cantidadDevolver);
 		
 		JButton btnAplicar = new JButton("Confirmar");
 		btnAplicar.addActionListener(new ActionListener() {
@@ -1924,7 +1909,7 @@ public class Vista {
 			}
 		});
 		btnAplicar.setBounds(589, 357, 103, 23);
-		panel.add(btnAplicar);
+		panelHistorial.add(btnAplicar);
 		
 		JButton btnCancelarSeleccion = new JButton("Cancelar");
 		btnCancelarSeleccion.addActionListener(new ActionListener() {
@@ -1936,17 +1921,16 @@ public class Vista {
 			}
 		});
 		btnCancelarSeleccion.setBounds(143, 357, 97, 23);
-		panel.add(btnCancelarSeleccion);
+		panelHistorial.add(btnCancelarSeleccion);
 		
 		JButton btnCancelarDevolucion = new JButton("Cancelar");
 		btnCancelarDevolucion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				cantidadDevolver.setModel(new SpinnerNumberModel(0, 0, 0, 1));
 				tablaApoyo.setEnabled(true);
 			}
 		});
 		btnCancelarDevolucion.setBounds(387, 391, 99, 23);
-		panel.add(btnCancelarDevolucion);
-		
-		
+		panelHistorial.add(btnCancelarDevolucion);
 	}
 }

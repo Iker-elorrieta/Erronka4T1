@@ -113,6 +113,7 @@ CONSTRAINT FK_artic FOREIGN KEY (idArticulo) REFERENCES articulos(idArticulo)
 ON DELETE CASCADE ON UPDATE CASCADE
 ); 
 DELIMITER //
+
 CREATE EVENT RecargaArticulos
 ON SCHEDULE EVERY 1 SECOND
 STARTS CURRENT_TIMESTAMP()
@@ -125,4 +126,138 @@ WHERE stock<100;
 END;//
 DELIMITER ;
 
-ALTER EVENT RecargaArticulos ENABLE;
+CREATE TABLE Cartera(
+dni varchar(9) not null,
+    email varchar(50) not null,
+    dineroAntes float,
+    dineroDespues float ,
+    cambio float,
+    momento datetime not null,
+    constraint PK_primaria primary key (dni,momento)
+);
+DELIMITER //
+
+create trigger CambioCartera
+after update on personas
+for each row begin
+DECLARE cambio float default 0;
+DECLARE porcen float default 0;
+	if NEW.dinero > OLD.dinero then
+		set porcen = ((NEW.dinero - OLD.dinero) / OLD.dinero) * 100;
+		insert into Cartera values (NEW.dni, NEW.email, OLD.dinero, NEW.dinero, porcen, current_timestamp());
+    elseif NEW.dinero < OLD.dinero THEN
+		set porcen = ((NEW.dinero - OLD.dinero) / OLD.dinero) * 100;
+		insert into Cartera values (NEW.dni, NEW.email, OLD.dinero, NEW.dinero, porcen, current_timestamp());
+	END IF;
+end;//
+DELIMITER ;
+
+CREATE TABLE inventarios(
+	codigoSuper varchar(5),
+    stockTotal int not null,
+    precioTotal float not null,
+    fechaCambio datetime not null,
+    constraint PK_primarias primary key (codigoSuper,stockTotal,precioTotal,fechaCambio)
+);
+delimiter //
+
+CREATE TRIGGER calculoInventarios
+AFTER UPDATE ON articulos
+FOR EACH ROW
+BEGIN
+	if new.stock<old.stock then
+    insert into inventarios 
+    SELECT su.codigoSuper,sum(stock)'stockTotal',round(sum(stock*precio),2)'precioTotal',current_timestamp()'fechaCambio'
+	FROM articulos a JOIN secciones se ON a.codigoSeccion=se.codigoSeccion JOIN supermercados su ON su.codigoSuper=se.codigoSuper;
+    END IF;
+END;//
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER actualizarArticulosTotales
+AFTER DELETE ON articulos
+FOR EACH ROW
+BEGIN
+    UPDATE secciones se JOIN articulos a ON se.codigoSeccion=a.codigoSeccion SET se.numAr = (se.numAr - 1) WHERE se.codigoSeccion=OLD.codigoSeccion;
+END;//
+DELIMITER ;
+
+delimiter //
+CREATE PROCEDURE insertarCompra(DNIcomprador varchar(9),coste float)
+BEGIN
+	DECLARE dineroCliente FLOAT DEFAULT NULL;
+    DECLARE noencontrado BOOL DEFAULT 0;
+    DECLARE valornulo BOOL DEFAULT 0;
+	DECLARE CONTINUE HANDLER FOR 1452 SET noencontrado = 1;
+	DECLARE CONTINUE HANDLER FOR 1048 SET valornulo = 1; 
+		SELECT dinero INTO dineroCliente FROM personas WHERE dni=DNIComprador AND tipo='Cliente';
+        IF(coste<0) THEN
+			SELECT CONCAT('No es posible insertar un dato negativo')'Error'; 
+		ELSEIF(dineroCliente>=coste) THEN
+			INSERT INTO compras (dni,precioFinal,fechaCompra) VALUES (DNIcomprador,coste,current_timestamp());
+			UPDATE personas SET dinero=(dinero-coste) WHERE dni=DNIcomprador;
+		ELSEIF (dineroCliente<coste) THEN
+			SELECT CONCAT('No se puedo insertar la compra, no tiene el dinero suficiente')'Insuficiente dinero';
+		ELSE
+			INSERT INTO compras (dni,precioFinal,fechaCompra) VALUES (DNIcomprador,coste,current_timestamp());
+		END IF;
+        IF (noencontrado=1)THEN
+        SELECT CONCAT('No existe esa persona en la base de datos')'Error';
+        END IF;
+        IF(valornulo=1)THEN
+        SELECT CONCAT('No se pueden operar valores nulos')'Error';
+        END IF;
+END;//
+delimiter ;
+
+delimiter //
+CREATE PROCEDURE insertarArticulo(id int,cantidad int)
+BEGIN 
+	DECLARE stockActual INT;
+    DECLARE ultimoCodigo INT;
+    DECLARE precioArt FLOAT;
+    DECLARE duplicado BOOL DEFAULT 0;
+    DECLARE valornulo BOOL DEFAULT 0;
+    DECLARE negativo BOOL DEFAULT 0;
+    DECLARE CONTINUE HANDLER FOR 1062 SET duplicado = 1;
+    DECLARE CONTINUE HANDLER FOR 1048 SET valornulo = 1; 
+    DECLARE CONTINUE HANDLER FOR 3819 SET negativo = 1; 
+		SELECT codigoCompra INTO ultimoCodigo FROM compras ORDER BY fechaCompra DESC LIMIT 1;
+		SELECT stock,precio INTO stockActual,precioArt FROM articulos WHERE idArticulo=id;
+    IF(stockActual<cantidad) THEN
+			SELECT CONCAT('No tenemos tantas articulos del id ',id,' baje la cantidad por ',cantidad-stockActual,' articulos')'Error';
+	ELSEIF(stockActual>=cantidad AND duplicado=0)THEN
+			INSERT INTO articuloscomprados VALUES (ultimoCodigo,id,cantidad,precioArt);
+	END IF;
+    IF(duplicado=1)THEN
+        SELECT CONCAT('Ambos codigos de articulo y compra estan replicados.')'Error';
+	ELSE 
+		UPDATE articulos SET stock=(stock-cantidad) WHERE idArticulo=id;
+    END IF;
+    IF(valornulo=1)THEN
+        SELECT CONCAT('No se pueden operar valores nulos')'Error';
+	END IF;
+    IF(negativo=1)THEN
+    SELECT CONCAT("No se puede cambiar el stock por esa cantidad")'Error';
+    END IF;
+END;//
+delimiter ;
+
+delimiter //
+CREATE PROCEDURE devolverTodosArticulosCompra(codC int)
+BEGIN	
+	DECLARE codCV INT;
+    DECLARE idAV INT;
+    DECLARE cantV INT;
+	DECLARE fin BOOL DEFAULT 0;
+	DECLARE C CURSOR FOR SELECT codigoCompra,idArticulo,cantidad FROM articuloscomprados WHERE codigoCompra=codC;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET fin = 1; 
+		OPEN C;
+		FETCH C INTO codCV,idAV,cantV;
+		while fin = 0 do
+			UPDATE articulos SET stock=(stock+cantV) WHERE idArticulo=idAV; 
+			FETCH C INTO codCV,idAV,cantV;
+		END WHILE;
+       DELETE FROM articuloscomprados WHERE codigoCompra=codC;
+END;//
+delimiter ;

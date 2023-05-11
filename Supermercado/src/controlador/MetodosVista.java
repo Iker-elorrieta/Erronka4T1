@@ -46,7 +46,6 @@ import otros.tipoPersona;
 import referencias.TABLAS;
 import referencias.TITULOS;
 
-
 public class MetodosVista {
 Metodos mts = new Metodos();
 GestorArticulo ga=new GestorArticulo();
@@ -155,6 +154,7 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			datosTabla[cuenta][3]=carga.getString(TABLAS.PRECIO);
 			datosTabla[cuenta][4]=carga.getString(TABLAS.STOCKNECESARIO);
 			datosTabla[cuenta][5]=carga.getString(TABLAS.PRECIOTOTAL);
+			cuenta++;
 		}
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
@@ -567,7 +567,4 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		panel_Comprar.setLayout(new GridLayout(0, 3));
 		return panel_Comprar;
 	}
-	
 }
-
-
