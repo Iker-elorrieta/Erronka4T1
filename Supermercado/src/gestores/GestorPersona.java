@@ -25,6 +25,7 @@ import referencias.TABLAS;
 public class GestorPersona {
 	Metodos mc=new Metodos();
 	GestorSupermercado gsm=new GestorSupermercado();
+	GestorArticuloComprado gac=new GestorArticuloComprado();
 	private ArrayList<Persona> listaPersonas;
 	
 	public GestorPersona() {
@@ -257,15 +258,18 @@ public class GestorPersona {
 		}
 		for(ArticuloComprado arc: lista) {
 		comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.STOCK+"=("+TABLAS.STOCK+"+"+arc.getCantidad()+") WHERE "+TABLAS.IDARTICULO+"='"+arc.getIdArticulo()+"'");
+		gac.borrarArticuloComprado(arc);
 		}
 	}
-	public void cancelarCompra(Compra com) throws SQLException {
+	public void cancelarCompra(Persona per,Compra com) throws SQLException {
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
 		Statement comandoDos = (Statement) mc.conectarBaseDatos().createStatement();
 		ResultSet cargaDinero=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
 		while(cargaDinero.next()) {
-			comandoDos.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"+"+cargaDinero.getFloat(TABLAS.PRECIOFINAL)+")");
-			comandoDos.executeUpdate("DELETE FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+cargaDinero.getInt(TABLAS.CODIGOCOMPRA)+"'");
+			if(per instanceof Cliente) {
+				comandoDos.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"+"+cargaDinero.getFloat(TABLAS.PRECIOFINAL)+")");	
+			}
+			comandoDos.executeUpdate("DELETE FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
 		}
 	}
 	public void devolverUnArticulo(Persona per,ArticuloComprado arc,int numeroDevolver) throws SQLException {
@@ -285,13 +289,16 @@ public class GestorPersona {
 			comandoDos.execute("UPDATE "+TABLAS.ARTICULOSCOMPRADOS+" SET "+TABLAS.CANTIDAD+"=("+carga.getInt(TABLAS.CANTIDAD)+"-"+numeroDevolver+")");
 		}
 		}
+	}
+	public void compruebaDevolucionArticulo(ArticuloComprado arc) throws SQLException {
 		int numArc=0;
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
 		ResultSet cargatres=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra()+"");
 		while(cargatres.next()) {
 			numArc++;
 		}
 		if(numArc==0) {
-			comandoDos.execute("DELETE FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+arc.getCodigoCompra()+"'");
-		}
+			comando.execute("DELETE FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+arc.getCodigoCompra()+"'");
+		}	
 	}
 }

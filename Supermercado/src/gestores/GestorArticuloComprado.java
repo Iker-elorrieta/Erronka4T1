@@ -76,4 +76,16 @@ public class GestorArticuloComprado {
 		}
 		return buscado;
 	}
+	public ArrayList<ArticuloComprado> cargarArticuloCompradoCod(int codCompra) throws SQLException{
+		ArrayList<ArticuloComprado> lista=new ArrayList<ArticuloComprado>();
+		ArticuloComprado arc=null;
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"="+codCompra+"");
+		while(carga.next()) {
+		arc=new ArticuloComprado(carga.getInt(TABLAS.CODIGOCOMPRA),carga.getInt(TABLAS.IDARTICULO),
+				carga.getInt(TABLAS.CANTIDAD),carga.getFloat(TABLAS.PRECIOART));
+		lista.add(arc);
+		}
+		return lista;
+	}
 }

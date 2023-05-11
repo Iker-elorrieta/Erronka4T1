@@ -26,10 +26,12 @@ import javax.swing.table.DefaultTableModel;
 
 import excepciones.ErroresDeOperaciones;
 import gestores.GestorArticulo;
+import gestores.GestorCompra;
 import gestores.GestorPersona;
 import gestores.GestorSeccion;
 import gestores.GestorSupermercado;
 import modelo.Articulo;
+import modelo.ArticuloComprado;
 import modelo.Cliente;
 import modelo.Comida;
 import modelo.Compra;
@@ -42,6 +44,7 @@ import modelo.Supermercado;
 import otros.tipoArticulo;
 import otros.tipoPersona;
 import referencias.TABLAS;
+import referencias.TITULOS;
 
 
 public class MetodosVista {
@@ -50,6 +53,7 @@ GestorArticulo ga=new GestorArticulo();
 GestorPersona gp=new GestorPersona();
 GestorSupermercado gsm=new GestorSupermercado();
 GestorSeccion gs=new GestorSeccion();
+GestorCompra gc=new GestorCompra();
 	
 	public JTable cargarTabla(ArrayList<Articulo> listaArticulos) throws SQLException {
 		listaArticulos = ga.cargarArticulos();
@@ -85,11 +89,55 @@ GestorSeccion gs=new GestorSeccion();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
 			new String[] {
-				TABLAS.NOMBREARTICULO, TABLAS.RUTAIMAGEN, TABLAS.DESCRIPCION, TABLAS.PRECIO,"Atributo 1","Atributo 2"
+				TITULOS.NOMBRE, TITULOS.NOMBREIMAGEN, TITULOS.DESCRIPCION, TITULOS.PRECIO,TITULOS.ATRIBUTO1,TITULOS.ATRIBUTO2
 			}
 		));
 		return table;
 	}
+public JTable cargarHistorialCompras(Persona per,ArrayList<Compra> listaCompras) throws SQLException, ParseException {
+	String[][] datosTabla = new String[listaCompras.size()][3];
+	for(int i = 0;i<listaCompras.size();i++){
+		datosTabla[i][0] = String.valueOf(listaCompras.get(i).getCodigoCompra());
+		datosTabla[i][1] = String.valueOf(listaCompras.get(i).getPrecioTotal());
+		datosTabla[i][2] = String.valueOf(listaCompras.get(i).getFechaCompra());
+		
+	}
+		JTable table = new JTable();
+		table.setModel(new DefaultTableModel(
+			datosTabla,
+			new String[] {
+				TITULOS.CODIGO, TITULOS.PRECIO, ""
+			}
+		));
+		return table;
+	}
+public Compra cogerCodigoCompra(JTable tabla,ArrayList<Compra> listaCompras) {
+	return listaCompras.get(tabla.getSelectedRow());
+}
+public JTable cargaArticulosComprados(ArrayList<ArticuloComprado> listaArC) throws SQLException {
+	String[][] datosTabla = new String[listaArC.size()][3];
+	ArrayList<Articulo> nombres=ga.cargarArticulos();
+	for(int i = 0;i<listaArC.size();i++){
+		for(Articulo ar:nombres) {
+			if(ar.getIdArticulo()==listaArC.get(i).getIdArticulo()) {
+				datosTabla[i][0] = String.valueOf(ar.getNombreArticulo());
+			}
+		}
+		datosTabla[i][1] = String.valueOf(listaArC.get(i).getCantidad());
+		datosTabla[i][2] = String.valueOf(listaArC.get(i).getPrecioArt());
+	}
+		JTable table = new JTable();
+		table.setModel(new DefaultTableModel(
+			datosTabla,
+			new String[] {
+				TITULOS.NOMBRE, TITULOS.CANTIDAD, TITULOS.PRECIO
+			}
+		));
+		return table;
+}
+public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloComprado> listaArC) {
+	return listaArC.get(tabla.getSelectedRow());
+}
 	public JTable tablaRecargArticulos() throws SQLException {
 			Statement comando = (Statement) mts.conectarBaseDatos().createStatement();
 			ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSRECARGAR);
@@ -112,7 +160,7 @@ GestorSeccion gs=new GestorSeccion();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
 			new String[] {
-				"Encargado", TABLAS.IDARTICULO, TABLAS.NOMBREARTICULO, TABLAS.PRECIO,"Stock necesario","Precio total"
+				TITULOS.ENCARGADO, TITULOS.IDENTIFICADOR, TITULOS.NOMBRE, TITULOS.PRECIO,TITULOS.STOCKNECESARIO,TITULOS.COSTE
 			}
 		));
 		return table;
@@ -151,7 +199,7 @@ GestorSeccion gs=new GestorSeccion();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
 			new String[] {
-				TABLAS.NOMBRE,TABLAS.APELLIDOS,TABLAS.EMAIL, TABLAS.TIPO,"Bloqueado/Dios"
+				TITULOS.NOMBRE,TITULOS.APELLIDOS,TITULOS.EMAIL, TITULOS.TIPO,TITULOS.ESTADO
 			}
 		));
 		return table;
@@ -169,7 +217,7 @@ GestorSeccion gs=new GestorSeccion();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
 			new String[] {
-				TABLAS.CODIGOSUPER,TABLAS.EMPRESA,TABLAS.DIRECCION, TABLAS.NUMEROEMPLEADOS
+				TITULOS.CODIGO,TITULOS.EMPRESA,TITULOS.DIRECCION, TITULOS.NUMEMPLEADOS
 			}
 		));
 		return table;
@@ -186,7 +234,7 @@ GestorSeccion gs=new GestorSeccion();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
 			new String[] {
-				TABLAS.CODIGOSECCION,TABLAS.TIPO,TABLAS.NUMAR
+				TITULOS.CODIGO,TITULOS.TIPO,TITULOS.NUMARTICULOS
 			}
 		));
 		return table;
@@ -385,7 +433,7 @@ GestorSeccion gs=new GestorSeccion();
 			JSpinner cantidad = new JSpinner();
 			cantidad.setBounds(123, 70, 39, 20);
 			panelAtributos.add(cantidad);
-			cantidad.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+			cantidad.setModel(new SpinnerNumberModel(1, 1, 100, 1));
 			
 			JButton btnCogerArticulo = new JButton("Anadir");
 			btnCogerArticulo.addActionListener(new ActionListener() {
@@ -479,14 +527,24 @@ GestorSeccion gs=new GestorSeccion();
 				lblAtributoUno.setBounds(10, 50, 207, 14);
 				panelAtributos.add(lblAtributoUno);
 			}
-							
-			JButton btnCogerArticulo = new JButton("Anadir");
-			btnCogerArticulo.setBounds(10, 69, 74, 23);
-			panelAtributos.add(btnCogerArticulo);
-							
-			JLabel cantidad = new JLabel("Cantidad :"+carrito.getListaCantidades().get(contador).getCantidad());
-			cantidad.setBounds(123, 70, 75, 20);
+				
+			JSpinner cantidad = new JSpinner();
+			cantidad.setBounds(123, 70, 39, 20);
 			panelAtributos.add(cantidad);
+			cantidad.setModel(new SpinnerNumberModel(carrito.getListaCantidades().get(contador).getCantidad(), 1, carrito.getListaCantidades().get(contador).getCantidad(), 1));
+			
+			JButton btnCogerArticulo = new JButton("Cambiar:");
+			btnCogerArticulo.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					carrito.cambiarArticulo(ar, (Integer)cantidad.getValue());
+					carrito.setPrecioTotal(carrito.calcularPrecioTotal());
+					verPrecio.setText("Precio del carrito: "+carrito.getPrecioTotal());
+				}
+			});
+			btnCogerArticulo.setBounds(10, 69, 95, 23);
+			panelAtributos.add(btnCogerArticulo);
+			
+			
 			
 			JPanel panel = new JPanel();
 			panel.setBounds(402, 0, 248, 152);

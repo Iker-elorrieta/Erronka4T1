@@ -119,11 +119,11 @@ public class GestorArticulo {
 		comando = (Statement) mc.conectarBaseDatos().createStatement();
 		comando.executeUpdate("DELETE FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.IDARTICULO+"='"+ar.getIdArticulo()+"'");
 	}
-	public Articulo buscarArticulo(Articulo ar) {
-		Articulo a= null;
-		for(Articulo ar1:listaArticulos) {
+	public Articulo buscarArticulo(Articulo ar,ArrayList<Articulo> lista) {
+		Articulo a= ar;
+		for(Articulo ar1:lista) {
 			if(ar1.getNombreArticulo().equals(ar.getNombreArticulo())) {
-				a=ar1;
+				a=ar1;	
 			}
 		}
 		return a;

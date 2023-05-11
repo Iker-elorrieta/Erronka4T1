@@ -222,7 +222,7 @@ class TestGestorPersona {
 			prueba=(Cliente) gp.getListaPersonas().get(posicion);
 			assertNotEquals(prueba.getDinero(),cliente.getDinero());
 			
-			gp.cancelarCompra(c);
+			gp.cancelarCompra(cliente,c);
 			Compra c1=gc.buscarCompraReciente();
 			assertNotEquals(c.getCodigoCompra(),c1.getCodigoCompra());
 			assertNotEquals(c.getFechaCompra(),c1.getFechaCompra());
@@ -251,6 +251,7 @@ class TestGestorPersona {
 			assertNotEquals(cant,arc.getCantidad());
 			
 			gp.devolverUnArticulo(cliente, arc, 1);
+			gp.compruebaDevolucionArticulo(arc);
 			carga=comando.executeQuery("SELECT "+TABLAS.CANTIDAD+" FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+arc.getCodigoCompra()+"'");
 			int existe=-1;
 			while(carga.next()) {

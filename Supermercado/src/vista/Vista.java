@@ -23,6 +23,8 @@ import excepciones.ErroresDeLogin;
 import excepciones.ErroresDeOperaciones;
 import excepciones.ErroresDeRegistro;
 import gestores.GestorArticulo;
+import gestores.GestorArticuloComprado;
+import gestores.GestorCompra;
 import gestores.GestorPersona;
 import gestores.GestorSeccion;
 import gestores.GestorSupermercado;
@@ -62,7 +64,6 @@ public class Vista {
 	private JDatePickerImpl datePicker_2;
 	private JDatePickerImpl datePicker_3;
 	private JDatePickerImpl datePicker_4;
-	private JTable tabla;
 	private JTextField textCNombre;
 	private JTextField textCApellidos;
 	private JTextField textCEmail;
@@ -88,7 +89,11 @@ public class Vista {
 	private JTextField textProcedencia;
 	private JTextField textBuscador;
 	
+	private JTable tabla;
+	private JTable tablaApoyo;
+	
 	private Compra carrito=new Compra();
+	private Compra devolucion=new Compra();
 	private Comida nuevaComida;
 	private Ropa nuevaRopa;
 	private Herramienta nuevaHerramienta;
@@ -96,6 +101,7 @@ public class Vista {
 	private Jefe nuevoJefe;
 	private Supermercado supermercado;
 	private Seccion seccion;
+	private ArticuloComprado arDevolver;
 	
 	private Jefe admin;
 	private Persona login;
@@ -111,6 +117,8 @@ public class Vista {
 	private ArrayList<Persona> usuarios;
 	private ArrayList<Supermercado> supermercados;
 	private ArrayList<Seccion> seccionesDelSuper;
+	private ArrayList<Compra> historial;
+	private ArrayList<ArticuloComprado> historialArticulosComprados;
 	
 	private Metodos mc=new Metodos();
 	private MetodosVista cv = new MetodosVista();
@@ -118,11 +126,9 @@ public class Vista {
 	private GestorSupermercado gsm=new GestorSupermercado();
 	private GestorSeccion gs=new GestorSeccion();
 	private GestorArticulo ga=new GestorArticulo();
-	
-	/**
-	private GestorArticuloComprado gac=new GestorArticuloComprado();
 	private GestorCompra gc=new GestorCompra();
-	*/
+	private GestorArticuloComprado gac=new GestorArticuloComprado();
+	
 	
 	/**
 	 * Launch the application.
@@ -162,15 +168,13 @@ public class Vista {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 723, 492);
+		frame.setBounds(100, 100, 740, 492);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
 		JTabbedPane paneles = new JTabbedPane(JTabbedPane.TOP);
-		paneles.setBounds(0, -26, 707, 479);
+		paneles.setBounds(0, -25, 724, 478);
 		frame.getContentPane().add(paneles);
-		
-		
 		
 		JPanel panel_Bienvenido = new JPanel();
 		paneles.addTab("Primera", null, panel_Bienvenido, null);
@@ -716,6 +720,28 @@ public class Vista {
 		});
 		btnComprar.setBounds(579, 391, 89, 23);
 		panel_PerfilUtilidades.add(btnComprar);
+		
+		JScrollPane historialCompras = new JScrollPane();
+		JButton btnVerHistorial = new JButton("Historial");
+		btnVerHistorial.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					historial=gc.buscarComprasPersona(login);
+					tabla=cv.cargarHistorialCompras(login,historial);
+					historialCompras.setViewportView(tabla);
+					paneles.setSelectedIndex(10);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		btnVerHistorial.setBounds(467, 391, 89, 23);
+		panel_PerfilUtilidades.add(btnVerHistorial);
 		
 		JPanel panel_Otros = new JPanel();
 		panel_Otros.setLayout(null);
@@ -1755,23 +1781,6 @@ public class Vista {
 		btnBuscar.setBounds(255, 25, 89, 23);
 		panel_Compras.add(btnBuscar);
 		
-		JButton btnTodo = new JButton("Todo");
-		btnTodo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					listaArticulos=ga.cargarArticulos();
-					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
-					boxSeccion.setVisible(false);
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-			}
-		});
-		btnTodo.setBounds(156, 25, 89, 23);
-		panel_Compras.add(btnTodo);
-		
 		JButton btnAtrasCom = new JButton("Atras");
 		btnAtrasCom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1792,12 +1801,125 @@ public class Vista {
 		
 		
 		lblPrecioTotal.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblPrecioTotal.setBounds(265, 404, 189, 14);
+		lblPrecioTotal.setBounds(265, 404, 228, 14);
 		panel_Compras.add(lblPrecioTotal);
 		
 		JButton btnRealizarCompra = new JButton("Comprar");
+		btnRealizarCompra.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					gp.insertarArticulos(carrito.getListaCantidades(),gp.insertarCompraYCobrar(admin, carrito));
+					carrito=new Compra();
+				} catch (SQLException | ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		btnRealizarCompra.setBounds(603, 402, 89, 23);
 		panel_Compras.add(btnRealizarCompra);
+		
+		JPanel panel = new JPanel();
+		paneles.addTab("Undecima", null, panel, null);
+		panel.setLayout(null);
+		
+		
+		historialCompras.setBounds(0, 46, 376, 300);
+		panel.add(historialCompras);
+		
+		JLabel lblHistorial = new JLabel("Historial de Compras");
+		lblHistorial.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblHistorial.setBounds(0, 21, 222, 14);
+		panel.add(lblHistorial);
+		
+		JScrollPane articulosComprados = new JScrollPane();
+		articulosComprados.setBounds(379, 46, 313, 300);
+		panel.add(articulosComprados);
+		
+		JLabel lblArticulosComprados = new JLabel("Articulos comprados");
+		lblArticulosComprados.setFont(new Font("Tahoma", Font.BOLD, 14));
+		lblArticulosComprados.setBounds(379, 21, 200, 14);
+		panel.add(lblArticulosComprados);
+		
+		JButton btnAtrasHis = new JButton("Atras");
+		btnAtrasHis.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				paneles.setSelectedIndex(3);
+			}
+		});
+		btnAtrasHis.setBounds(10, 391, 89, 23);
+		panel.add(btnAtrasHis);
+		
+		JButton btnVerArticulosCom = new JButton("Seleccionar");
+		btnVerArticulosCom.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					tabla.setEnabled(false);
+					historialArticulosComprados=gac.cargarArticuloCompradoCod(cv.cogerCodigoCompra(tabla, historial).getCodigoCompra());
+					tablaApoyo=cv.cargaArticulosComprados(historialArticulosComprados);
+					articulosComprados.setViewportView(tablaApoyo);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnVerArticulosCom.setBounds(273, 357, 103, 23);
+		panel.add(btnVerArticulosCom);
+		
+		JButton btnCancelarCompra = new JButton("Devolver");
+		btnCancelarCompra.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					devolucion=cv.cogerCodigoCompra(tabla, historial);
+					gp.cancelarArticulos(devolucion);
+					gp.cancelarCompra(login,devolucion);
+					historial=gc.buscarComprasPersona(login);
+					tabla=cv.cargarHistorialCompras(login,historial);
+					historialCompras.setViewportView(tabla);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnCancelarCompra.setBounds(10, 357, 103, 23);
+		panel.add(btnCancelarCompra);
+		
+		JSpinner cantidadDevolver = new JSpinner();
+		JButton btnSeleccionarArCom = new JButton("Modificar");
+		btnSeleccionarArCom.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				arDevolver=cv.cogerArticuloComprado(tablaApoyo, historialArticulosComprados);
+				cantidadDevolver.setModel(new SpinnerNumberModel(0, 0, arDevolver.getCantidad(), 1));
+			}
+		});
+		btnSeleccionarArCom.setBounds(389, 357, 97, 23);
+		panel.add(btnSeleccionarArCom);
+		
+		
+		cantidadDevolver.setModel(new SpinnerNumberModel(0, 0, 0, 1));
+		cantidadDevolver.setBounds(534, 358, 45, 20);
+		panel.add(cantidadDevolver);
+		
+		JButton btnAplicar = new JButton("Confirmar");
+		btnAplicar.setBounds(589, 357, 103, 23);
+		panel.add(btnAplicar);
+		
+		JButton btnCancelarSeleccion = new JButton("Cancelar");
+		btnCancelarSeleccion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tabla.setEnabled(true);
+				tablaApoyo=null;
+				articulosComprados.setViewportView(tablaApoyo);
+			}
+		});
+		btnCancelarSeleccion.setBounds(143, 357, 97, 23);
+		panel.add(btnCancelarSeleccion);
 		
 		
 	}

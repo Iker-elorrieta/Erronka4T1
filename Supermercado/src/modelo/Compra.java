@@ -102,4 +102,16 @@ public void anadirArticulo(Articulo ar,int cantidad) {
 	calcularPrecioTotal();
 	}
 }
+public void cambiarArticulo(Articulo ar,int cantidad) {
+	for(ArticuloComprado arc:listaCantidades) {
+		if(ar.getIdArticulo()==arc.getIdArticulo()) {
+			if(arc.getCantidad()==cantidad) {
+				listaCantidades.remove(arc);
+			}else {
+			arc.setCantidad(cantidad);
+			calcularPrecioTotal();
+			}
+		}
+	}
+	}
 }

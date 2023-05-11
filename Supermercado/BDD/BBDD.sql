@@ -91,7 +91,7 @@ INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALU
 ('11111111A', 1, 8.98, '2020-01-19 15:00:00');
 INSERT INTO `articulos` (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `fechaCaducidad`, `procedencia`) VALUES
 (1, 'A0001', 'Patatas bravas', 'patatasbravas.png', '', 3.99, 98, '2023-05-20', 'España'),
-(2, 'A0001', 'Mouse', 'mousse.png', '', 1.99, 100, '2023-05-15', 'Francia'),
+(2, 'A0001', 'Mousse', 'mousse.png', '', 1.99, 100, '2023-05-15', 'Francia'),
 (3, 'A0001', 'Manzanas', 'manzanas.png', '', 0.99, 100, '2023-05-17', 'España');
 INSERT INTO `articulos` (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`,  `electrica`, `garantia`) VALUES
 (4, 'A0002', 'Martillo', 'martillo.png', '', 7.99, 100, 0, 3),

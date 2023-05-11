@@ -64,4 +64,15 @@ public class GestorCompra {
 		}
 		return nueva;
 	}
+	public ArrayList<Compra> buscarComprasPersona(Persona per) throws SQLException, ParseException{
+		ArrayList<Compra> lista=new ArrayList<Compra>();
+		Compra arc=null;
+		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.DNI+"='"+per.getDni()+"'");
+		while(carga.next()) {
+		arc=new Compra(carga.getInt(TABLAS.CODIGOCOMPRA),carga.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(carga.getString(TABLAS.FECHACOMPRA)));
+		lista.add(arc);
+		}
+		return lista;
+	}
 }
