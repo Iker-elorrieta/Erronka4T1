@@ -234,7 +234,7 @@ public class GestorPersona {
 				cli=(Cliente) per;
 				comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"-"+compra.calcularPrecioTotal()+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");
 			}
-			ResultSet cargar=comando.executeQuery("SELECT "+TABLAS.CODIGOCOMPRA+" FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.DNI+"='"+per.getDni()+"' ORDER BY "+TABLAS.FECHACOMPRA+" LIMIT 1");
+			ResultSet cargar=comando.executeQuery("SELECT "+TABLAS.CODIGOCOMPRA+" FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.DNI+"='"+per.getDni()+"' ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
 			int cod=0;
 			while(cargar.next()) {
 				cod=cargar.getInt(TABLAS.CODIGOCOMPRA);
@@ -276,19 +276,16 @@ public class GestorPersona {
 		Metodos mc=new Metodos();
 		Cliente cli=null;
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
-		Statement comandoDos = (Statement) mc.conectarBaseDatos().createStatement();
-		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+arc.getCodigoCompra()+"' AND "+TABLAS.IDARTICULO+"='"+arc.getIdArticulo()+"'");
-		while(carga.next()) {
-			if(per instanceof Cliente) {
-				cli=(Cliente) per;
-			comandoDos.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"-"+carga.getInt(TABLAS.CANTIDAD)*carga.getFloat(TABLAS.PRECIOART)+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");
-			}	
-		if(carga.getInt(TABLAS.CANTIDAD)<=numeroDevolver) {
-				comandoDos.execute("DELETE FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.IDARTICULO+"="+arc.getIdArticulo()+" AND "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra()+"");
+		if(per instanceof Cliente) {
+			cli=(Cliente) per;
+		comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"+"+arc.getCantidad()*arc.getPrecioArt()+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");
+		}	
+		if(arc.getCantidad()<=numeroDevolver) {
+				comando.execute("DELETE FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.IDARTICULO+"="+arc.getIdArticulo()+" AND "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra()+"");
 		}else {
-			comandoDos.execute("UPDATE "+TABLAS.ARTICULOSCOMPRADOS+" SET "+TABLAS.CANTIDAD+"=("+carga.getInt(TABLAS.CANTIDAD)+"-"+numeroDevolver+")");
+			comando.execute("UPDATE "+TABLAS.ARTICULOSCOMPRADOS+" SET "+TABLAS.CANTIDAD+"=("+arc.getCantidad()+"-"+numeroDevolver+")");
 		}
-		}
+		
 	}
 	public void compruebaDevolucionArticulo(ArticuloComprado arc) throws SQLException {
 		int numArc=0;

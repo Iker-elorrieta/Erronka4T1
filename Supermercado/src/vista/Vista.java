@@ -173,7 +173,7 @@ public class Vista {
 		frame.getContentPane().setLayout(null);
 		
 		JTabbedPane paneles = new JTabbedPane(JTabbedPane.TOP);
-		paneles.setBounds(0, -25, 724, 478);
+		paneles.setBounds(0, 0, 724, 453);
 		frame.getContentPane().add(paneles);
 		
 		JPanel panel_Bienvenido = new JPanel();
@@ -1770,7 +1770,7 @@ public class Vista {
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					listaArticulos=ga.buscarArticulosPorNombre(textBuscador.getText());
+					listaArticulos=ga.buscarArticulosPorNombre(textBuscador.getText(),listaArticulos);
 					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -1808,7 +1808,9 @@ public class Vista {
 		btnRealizarCompra.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					gp.insertarArticulos(carrito.getListaCantidades(),gp.insertarCompraYCobrar(admin, carrito));
+					int ultimocodigo=gp.insertarCompraYCobrar(login, carrito);
+					System.out.println(ultimocodigo);
+					gp.insertarArticulos(carrito.getListaCantidades(),ultimocodigo);
 					carrito=new Compra();
 				} catch (SQLException | ParseException e1) {
 					// TODO Auto-generated catch block
@@ -1895,7 +1897,8 @@ public class Vista {
 		btnSeleccionarArCom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				arDevolver=cv.cogerArticuloComprado(tablaApoyo, historialArticulosComprados);
-				cantidadDevolver.setModel(new SpinnerNumberModel(0, 0, arDevolver.getCantidad(), 1));
+				cantidadDevolver.setModel(new SpinnerNumberModel( arDevolver.getCantidad(),0, arDevolver.getCantidad(), 1));
+				tablaApoyo.setEnabled(false);
 			}
 		});
 		btnSeleccionarArCom.setBounds(389, 357, 97, 23);
@@ -1907,6 +1910,19 @@ public class Vista {
 		panel.add(cantidadDevolver);
 		
 		JButton btnAplicar = new JButton("Confirmar");
+		btnAplicar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					gp.devolverUnArticulo(login, arDevolver, (Integer)cantidadDevolver.getValue());
+					gp.compruebaDevolucionArticulo(arDevolver);
+					btnVerArticulosCom.doClick();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
 		btnAplicar.setBounds(589, 357, 103, 23);
 		panel.add(btnAplicar);
 		
@@ -1914,12 +1930,22 @@ public class Vista {
 		btnCancelarSeleccion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tabla.setEnabled(true);
+				tablaApoyo.setEnabled(true);
 				tablaApoyo=null;
 				articulosComprados.setViewportView(tablaApoyo);
 			}
 		});
 		btnCancelarSeleccion.setBounds(143, 357, 97, 23);
 		panel.add(btnCancelarSeleccion);
+		
+		JButton btnCancelarDevolucion = new JButton("Cancelar");
+		btnCancelarDevolucion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tablaApoyo.setEnabled(true);
+			}
+		});
+		btnCancelarDevolucion.setBounds(387, 391, 99, 23);
+		panel.add(btnCancelarDevolucion);
 		
 		
 	}
