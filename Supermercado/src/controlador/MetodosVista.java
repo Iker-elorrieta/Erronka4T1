@@ -1,5 +1,6 @@
 package controlador;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -366,13 +367,12 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		tabla.getModel().setValueAt(lista.get(tabla.getSelectedRow()).getDescripcion(), tabla.getSelectedRow(), 2);
 		return tabla;
 	}
-	public JPanel mostrarArticulos(ArrayList<Articulo> lista,Compra carrito,JLabel verPrecio) {
-		
+	public JPanel mostrarArticulos(ArrayList<Articulo> lista,Compra carrito,JLabel verPrecio,ArrayList<Articulo> articulosMostrar) {
 		JPanel panel_Comprar = new JPanel();
+		Color customColor = new Color(18,20,28); 
 		Comida co=null;
 		Ropa ro=null;
 		Herramienta he=null;
-		
 		for(Articulo ar:lista) {
 			ImageIcon imagenIcono = new ImageIcon(".\\Imagenes\\"+ar.getRutaImagen());
 			Image imagen = imagenIcono.getImage();
@@ -386,46 +386,55 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			panelAtributos.setBounds(152, 0, 248, 152);
 			panel_Comprar.add(panelAtributos);
 			panelAtributos.setLayout(null);
-			
+			panelAtributos.setBackground(customColor);
 			
 			JLabel lblNombreAr = new JLabel("Nombre: "+ar.getNombreArticulo());
+			lblNombreAr.setForeground(new Color(255, 255, 255));
 			lblNombreAr.setBounds(10, 0, 207, 14);
 			panelAtributos.add(lblNombreAr);
 			
 			JLabel lblPrecioAr = new JLabel("Precio: "+ar.getPrecio());
+			lblPrecioAr.setForeground(new Color(255, 255, 255));
 			lblPrecioAr.setBounds(10, 11, 207, 14);
 			panelAtributos.add(lblPrecioAr);
 			
 			JLabel lblStockAr = new JLabel("Stock: "+ar.getStockActual());
+			lblStockAr.setForeground(new Color(255, 255, 255));
 			lblStockAr.setBounds(10, 25, 207, 14);
 			panelAtributos.add(lblStockAr);
 			if(ar instanceof Comida) {
 				co=(Comida)ar;
 			JLabel lblAtributoDos = new JLabel("Procedencia :"+co.getProcedencia());
+			lblAtributoDos.setForeground(new Color(255, 255, 255));
 			lblAtributoDos.setBounds(10, 36, 207, 14);
 			panelAtributos.add(lblAtributoDos);
 			
 			JLabel lblAtributoUno = new JLabel("Fecha de caducidad: "+co.getFechaCaducidad());
+			lblAtributoUno.setForeground(new Color(255, 255, 255));
 			lblAtributoUno.setBounds(10, 50, 207, 14);
 			panelAtributos.add(lblAtributoUno);
 			}
 			if(ar instanceof Ropa) {
 				ro=(Ropa)ar;
 				JLabel lblAtributoDos = new JLabel("Talla :"+ro.getTalla());
+				lblAtributoDos.setForeground(new Color(255, 255, 255));
 				lblAtributoDos.setBounds(10, 36, 207, 14);
 				panelAtributos.add(lblAtributoDos);
 				
 				JLabel lblAtributoUno = new JLabel("Marca: "+ro.getMarca());
+				lblAtributoUno.setForeground(new Color(255, 255, 255));
 				lblAtributoUno.setBounds(10, 50, 207, 14);
 				panelAtributos.add(lblAtributoUno);
 			}
 			if(ar instanceof Herramienta) {
 				he=(Herramienta)ar;
 				JLabel lblAtributoDos = new JLabel("Electrica :"+he.getElectrica());
+				lblAtributoDos.setForeground(new Color(255, 255, 255));
 				lblAtributoDos.setBounds(10, 36, 207, 14);
 				panelAtributos.add(lblAtributoDos);
 				
 				JLabel lblAtributoUno = new JLabel("Garantia: "+he.getGarantia());
+				lblAtributoUno.setForeground(new Color(255, 255, 255));
 				lblAtributoUno.setBounds(10, 50, 207, 14);
 				panelAtributos.add(lblAtributoUno);
 			}
@@ -439,11 +448,14 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			btnCogerArticulo.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					carrito.anadirArticulo(ar, (Integer)cantidad.getValue());
+					articulosMostrar.add(ar);
 					carrito.setPrecioTotal(carrito.calcularPrecioTotal());
 					verPrecio.setText("Precio del carrito: "+carrito.getPrecioTotal());
 				}
 			});
 			btnCogerArticulo.setBounds(10, 69, 74, 23);
+			btnCogerArticulo.setForeground(new Color(192, 192, 192));
+			btnCogerArticulo.setBackground(new Color(0,76,255));
 			panelAtributos.add(btnCogerArticulo);
 			
 			JPanel panel = new JPanel();
@@ -451,6 +463,7 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			panel_Comprar.add(panel);
 			panel.setLayout(null);
 			JLabel lblDescripcionAr = new JLabel("Descripcion:");
+			lblDescripcionAr.setForeground(new Color(255, 255, 255));
 			lblDescripcionAr.setBounds(10, 11, 175, 14);
 			panel.add(lblDescripcionAr);
 			
@@ -459,20 +472,25 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			muestraDes.setEnabled(false);
 			muestraDes.setEditable(false);
 			muestraDes.setBounds(10, 36, 207, 125);
+			muestraDes.setBackground(new Color(128, 128, 128));
+			muestraDes.setForeground(new Color(255, 255, 255));
 			panel.add(muestraDes);
+			panel.setBackground(customColor);
 		}	
 		panel_Comprar.setLayout(new GridLayout(0, 3));
+		panel_Comprar.setBackground(customColor);
 		carrito.setPrecioTotal(carrito.calcularPrecioTotal());
 		verPrecio.setText("Precio del carrito: "+carrito.getPrecioTotal());
 		return panel_Comprar;
 	}
-	public JPanel mostrarCarrito(Compra carrito,JLabel verPrecio) {
+	public JPanel mostrarCarrito(ArrayList<Articulo> muestraArticulos,Compra carrito,JLabel verPrecio) {
 		JPanel panel_Comprar = new JPanel();
 		Comida co=null;
 		Ropa ro=null;
 		Herramienta he=null;
 		int contador=0;
-		for(Articulo ar:carrito.getArrayArticulos()) {
+		Color customColor = new Color(18,20,28); 
+		for(Articulo ar:muestraArticulos) {
 			ImageIcon imagenIcono = new ImageIcon(".\\Imagenes\\"+ar.getRutaImagen());
 			Image imagen = imagenIcono.getImage();
 			Image imagenRedimensionada = imagen.getScaledInstance(146, 132, java.awt.Image.SCALE_SMOOTH);
@@ -487,43 +505,52 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			panelAtributos.setLayout(null);
 			
 			JLabel lblNombreAr = new JLabel("Nombre: "+ar.getNombreArticulo());
+			lblNombreAr.setForeground(new Color(255, 255, 255));
 			lblNombreAr.setBounds(10, 0, 207, 14);
 			panelAtributos.add(lblNombreAr);
 			
 			JLabel lblPrecioAr = new JLabel("Precio: "+ar.getPrecio());
+			lblPrecioAr.setForeground(new Color(255, 255, 255));
 			lblPrecioAr.setBounds(10, 11, 207, 14);
 			panelAtributos.add(lblPrecioAr);
 			
 			JLabel lblStockAr = new JLabel("Stock: "+ar.getStockActual());
+			lblStockAr.setForeground(new Color(255, 255, 255));
 			lblStockAr.setBounds(10, 25, 207, 14);
 			panelAtributos.add(lblStockAr);
 			if(ar instanceof Comida) {
 				co=(Comida)ar;
 			JLabel lblAtributoDos = new JLabel("Procedencia :"+co.getProcedencia());
+			lblAtributoDos.setForeground(new Color(255, 255, 255));
 			lblAtributoDos.setBounds(10, 36, 207, 14);
 			panelAtributos.add(lblAtributoDos);
 			
 			JLabel lblAtributoUno = new JLabel("Fecha de caducidad: "+co.getFechaCaducidad());
+			lblAtributoUno.setForeground(new Color(255, 255, 255));
 			lblAtributoUno.setBounds(10, 50, 207, 14);
 			panelAtributos.add(lblAtributoUno);
 			}
 			if(ar instanceof Ropa) {
 				ro=(Ropa)ar;
 				JLabel lblAtributoDos = new JLabel("Talla :"+ro.getTalla());
+				lblAtributoDos.setForeground(new Color(255, 255, 255));
 				lblAtributoDos.setBounds(10, 36, 207, 14);
 				panelAtributos.add(lblAtributoDos);
 				
 				JLabel lblAtributoUno = new JLabel("Marca: "+ro.getMarca());
+				lblAtributoUno.setForeground(new Color(255, 255, 255));
 				lblAtributoUno.setBounds(10, 50, 207, 14);
 				panelAtributos.add(lblAtributoUno);
 			}
 			if(ar instanceof Herramienta) {
 				he=(Herramienta)ar;
 				JLabel lblAtributoDos = new JLabel("Electrica :"+he.getElectrica());
+				lblAtributoDos.setForeground(new Color(255, 255, 255));
 				lblAtributoDos.setBounds(10, 36, 207, 14);
 				panelAtributos.add(lblAtributoDos);
 				
 				JLabel lblAtributoUno = new JLabel("Garantia: "+he.getGarantia());
+				lblAtributoUno.setForeground(new Color(255, 255, 255));
 				lblAtributoUno.setBounds(10, 50, 207, 14);
 				panelAtributos.add(lblAtributoUno);
 			}
@@ -542,28 +569,36 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 				}
 			});
 			btnCogerArticulo.setBounds(10, 69, 95, 23);
+			btnCogerArticulo.setForeground(new Color(192, 192, 192));
+			btnCogerArticulo.setBackground(new Color(0,76,255));
 			panelAtributos.add(btnCogerArticulo);
-			
-			
+			panelAtributos.setBackground(customColor);
 			
 			JPanel panel = new JPanel();
 			panel.setBounds(402, 0, 248, 152);
 			panel_Comprar.add(panel);
 			panel.setLayout(null);
+			
 			JLabel lblDescripcionAr = new JLabel("Descripcion:");
+			lblDescripcionAr.setForeground(new Color(255, 255, 255));
 			lblDescripcionAr.setBounds(10, 11, 175, 14);
 			panel.add(lblDescripcionAr);
+			panel.setBackground(customColor);
 			
 			JTextArea muestraDes = new JTextArea(ar.getDescripcion());
 			muestraDes.setLineWrap(true);
 			muestraDes.setEnabled(false);
 			muestraDes.setEditable(false);
+			muestraDes.setBackground(new Color(128, 128, 128));
+			muestraDes.setForeground(new Color(255, 255, 255));
 			muestraDes.setBounds(10, 36, 207, 125);
 			panel.add(muestraDes);
 			contador++;
 		}	
 		carrito.setPrecioTotal(carrito.calcularPrecioTotal());
 		verPrecio.setText("Precio del carrito: "+carrito.getPrecioTotal());
+		
+		panel_Comprar.setBackground(customColor);
 		panel_Comprar.setLayout(new GridLayout(0, 3));
 		return panel_Comprar;
 	}

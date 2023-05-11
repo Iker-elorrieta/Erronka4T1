@@ -21,13 +21,11 @@ Compra obj = new Compra(212, 12313, myObj);
 	
 	@Test
 	void test_GettersSetters() {
-		obj.setArrayArticulos(arrayArticulos);
 		obj.setCodigoCompra(212);
 		obj.setFechaCompra(myObj);
 		obj.setPrecioTotal((float)64.2);
 		Ropa ar=new Ropa(0, tiempo, tiempo, tiempo, 0, 0, tiempo, tiempo);
 		obj.anadirArticulo(ar, 1);
-		assertEquals(obj.getArrayArticulos(),arrayArticulos);
 		assertEquals(obj.getCodigoCompra(),212);
 		assertEquals(obj.getFechaCompra(),myObj);
 		assertEquals(Double.valueOf(obj.getPrecioTotal()),(float)64.2);

@@ -9,25 +9,21 @@ private int codigoCompra;
 private float precioFinal;
 private LocalDateTime fechaCompra;
 private ArrayList<ArticuloComprado> listaCantidades;
-private ArrayList<Articulo> arrayArticulos;
 
 public Compra(int codigoCompra, float precioTotal, LocalDateTime fechaCompra) {
 	super();
 	this.codigoCompra = codigoCompra;
 	this.precioFinal = precioTotal;
 	this.fechaCompra = fechaCompra;
-	arrayArticulos = new ArrayList<Articulo>();
 	listaCantidades=new ArrayList<ArticuloComprado>();
 }
 public Compra(float f) {
 	// TODO Auto-generated constructor stub
 	this.precioFinal = f;
-	arrayArticulos = new ArrayList<Articulo>();
 	listaCantidades=new ArrayList<ArticuloComprado>();
 }
 public Compra() {
-	// TODO Auto-generated constructor stub
-	arrayArticulos = new ArrayList<Articulo>();
+	// TODO Auto-generated constructor stub;
 	listaCantidades=new ArrayList<ArticuloComprado>();
 }
 @Override
@@ -58,9 +54,6 @@ public void setListaCantidades(ArrayList<ArticuloComprado> listaCantidades) {
 public int getCodigoCompra() {
 	return codigoCompra;
 }
-public ArrayList<Articulo> getArrayArticulos() {
-	return arrayArticulos;
-}
 public float calcularPrecioTotal() {
 	float calcularPrecio=0;
 	for(ArticuloComprado arc:listaCantidades) {
@@ -76,9 +69,6 @@ public LocalDateTime getFechaCompra() {
 }
 public void setCodigoCompra(int codigoCompra) {
 	this.codigoCompra = codigoCompra;
-}
-public void setArrayArticulos(ArrayList<Articulo> arrayArticulos) {
-	this.arrayArticulos = arrayArticulos;
 }
 public void setPrecioTotal(float precioTotal) {
 	this.precioFinal = precioTotal;
@@ -96,7 +86,6 @@ public void anadirArticulo(Articulo ar,int cantidad) {
 		}
 	}
 	if(!repetido) {
-	arrayArticulos.add(ar);
 	ArticuloComprado arc=new ArticuloComprado(0, ar.getIdArticulo(), cantidad, ar.getPrecio());
 	listaCantidades.add(arc);
 	calcularPrecioTotal();

@@ -92,7 +92,6 @@ public class Vista {
 	private JTable tabla;
 	private JTable tablaApoyo;
 	
-	
 	private Comida nuevaComida;
 	private Ropa nuevaRopa;
 	private Herramienta nuevaHerramienta;
@@ -115,6 +114,7 @@ public class Vista {
 	private String [] Tipos={"Comida","Herramienta","Ropa"};
 	
 	private ArrayList<Articulo> listaArticulos;
+	private ArrayList<Articulo> articulosCarrito=new ArrayList<Articulo>();
 	private ArrayList<Persona> usuarios;
 	private ArrayList<Supermercado> supermercados;
 	private ArrayList<Seccion> seccionesDelSuper;
@@ -172,7 +172,6 @@ public class Vista {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		Color customColor = new Color(18,20,28); 
 		JTabbedPane paneles = new JTabbedPane(JTabbedPane.TOP);
 		paneles.setBounds(0, 0, 724, 453);
 		frame.getContentPane().add(paneles);
@@ -180,9 +179,12 @@ public class Vista {
 		JPanel panel_Bienvenido = new JPanel();
 		paneles.addTab("Primera", null, panel_Bienvenido, null);
 		panel_Bienvenido.setLayout(null);
+		Color customColor = new Color(18,20,28); 
 		panel_Bienvenido.setBackground(customColor);
 		
 		JButton btnIniSes = new JButton("Iniciar sesion");
+		btnIniSes.setForeground(new Color(192, 192, 192));
+		btnIniSes.setBackground(new Color(0,76,255));
 		btnIniSes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				paneles.setSelectedIndex(1);
@@ -192,6 +194,8 @@ public class Vista {
 		panel_Bienvenido.add(btnIniSes);
 		
 		JButton btnRegis = new JButton("Registrarse");
+		btnRegis.setForeground(new Color(192, 192, 192));
+		btnRegis.setBackground(new Color(0,76,255));
 		btnRegis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				paneles.setSelectedIndex(2);
@@ -201,15 +205,18 @@ public class Vista {
 		panel_Bienvenido.add(btnRegis);
 		
 		JLabel lblMensajeIni = new JLabel("Bienvenido al Super Elorrieta!");
+		lblMensajeIni.setForeground(new Color(255, 255, 255));
 		lblMensajeIni.setFont(new Font("Tahoma", Font.BOLD, 34));
 		lblMensajeIni.setBounds(74, 31, 536, 81);
 		panel_Bienvenido.add(lblMensajeIni);
 		
 		JLabel lblIniSes = new JLabel("Pulse en este botón para acceder a su cuenta.");
+		lblIniSes.setForeground(new Color(255, 255, 255));
 		lblIniSes.setBounds(214, 156, 283, 14);
 		panel_Bienvenido.add(lblIniSes);
 		
 		JLabel lblCreaCuen = new JLabel("Pulse este si quiere crear una cuenta.");
+		lblCreaCuen.setForeground(new Color(255, 255, 255));
 		lblCreaCuen.setBounds(227, 227, 239, 14);
 		panel_Bienvenido.add(lblCreaCuen);
 		
@@ -219,44 +226,69 @@ public class Vista {
 		panel_IniciarSesion.setBackground(customColor);
 		
 		cemail = new JTextField();
+		cemail.setForeground(new Color(255, 255, 255));
+		cemail.setBackground(new Color(128, 128, 128));
 		cemail.setBounds(231, 107, 181, 20);
 		panel_IniciarSesion.add(cemail);
 		cemail.setColumns(10);
 		
 		JLabel lblemail = new JLabel("E-mail:");
+		lblemail.setForeground(new Color(255, 255, 255));
 		lblemail.setBounds(24, 110, 46, 14);
 		panel_IniciarSesion.add(lblemail);
 		
 		JLabel lblContra = new JLabel("Contraseña:");
+		lblContra.setForeground(new Color(255, 255, 255));
 		lblContra.setBounds(24, 206, 72, 14);
 		panel_IniciarSesion.add(lblContra);
 		
 		campoContrasena = new JPasswordField();
+		campoContrasena.setForeground(new Color(255, 255, 255));
+		campoContrasena.setBackground(new Color(128, 128, 128));
 		campoContrasena.setBounds(231, 203, 181, 20);
 		panel_IniciarSesion.add(campoContrasena);
 		
 		JPanel panel_PerfilUtilidades = new JPanel();
+		panel_PerfilUtilidades.setForeground(new Color(192, 192, 192));
 		UtilDateModel modelo = new UtilDateModel();
 		Properties po = new Properties();
 		JDatePanelImpl datePanelo = new JDatePanelImpl(modelo, po);
 		datePicker_1 = new JDatePickerImpl(datePanelo, new DateLabelFormatter());
+		datePicker_1.getJFormattedTextField().setForeground(new Color(255, 255, 255));
+		datePicker_1.getJFormattedTextField().setBackground(new Color(128, 128, 128));
 		datePicker_1.getJFormattedTextField().setEnabled(false);
 		datePicker_1.setBounds(156, 104, 125, 20);
 		panel_PerfilUtilidades.add(datePicker_1);
 		datePicker_1.setEnabled(false);
+		datePicker_1.setForeground(new Color(255, 255, 255));
+		datePicker_1.setBackground(new Color(128, 128, 128));
 		panel_PerfilUtilidades.setBackground(customColor);
 		
 		JLabel lblModifica = new JLabel("Modificaciones");
+		lblModifica.setForeground(new Color(255, 255, 255));
 		JButton btnAnadirSecciones = new JButton("Secciones");
+		btnAnadirSecciones.setForeground(new Color(192, 192, 192));
+		btnAnadirSecciones.setBackground(new Color(255, 255, 0));
 		JButton btnPaginaSuper = new JButton("Supermercado");
+		btnPaginaSuper.setForeground(new Color(192, 192, 192));
+		btnPaginaSuper.setBackground(new Color(255, 255, 0));
 		JButton btnInfo = new JButton("Datos");
+		btnInfo.setForeground(new Color(192, 192, 192));
+		btnInfo.setBackground(new Color(255, 255, 0));
 		JLabel lblCrear = new JLabel("Creacion");
+		lblCrear.setForeground(new Color(255, 255, 255));
 		JButton btnCreacion = new JButton("Administrador");
+		btnCreacion.setForeground(new Color(192, 192, 192));
+		btnCreacion.setBackground(new Color(255, 255, 0));
 		JButton btnAnadirArticulo = new JButton("Articulos");
+		btnAnadirArticulo.setForeground(new Color(192, 192, 192));
+		btnAnadirArticulo.setBackground(new Color(255, 255, 0));
 		JLabel lblSaludo = new JLabel("");
-		lblSaludo.setForeground(new Color(0, 0, 255));
+		lblSaludo.setForeground(new Color(255, 255, 255));
 		JLabel lblErrorInicioSesion = new JLabel("");
 		JButton btnIniciar = new JButton("Iniciar sesion");
+		btnIniciar.setForeground(new Color(192, 192, 192));
+		btnIniciar.setBackground(new Color(0,76,255));
 		btnIniciar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -307,6 +339,8 @@ public class Vista {
 		panel_IniciarSesion.add(btnIniciar);
 		
 		JButton btnAtras = new JButton("Atras");
+		btnAtras.setForeground(new Color(192, 192, 192));
+		btnAtras.setBackground(new Color(0,76,255));
 		btnAtras.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				paneles.setSelectedIndex(0);
@@ -328,6 +362,7 @@ public class Vista {
 		panel_Registrarse.setBackground(customColor);
 		
 		JLabel lblDni = new JLabel("DNI:");
+		lblDni.setForeground(new Color(255, 255, 255));
 		lblDni.setBounds(10, 22, 46, 14);
 		panel_Registrarse.add(lblDni);
 		
@@ -335,17 +370,23 @@ public class Vista {
 		textDNI.setBounds(212, 19, 188, 20);
 		panel_Registrarse.add(textDNI);
 		textDNI.setColumns(10);
+		textDNI.setForeground(new Color(255, 255, 255));
+		textDNI.setBackground(new Color(128, 128, 128));
 		
 		textNombre = new JTextField();
 		textNombre.setBounds(212, 101, 188, 20);
 		panel_Registrarse.add(textNombre);
 		textNombre.setColumns(10);
+		textNombre.setForeground(new Color(255, 255, 255));
+		textNombre.setBackground(new Color(128, 128, 128));
 		
 		JLabel lblNombre = new JLabel("Nombre:");
+		lblNombre.setForeground(new Color(255, 255, 255));
 		lblNombre.setBounds(10, 104, 68, 14);
 		panel_Registrarse.add(lblNombre);
 		
 		JLabel lblApellidos = new JLabel("Apellidos:");
+		lblApellidos.setForeground(new Color(255, 255, 255));
 		lblApellidos.setBounds(10, 150, 68, 14);
 		panel_Registrarse.add(lblApellidos);
 		
@@ -353,20 +394,28 @@ public class Vista {
 		textApellidos.setBounds(212, 147, 188, 20);
 		panel_Registrarse.add(textApellidos);
 		textApellidos.setColumns(10);
+		textApellidos.setForeground(new Color(255, 255, 255));
+		textApellidos.setBackground(new Color(128, 128, 128));
 		
 		JLabel lblFechaNa = new JLabel("Fecha de nacimiento:");
+		lblFechaNa.setForeground(new Color(255, 255, 255));
 		lblFechaNa.setBounds(10, 198, 127, 14);
 		panel_Registrarse.add(lblFechaNa);
 		
 		JLabel lblContrasena = new JLabel("Contraseña:");
+		lblContrasena.setForeground(new Color(255, 255, 255));
 		lblContrasena.setBounds(10, 243, 127, 14);
 		panel_Registrarse.add(lblContrasena);
 		
 		contrasenaRegi = new JPasswordField();
 		contrasenaRegi.setBounds(212, 240, 188, 20);
+		contrasenaRegi.setForeground(new Color(255, 255, 255));
+		contrasenaRegi.setBackground(new Color(128, 128, 128));
 		panel_Registrarse.add(contrasenaRegi);
 		
 		JButton btnAtra1 = new JButton("Atras");
+		btnAtra1.setForeground(new Color(192, 192, 192));
+		btnAtra1.setBackground(new Color(0,76,255));
 		btnAtra1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				paneles.setSelectedIndex(0);
@@ -386,11 +435,17 @@ public class Vista {
 		Properties p = new Properties();
 		JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
 		datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+		datePicker.getJFormattedTextField().setForeground(new Color(255, 255, 255));
+		datePicker.getJFormattedTextField().setBackground(new Color(128, 128, 128));
 		datePicker.setBounds(212, 195, 188, 20);
+		datePicker.setForeground(new Color(255, 255, 255));
+		datePicker.setBackground(new Color(128, 128, 128));
 		panel_Registrarse.add(datePicker);
 
 		JLabel lblErroresLogin = new JLabel("");
 		JButton btnRegistrarse1 = new JButton("Registrarse");
+		btnRegistrarse1.setForeground(new Color(192, 192, 192));
+		btnRegistrarse1.setBackground(new Color(0,76,255));
 		btnRegistrarse1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -433,6 +488,7 @@ public class Vista {
 		panel_Registrarse.add(btnRegistrarse1);
 		
 		JLabel lblEmail = new JLabel("E-Mail:");
+		lblEmail.setForeground(new Color(255, 255, 255));
 		lblEmail.setBounds(10, 62, 46, 14);
 		panel_Registrarse.add(lblEmail);
 		
@@ -440,6 +496,8 @@ public class Vista {
 		textMail.setBounds(212, 59, 188, 20);
 		panel_Registrarse.add(textMail);
 		textMail.setColumns(10);
+		textMail.setForeground(new Color(255, 255, 255));
+		textMail.setBackground(new Color(128, 128, 128));
 		
 		lblErroresLogin.setForeground(new Color(255, 0, 0));
 		lblErroresLogin.setBounds(212, 286, 188, 14);
@@ -453,6 +511,8 @@ public class Vista {
 		panel_PerfilUtilidades.add(lblSaludo);
 		
 		JButton btnCerrarSesion = new JButton("Cerrar Sesion");
+		btnCerrarSesion.setForeground(new Color(192, 192, 192));
+		btnCerrarSesion.setBackground(new Color(0,76,255));
 		btnCerrarSesion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				login=null;
@@ -468,6 +528,8 @@ public class Vista {
 		panel_PerfilUtilidades.add(btnCerrarSesion);
 		
 		JButton btnBorrarPerfil = new JButton("Borrar Perfil");
+		btnBorrarPerfil.setForeground(new Color(192, 192, 192));
+		btnBorrarPerfil.setBackground(new Color(0,76,255));
 		btnBorrarPerfil.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(JOptionPane.showConfirmDialog (null, "¿Estas seguro?","AVISO", 0)==0) {
@@ -486,6 +548,8 @@ public class Vista {
 		
 		JLabel lblErroresCambio = new JLabel("");
 		JButton btnCambiarPerfil = new JButton("Cambiar Perfil");
+		btnCambiarPerfil.setForeground(new Color(192, 192, 192));
+		btnCambiarPerfil.setBackground(new Color(0,76,255));
 		btnCambiarPerfil.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 		if(cambios) {
@@ -528,26 +592,33 @@ public class Vista {
 		panel_PerfilUtilidades.add(btnCambiarPerfil);
 		
 		JLabel lblCNombre = new JLabel("Nombre:");
+		lblCNombre.setForeground(new Color(255, 255, 255));
 		lblCNombre.setBounds(10, 36, 55, 14);
 		panel_PerfilUtilidades.add(lblCNombre);
 		
 		JLabel lblCApellidos = new JLabel("Apellidos:");
+		lblCApellidos.setForeground(new Color(255, 255, 255));
 		lblCApellidos.setBounds(10, 61, 46, 14);
 		panel_PerfilUtilidades.add(lblCApellidos);
 		
 		JLabel lblCGmail = new JLabel("E-mail:");
+		lblCGmail.setForeground(new Color(255, 255, 255));
 		lblCGmail.setBounds(10, 85, 46, 14);
 		panel_PerfilUtilidades.add(lblCGmail);
 		
 		JLabel lblCFechaNacimiento = new JLabel("Fecha de Nacimiento:");
+		lblCFechaNacimiento.setForeground(new Color(255, 255, 255));
 		lblCFechaNacimiento.setBounds(10, 110, 136, 14);
 		panel_PerfilUtilidades.add(lblCFechaNacimiento);
 		
 		JLabel lblCContrasena = new JLabel("Contrasena:");
+		lblCContrasena.setForeground(new Color(255, 255, 255));
 		lblCContrasena.setBounds(10, 135, 89, 14);
 		panel_PerfilUtilidades.add(lblCContrasena);
 		
 		textCNombre = new JTextField();
+		textCNombre.setForeground(new Color(255, 255, 255));
+		textCNombre.setBackground(new Color(128, 128, 128));
 		textCNombre.setEnabled(false);
 		textCNombre.setBounds(156, 33, 125, 20);
 		panel_PerfilUtilidades.add(textCNombre);
@@ -555,47 +626,62 @@ public class Vista {
 		
 		
 		textCApellidos = new JTextField();
+		textCApellidos.setForeground(new Color(255, 255, 255));
+		textCApellidos.setBackground(new Color(128, 128, 128));
 		textCApellidos.setEnabled(false);
 		textCApellidos.setBounds(156, 58, 125, 20);
 		panel_PerfilUtilidades.add(textCApellidos);
 		textCApellidos.setColumns(10);
 		
 		textCEmail = new JTextField();
+		textCEmail.setForeground(new Color(255, 255, 255));
+		textCEmail.setBackground(new Color(128, 128, 128));
 		textCEmail.setEnabled(false);
 		textCEmail.setBounds(156, 82, 125, 20);
 		panel_PerfilUtilidades.add(textCEmail);
 		textCEmail.setColumns(10);
 		
 		passCContrasena = new JPasswordField();
+		passCContrasena.setForeground(new Color(255, 255, 255));
+		passCContrasena.setBackground(new Color(128, 128, 128));
 		passCContrasena.setEnabled(false);
 		passCContrasena.setBounds(156, 132, 125, 20);
 		panel_PerfilUtilidades.add(passCContrasena);
 		
 		JLabel lblAumentarDinero = new JLabel("Cartera");
+		lblAumentarDinero.setForeground(new Color(255, 255, 255));
 		lblAumentarDinero.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblAumentarDinero.setBounds(63, 196, 66, 14);
 		panel_PerfilUtilidades.add(lblAumentarDinero);
 		
 		JLabel lblDinero = new JLabel("Dinero actual:");
+		lblDinero.setForeground(new Color(255, 255, 255));
 		lblDinero.setBounds(10, 221, 89, 14);
 		panel_PerfilUtilidades.add(lblDinero);
 		
 		textDineroActual = new JTextField();
+		textDineroActual.setForeground(new Color(255, 255, 255));
+		textDineroActual.setBackground(new Color(128, 128, 128));
 		textDineroActual.setEnabled(false);
 		textDineroActual.setBounds(116, 218, 86, 20);
 		panel_PerfilUtilidades.add(textDineroActual);
 		textDineroActual.setColumns(10);
 		
 		textDineroExtra = new JTextField();
+		textDineroExtra.setForeground(new Color(255, 255, 255));
+		textDineroExtra.setBackground(new Color(128, 128, 128));
 		textDineroExtra.setBounds(116, 248, 86, 20);
 		panel_PerfilUtilidades.add(textDineroExtra);
 		textDineroExtra.setColumns(10);
 		
 		JLabel lblDineroExtra = new JLabel("Dinero extra:");
+		lblDineroExtra.setForeground(new Color(255, 255, 255));
 		lblDineroExtra.setBounds(10, 251, 89, 14);
 		panel_PerfilUtilidades.add(lblDineroExtra);
 		
 		JButton btnSumarDinero = new JButton("Agregar");
+		btnSumarDinero.setForeground(new Color(192, 192, 192));
+		btnSumarDinero.setBackground(new Color(0,76,255));
 		btnSumarDinero.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -639,6 +725,8 @@ public class Vista {
 		panel_PerfilUtilidades.add(btnCreacion);
 		JComboBox<String> tipoArticuloCombo = new JComboBox<String>();
 		JComboBox<String> suAnadirArticulo = new JComboBox<String>();
+		suAnadirArticulo.setBackground(new Color(128, 128, 128));
+		suAnadirArticulo.setForeground(new Color(255, 255, 255));
 		btnAnadirArticulo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				paneles.setSelectedIndex(8);
@@ -669,6 +757,8 @@ public class Vista {
 		panel_PerfilUtilidades.add(lblErrorSeleccion);
 		
 		JComboBox<String> escogeJefe = new JComboBox<String>();
+		escogeJefe.setBackground(new Color(128, 128, 128));
+		escogeJefe.setForeground(new Color(255, 255, 255));
 		btnPaginaSuper.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -689,6 +779,8 @@ public class Vista {
 		panel_PerfilUtilidades.add(btnPaginaSuper);
 		
 		JComboBox<String> escogeSuper = new JComboBox<String>();
+		escogeSuper.setForeground(new Color(255, 255, 255));
+		escogeSuper.setBackground(new Color(128, 128, 128));
 		btnAnadirSecciones.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -708,6 +800,8 @@ public class Vista {
 		panel_PerfilUtilidades.add(lblModifica);
 		
 		JButton btnComprar = new JButton("Comprar");
+		btnComprar.setForeground(new Color(192, 192, 192));
+		btnComprar.setBackground(new Color(0,76,255));
 		btnComprar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 					paneles.setSelectedIndex(9);
@@ -718,6 +812,8 @@ public class Vista {
 		
 		JScrollPane historialCompras = new JScrollPane();
 		JButton btnVerHistorial = new JButton("Historial");
+		btnVerHistorial.setForeground(new Color(192, 192, 192));
+		btnVerHistorial.setBackground(new Color(0,76,255));
 		btnVerHistorial.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -747,12 +843,20 @@ public class Vista {
 		panel_Otros.add(scrollPane);
 		
 		JButton btnAceptar = new JButton("Aceptar");
+		btnAceptar.setForeground(new Color(192, 192, 192));
 		JTextArea cambiaDe = new JTextArea();
+		cambiaDe.setForeground(new Color(255, 255, 255));
+		cambiaDe.setBackground(new Color(128, 128, 128));
 		JButton btnDescrip = new JButton("Descripcion");
+		btnDescrip.setForeground(new Color(192, 192, 192));
 		JButton btnBloquea = new JButton("Bloquear");
+		btnBloquea.setForeground(new Color(192, 192, 192));
 		JButton btnDesbloquea = new JButton("Desbloquear");
+		btnDesbloquea.setForeground(new Color(192, 192, 192));
 		paneles.addTab("Quinta", null, panel_Otros, null);
 		JButton verArticulos = new JButton("Articulos");
+		verArticulos.setForeground(new Color(192, 192, 192));
+		verArticulos.setBackground(new Color(255, 0, 0));
 		verArticulos.setBounds(479, 5, 89, 23);
 		verArticulos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -776,6 +880,8 @@ public class Vista {
 		panel_Otros.add(verArticulos);
 		
 		JButton btnVerUsuarios = new JButton("Usuarios");
+		btnVerUsuarios.setForeground(new Color(192, 192, 192));
+		btnVerUsuarios.setBackground(new Color(255, 0, 0));
 		btnVerUsuarios.setBounds(10, 5, 89, 23);
 		btnVerUsuarios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -800,6 +906,8 @@ public class Vista {
 		panel_Otros.add(btnVerUsuarios);
 		
 		JButton btnAtras1 = new JButton("Atras");
+		btnAtras1.setForeground(new Color(192, 192, 192));
+		btnAtras1.setBackground(new Color(0,76,255));
 		btnAtras1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				paneles.setSelectedIndex(3);
@@ -811,6 +919,8 @@ public class Vista {
 		panel_Otros.add(btnAtras1);
 		
 		JButton btnVerSuper = new JButton("Supermercados");
+		btnVerSuper.setForeground(new Color(192, 192, 192));
+		btnVerSuper.setBackground(new Color(255, 0, 0));
 		btnVerSuper.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -830,6 +940,7 @@ public class Vista {
 		btnVerSuper.setBounds(128, 5, 139, 23);
 		panel_Otros.add(btnVerSuper);
 		
+		btnDesbloquea.setBackground(new Color(0,76,255));
 		btnDesbloquea.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -845,6 +956,7 @@ public class Vista {
 		panel_Otros.add(btnDesbloquea);
 		btnDesbloquea.setVisible(false);
 		
+		btnBloquea.setBackground(new Color(0,76,255));
 		btnBloquea.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -860,7 +972,11 @@ public class Vista {
 		panel_Otros.add(btnBloquea);
 		btnBloquea.setVisible(false);
 		JButton btnVerSecciones = new JButton("Secciones");
+		btnVerSecciones.setForeground(new Color(192, 192, 192));
+		btnVerSecciones.setBackground(new Color(255, 0, 0));
 		JButton btnBorrar = new JButton("Borrar");
+		btnBorrar.setForeground(new Color(192, 192, 192));
+		btnBorrar.setBackground(new Color(0,76,255));
 		btnBorrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -910,7 +1026,11 @@ public class Vista {
 		panel_Otros.add(btnVerSecciones);
 		
 		JButton btnCargarStocks = new JButton("Recargas");
+		btnCargarStocks.setForeground(new Color(192, 192, 192));
+		btnCargarStocks.setBackground(new Color(255, 0, 0));
 		JButton btnModificar = new JButton("Modificar");
+		btnModificar.setForeground(new Color(192, 192, 192));
+		btnModificar.setBackground(new Color(0,76,255));
 		btnModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -949,6 +1069,7 @@ public class Vista {
 		btnModificar.setBounds(308, 391, 103, 23);
 		panel_Otros.add(btnModificar);
 		
+		btnDescrip.setBackground(new Color(0,76,255));
 		btnDescrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -972,6 +1093,7 @@ public class Vista {
 		btnDescrip.setVisible(false);
 		panel_Otros.add(btnDescrip);
 		
+		btnAceptar.setBackground(new Color(0,76,255));
 		btnAceptar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -1025,78 +1147,110 @@ public class Vista {
 		panel_Admin.setBackground(customColor);
 		
 		datePicker_3 = new JDatePickerImpl(datePanel2, new DateLabelFormatter());
+		datePicker_3.getJFormattedTextField().setForeground(new Color(255, 255, 255));
+		datePicker_3.getJFormattedTextField().setBackground(new Color(128, 128, 128));
 		datePicker_3.getJFormattedTextField().setEnabled(false);
 		datePicker_3.setBounds(295, 145, 125, 20);
+		datePicker_3.setForeground(new Color(255, 255, 255));
+		datePicker_3.setBackground(new Color(128, 128, 128));
 		panel_Admin.add(datePicker_3);
 		datePicker_2 = new JDatePickerImpl(datePanel3, new DateLabelFormatter());
+		datePicker_2.getJFormattedTextField().setBackground(new Color(128, 128, 128));
+		datePicker_2.getJFormattedTextField().setForeground(new Color(255, 255, 255));
+		datePicker_2.setForeground(new Color(255, 255, 255));
+		datePicker_2.setBackground(new Color(128, 128, 128));
 		datePicker_2.getJFormattedTextField().setEnabled(false);
 		datePicker_2.setBounds(295, 176, 125, 20);
 		panel_Admin.add(datePicker_2);
 		
 		textDNIJefe = new JTextField();
+		textDNIJefe.setForeground(new Color(255, 255, 255));
+		textDNIJefe.setBackground(new Color(128, 128, 128));
 		textDNIJefe.setBounds(305, 24, 115, 20);
 		panel_Admin.add(textDNIJefe);
 		textDNIJefe.setColumns(10);
 		
 		JLabel lblDniJ = new JLabel("DNI:");
+		lblDniJ.setForeground(new Color(255, 255, 255));
 		lblDniJ.setBounds(192, 27, 77, 14);
 		panel_Admin.add(lblDniJ);
 		
 		textNombreJefe = new JTextField();
+		textNombreJefe.setForeground(new Color(255, 255, 255));
+		textNombreJefe.setBackground(new Color(128, 128, 128));
 		textNombreJefe.setBounds(305, 55, 115, 20);
 		panel_Admin.add(textNombreJefe);
 		textNombreJefe.setColumns(10);
 		
 		JLabel lblCrearAdmin = new JLabel("Creacion del Administrador");
+		lblCrearAdmin.setForeground(new Color(255, 255, 255));
 		lblCrearAdmin.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblCrearAdmin.setBounds(240, 2, 213, 14);
 		panel_Admin.add(lblCrearAdmin);
 		
 		JLabel lblNombreJefe = new JLabel("Nombre:");
+		lblNombreJefe.setForeground(new Color(255, 255, 255));
 		lblNombreJefe.setBounds(175, 58, 77, 14);
 		panel_Admin.add(lblNombreJefe);
 		
 		JLabel lblApellidosJefe = new JLabel("Apellidos:");
+		lblApellidosJefe.setForeground(new Color(255, 255, 255));
 		lblApellidosJefe.setBounds(165, 89, 77, 14);
 		panel_Admin.add(lblApellidosJefe);
 		
 		textApellidosJefe = new JTextField();
+		textApellidosJefe.setForeground(new Color(255, 255, 255));
+		textApellidosJefe.setBackground(new Color(128, 128, 128));
 		textApellidosJefe.setBounds(305, 86, 115, 20);
 		panel_Admin.add(textApellidosJefe);
 		textApellidosJefe.setColumns(10);
 		
 		textGmailJefe = new JTextField();
+		textGmailJefe.setForeground(new Color(255, 255, 255));
+		textGmailJefe.setBackground(new Color(128, 128, 128));
 		textGmailJefe.setBounds(305, 117, 115, 20);
 		panel_Admin.add(textGmailJefe);
 		textGmailJefe.setColumns(10);
 		
 		JLabel lblGmailJefe = new JLabel("E-mail:");
+		lblGmailJefe.setForeground(new Color(255, 255, 255));
 		lblGmailJefe.setBounds(179, 120, 46, 14);
 		panel_Admin.add(lblGmailJefe);
 		
 		JLabel lblFechaNacimientoJefe = new JLabel("Fecha de nacimiento:");
+		lblFechaNacimientoJefe.setForeground(new Color(255, 255, 255));
 		lblFechaNacimientoJefe.setBounds(111, 151, 131, 14);
 		panel_Admin.add(lblFechaNacimientoJefe);
 		
 		JLabel lblFechaAdquisicion = new JLabel("Fecha adquisicion:");
+		lblFechaAdquisicion.setForeground(new Color(255, 255, 255));
 		lblFechaAdquisicion.setBounds(121, 176, 131, 14);
 		panel_Admin.add(lblFechaAdquisicion);
 		
 		JLabel lblPorcentajeEmpresa = new JLabel("Porcentaje empresa:");
+		lblPorcentajeEmpresa.setForeground(new Color(255, 255, 255));
 		lblPorcentajeEmpresa.setBounds(111, 216, 131, 14);
 		panel_Admin.add(lblPorcentajeEmpresa);
 		
 		JLabel lblContrasenaJefe = new JLabel("Contrasena:");
+		lblContrasenaJefe.setForeground(new Color(255, 255, 255));
 		lblContrasenaJefe.setBounds(148, 241, 77, 14);
 		panel_Admin.add(lblContrasenaJefe);
 		
 		passJefe = new JPasswordField();
+		passJefe.setForeground(new Color(255, 255, 255));
+		passJefe.setBackground(new Color(128, 128, 128));
 		passJefe.setBounds(305, 238, 115, 20);
 		panel_Admin.add(passJefe);
 		JButton btnCancelarJefe = new JButton("Cancelar");
+		btnCancelarJefe.setForeground(new Color(192, 192, 192));
 		JSpinner porcentajeEmpresa = new JSpinner();
+		porcentajeEmpresa.setForeground(new Color(255, 255, 255));
+		porcentajeEmpresa.setBackground(new Color(128, 128, 128));
 		JLabel lblErroresASS = new JLabel("");
 		JButton btnConfirmarCreacion = new JButton("Confirmar");
+		btnConfirmarCreacion.setForeground(new Color(192, 192, 192));
+		btnConfirmarCreacion.setBackground(new Color(0,76,255));
 		btnConfirmarCreacion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -1106,6 +1260,7 @@ public class Vista {
 					String.valueOf(passJefe.getPassword()),tipoPersona.Jefe,
 					mc.deStringADate(datePicker_2.getJFormattedTextField().getText()),(Float)porcentajeEmpresa.getValue(),0);
 					gp.insertarPersona(nuevoJefe);
+					usuarios=gp.cargarPersonas();
 					datePicker_3.getJFormattedTextField().setText("");
 					datePicker_2.getJFormattedTextField().setText("");
 					btnCancelarJefe.doClick();
@@ -1131,6 +1286,7 @@ public class Vista {
 		btnConfirmarCreacion.setBounds(588, 377, 104, 23);
 		panel_Admin.add(btnConfirmarCreacion);
 		
+		btnCancelarJefe.setBackground(new Color(0,76,255));
 		btnCancelarJefe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textDNIJefe.setText("");
@@ -1145,6 +1301,8 @@ public class Vista {
 		panel_Admin.add(btnCancelarJefe);
 		
 		JButton btnCancelar = new JButton("Atras");
+		btnCancelar.setForeground(new Color(192, 192, 192));
+		btnCancelar.setBackground(new Color(0,76,255));
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelarJefe.doClick();
@@ -1169,53 +1327,70 @@ public class Vista {
 		panel_Supermercado.setBackground(customColor);
 		
 		JButton btnCancelarSuper = new JButton("Cancelar");
+		btnCancelarSuper.setForeground(new Color(192, 192, 192));
 		btnCancelarSuper.setBounds(304, 278, 89, 23);
 		panel_Supermercado.add(btnCancelarSuper);
 		
 		JLabel lblCrearSuper = new JLabel("Creacion del Supermercado");
+		lblCrearSuper.setForeground(new Color(255, 255, 255));
 		lblCrearSuper.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblCrearSuper.setBounds(259, 12, 201, 14);
 		panel_Supermercado.add(lblCrearSuper);
 		
 		JLabel lblCodigoSuper = new JLabel("Codigo:");
+		lblCodigoSuper.setForeground(new Color(255, 255, 255));
 		lblCodigoSuper.setBounds(259, 81, 46, 14);
 		panel_Supermercado.add(lblCodigoSuper);
 		
 		textCodigoSuper = new JTextField();
+		textCodigoSuper.setForeground(new Color(255, 255, 255));
+		textCodigoSuper.setBackground(new Color(128, 128, 128));
 		textCodigoSuper.setBounds(345, 78, 115, 20);
 		panel_Supermercado.add(textCodigoSuper);
 		textCodigoSuper.setColumns(10);
 		
 		JLabel lblEmpresa = new JLabel("Empresa:");
+		lblEmpresa.setForeground(new Color(255, 255, 255));
 		lblEmpresa.setBounds(259, 112, 77, 14);
 		panel_Supermercado.add(lblEmpresa);
 		
 		textEmpresa = new JTextField();
+		textEmpresa.setForeground(new Color(255, 255, 255));
+		textEmpresa.setBackground(new Color(128, 128, 128));
 		textEmpresa.setBounds(345, 109, 115, 20);
 		panel_Supermercado.add(textEmpresa);
 		textEmpresa.setColumns(10);
 		
 		JLabel lblDireccion = new JLabel("Direccion:");
+		lblDireccion.setForeground(new Color(255, 255, 255));
 		lblDireccion.setBounds(259, 143, 77, 14);
 		panel_Supermercado.add(lblDireccion);
 		
 		textDireccion = new JTextField();
+		textDireccion.setForeground(new Color(255, 255, 255));
+		textDireccion.setBackground(new Color(128, 128, 128));
 		textDireccion.setBounds(345, 140, 115, 20);
 		panel_Supermercado.add(textDireccion);
 		textDireccion.setColumns(10);
 		
 		JLabel lblNumEmple = new JLabel("Numero empleados:");
+		lblNumEmple.setForeground(new Color(255, 255, 255));
 		lblNumEmple.setBounds(262, 168, 131, 14);
 		panel_Supermercado.add(lblNumEmple);
 		
 		JSpinner NumEmple = new JSpinner();
+		NumEmple.setBackground(new Color(128, 128, 128));
+		NumEmple.setForeground(new Color(255, 255, 255));
 		NumEmple.setModel(new SpinnerNumberModel(1, 1, 25, 1));
 		NumEmple.setBounds(386, 165, 46, 20);
 		panel_Supermercado.add(NumEmple);
 		
 		JButton btnAtrasSuper = new JButton("Atras");
+		btnAtrasSuper.setForeground(new Color(192, 192, 192));
 		JLabel lblErroresSuper = new JLabel("");
 		JButton btnConfirmarSupermercado = new JButton("Confirmar");
+		btnConfirmarSupermercado.setForeground(new Color(192, 192, 192));
+		btnConfirmarSupermercado.setBackground(new Color(0,76,255));
 		btnConfirmarSupermercado.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -1236,6 +1411,7 @@ public class Vista {
 		btnConfirmarSupermercado.setBounds(588, 391, 104, 23);
 		panel_Supermercado.add(btnConfirmarSupermercado);
 		
+		btnAtrasSuper.setBackground(new Color(0,76,255));
 		btnAtrasSuper.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnCancelarSuper.doClick();
@@ -1250,6 +1426,7 @@ public class Vista {
 		panel_Supermercado.add(escogeJefe);
 		
 		JLabel lblJefe = new JLabel("Jefes disponibles:");
+		lblJefe.setForeground(new Color(255, 255, 255));
 		lblJefe.setBounds(221, 41, 115, 14);
 		panel_Supermercado.add(lblJefe);
 		
@@ -1257,6 +1434,7 @@ public class Vista {
 		lblErroresSuper.setBounds(259, 220, 201, 14);
 		panel_Supermercado.add(lblErroresSuper);
 		
+		btnCancelarSuper.setBackground(new Color(0,76,255));
 		btnCancelarSuper.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textCodigoSuper.setText("");
@@ -1272,28 +1450,35 @@ public class Vista {
 		panel_Seccion.setBackground(customColor);
 		
 		JLabel lblCreaSecciones = new JLabel("Creacion de Secciones");
+		lblCreaSecciones.setForeground(new Color(255, 255, 255));
 		lblCreaSecciones.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lblCreaSecciones.setBounds(221, 5, 152, 17);
 		 panel_Seccion.add(lblCreaSecciones);
 		 
 		 textPrimeraSe = new JTextField();
-			textPrimeraSe.setEnabled(false);
-			textPrimeraSe.setBounds(286, 160, 112, 20);
-			panel_Seccion.add(textPrimeraSe);
-			textPrimeraSe.setColumns(10);
-			textPrimeraSe.setVisible(false);
+		 textPrimeraSe.setForeground(new Color(255, 255, 255));
+		 textPrimeraSe.setBackground(new Color(128, 128, 128));
+		textPrimeraSe.setEnabled(false);
+		textPrimeraSe.setBounds(286, 160, 112, 20);
+		panel_Seccion.add(textPrimeraSe);
+		textPrimeraSe.setColumns(10);
+		textPrimeraSe.setVisible(false);
 			
 			JLabel lblPrimeraSe = new JLabel("Primera:");
+			lblPrimeraSe.setForeground(new Color(255, 255, 255));
 			lblPrimeraSe.setBounds(181, 163, 69, 14);
 			panel_Seccion.add(lblPrimeraSe);
 			lblPrimeraSe.setVisible(false);
 			
 			JLabel lblSegundaSe = new JLabel("Segunda:");
+			lblSegundaSe.setForeground(new Color(255, 255, 255));
 			lblSegundaSe.setBounds(181, 195, 69, 14);
 			panel_Seccion.add(lblSegundaSe);
 			lblSegundaSe.setVisible(false);
 			
 			textSegundaSe = new JTextField();
+			textSegundaSe.setForeground(new Color(255, 255, 255));
+			textSegundaSe.setBackground(new Color(128, 128, 128));
 			textSegundaSe.setEnabled(false);
 			textSegundaSe.setBounds(286, 192, 112, 20);
 			panel_Seccion.add(textSegundaSe);
@@ -1301,11 +1486,14 @@ public class Vista {
 			textSegundaSe.setVisible(false);
 			
 			JLabel lblTerceraSe = new JLabel("Tercera:");
+			lblTerceraSe.setForeground(new Color(255, 255, 255));
 			lblTerceraSe.setBounds(181, 226, 69, 14);
 			panel_Seccion.add(lblTerceraSe);
 			lblTerceraSe.setVisible(false);
 			
 			textTerceraSe = new JTextField();
+			textTerceraSe.setForeground(new Color(255, 255, 255));
+			textTerceraSe.setBackground(new Color(128, 128, 128));
 			textTerceraSe.setEnabled(false);
 			textTerceraSe.setBounds(286, 223, 112, 20);
 			panel_Seccion.add(textTerceraSe);
@@ -1313,17 +1501,22 @@ public class Vista {
 			textTerceraSe.setVisible(false);
 		
 		JComboBox<String> tipoSeccion = new JComboBox<String>();
+		tipoSeccion.setForeground(new Color(255, 255, 255));
+		tipoSeccion.setBackground(new Color(128, 128, 128));
 		tipoSeccion.setBounds(286, 118, 112, 20);
 		tipoSeccion.setModel(new DefaultComboBoxModel<String>(Tipos));
 		panel_Seccion.add(tipoSeccion);
 		tipoSeccion.setVisible(false);
 		
 		JLabel lblTipo = new JLabel("Tipo:");
+		lblTipo.setForeground(new Color(255, 255, 255));
 		lblTipo.setBounds(196, 121, 35, 14);
 		panel_Seccion.add(lblTipo);
 		lblTipo.setVisible(false);
 		
 		JButton btnSelecSe = new JButton("Seleccionar");
+		btnSelecSe.setForeground(new Color(192, 192, 192));
+		btnSelecSe.setBackground(new Color(0,76,255));
 		btnSelecSe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tipoSeccion.setEnabled(false);
@@ -1353,6 +1546,8 @@ public class Vista {
 		 panel_Seccion.add(btnSelecSe);
 		
 		JButton btnAnadir = new JButton("Mas");
+		btnAnadir.setForeground(new Color(192, 192, 192));
+		btnAnadir.setBackground(new Color(0,76,255));
 		btnAnadir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tipoSeccion.setEnabled(true);
@@ -1369,10 +1564,16 @@ public class Vista {
 		panel_Seccion.add(btnAnadir);
 		
 		JButton btnConfirmarSe = new JButton("Confirmar");
+		btnConfirmarSe.setForeground(new Color(192, 192, 192));
 		JLabel lblEscogeDireccion = new JLabel("Direccion:");
+		lblEscogeDireccion.setForeground(new Color(255, 255, 255));
 		lblEscogeDireccion.setVisible(false);
 		JComboBox<String> escogeDireccion = new JComboBox<String>();
+		escogeDireccion.setForeground(new Color(255, 255, 255));
+		escogeDireccion.setBackground(new Color(128, 128, 128));
 		JButton btnCancelarSe = new JButton("Cancelar");
+		btnCancelarSe.setForeground(new Color(192, 192, 192));
+		btnCancelarSe.setBackground(new Color(0,76,255));
 		btnCancelarSe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textPrimeraSe.setText("");
@@ -1400,6 +1601,8 @@ public class Vista {
 		 panel_Seccion.add(btnCancelarSe);
 		 
 		 JButton btnAtrasSe = new JButton("Atras");
+		 btnAtrasSe.setForeground(new Color(192, 192, 192));
+		 btnAtrasSe.setBackground(new Color(0,76,255));
 		 btnAtrasSe.addActionListener(new ActionListener() {
 		 	public void actionPerformed(ActionEvent e) {
 		 		btnCancelarSe.doClick();
@@ -1409,6 +1612,7 @@ public class Vista {
 		 btnAtrasSe.setBounds(10, 391, 89, 23);
 		 panel_Seccion.add(btnAtrasSe);
 		 
+		 btnConfirmarSe.setBackground(new Color(0,76,255));
 		 btnConfirmarSe.addActionListener(new ActionListener() {
 		 	public void actionPerformed(ActionEvent e) {
 		 		try {	
@@ -1456,6 +1660,7 @@ public class Vista {
 		 panel_Seccion.add(escogeSuper);
 		 
 		 JLabel lblSuperPadre = new JLabel("Supermercado:");
+		 lblSuperPadre.setForeground(new Color(255, 255, 255));
 		 lblSuperPadre.setBounds(164, 37, 112, 14);
 		 panel_Seccion.add(lblSuperPadre);
 		 
@@ -1512,42 +1717,56 @@ public class Vista {
 		panel_Articulos.add(suAnadirArticulo);
 		
 		JLabel lblNombreArticulo = new JLabel("Nombre:");
+		lblNombreArticulo.setForeground(new Color(255, 255, 255));
 		lblNombreArticulo.setBounds(10, 83, 75, 14);
 		panel_Articulos.add(lblNombreArticulo);
 		
 		textNombreArticulo = new JTextField();
+		textNombreArticulo.setForeground(new Color(255, 255, 255));
+		textNombreArticulo.setBackground(new Color(128, 128, 128));
 		textNombreArticulo.setBounds(95, 80, 123, 20);
 		panel_Articulos.add(textNombreArticulo);
 		textNombreArticulo.setColumns(10);
 		
 		JLabel lblDescripcion = new JLabel("Descripcion(Opcional):");
+		lblDescripcion.setForeground(new Color(255, 255, 255));
 		lblDescripcion.setBounds(10, 116, 156, 14);
 		panel_Articulos.add(lblDescripcion);
 		
 		JTextArea textDescripcion = new JTextArea();
+		textDescripcion.setBackground(new Color(128, 128, 128));
+		textDescripcion.setForeground(new Color(255, 255, 255));
 		textDescripcion.setLineWrap(true);
 		textDescripcion.setBounds(10, 141, 234, 227);
 		panel_Articulos.add(textDescripcion);
 		
 		JLabel lblImagen = new JLabel("Imagen y formato:");
+		lblImagen.setForeground(new Color(255, 255, 255));
 		lblImagen.setBounds(254, 83, 179, 14);
 		panel_Articulos.add(lblImagen);
 		
 		textImagen = new JTextField();
+		textImagen.setForeground(new Color(255, 255, 255));
+		textImagen.setBackground(new Color(128, 128, 128));
 		textImagen.setBounds(272, 125, 161, 20);
 		panel_Articulos.add(textImagen);
 		textImagen.setColumns(10);
 		
 		JLabel lblPrecio = new JLabel("Precio:");
+		lblPrecio.setForeground(new Color(255, 255, 255));
 		lblPrecio.setBounds(254, 175, 46, 14);
 		panel_Articulos.add(lblPrecio);
 		
 		textPrecio = new JTextField();
+		textPrecio.setForeground(new Color(255, 255, 255));
+		textPrecio.setBackground(new Color(128, 128, 128));
 		textPrecio.setBounds(318, 172, 115, 20);
 		panel_Articulos.add(textPrecio);
 		textPrecio.setColumns(10);
 		
 		JSpinner garantia = new JSpinner();
+		garantia.setForeground(new Color(255, 255, 255));
+		garantia.setBackground(new Color(128, 128, 128));
 		garantia.setVisible(false);
 		JCheckBox chckElectrica = new JCheckBox("Electrica");
 		
@@ -1588,34 +1807,44 @@ public class Vista {
 		panel_Articulos.add(lblSeccion);
 		
 		JLabel lblTalla = new JLabel("Talla:");
+		lblTalla.setForeground(new Color(255, 255, 255));
 		lblTalla.setBounds(472, 83, 46, 14);
 		panel_Articulos.add(lblTalla);
 		
 		textTalla = new JTextField();
+		textTalla.setForeground(new Color(255, 255, 255));
+		textTalla.setBackground(new Color(128, 128, 128));
 		textTalla.setBounds(543, 80, 123, 20);
 		panel_Articulos.add(textTalla);
 		textTalla.setColumns(10);
 		textTalla.setVisible(false);
 		
 		JLabel lblMarca = new JLabel("Marca:");
+		lblMarca.setForeground(new Color(255, 255, 255));
 		lblMarca.setBounds(472, 128, 46, 14);
 		panel_Articulos.add(lblMarca);
 		
 		textMarca = new JTextField();
+		textMarca.setForeground(new Color(255, 255, 255));
+		textMarca.setBackground(new Color(128, 128, 128));
 		textMarca.setBounds(543, 125, 123, 20);
 		panel_Articulos.add(textMarca);
 		textMarca.setColumns(10);
 		textMarca.setVisible(false);
 		
 		JLabel lblFechaDeCaducidad = new JLabel("Fecha de Caducidad");
+		lblFechaDeCaducidad.setForeground(new Color(255, 255, 255));
 		lblFechaDeCaducidad.setBounds(525, 163, 141, 14);
 		panel_Articulos.add(lblFechaDeCaducidad);
 		
 		JLabel lblProcedencia = new JLabel("Procedencia:");
+		lblProcedencia.setForeground(new Color(255, 255, 255));
 		lblProcedencia.setBounds(449, 236, 84, 14);
 		panel_Articulos.add(lblProcedencia);
 		
 		textProcedencia = new JTextField();
+		textProcedencia.setForeground(new Color(255, 255, 255));
+		textProcedencia.setBackground(new Color(128, 128, 128));
 		textProcedencia.setBounds(543, 233, 123, 20);
 		panel_Articulos.add(textProcedencia);
 		textProcedencia.setColumns(10);
@@ -1632,6 +1861,7 @@ public class Vista {
 		panel_Articulos.add(garantia);
 		
 		JLabel lblGarantia = new JLabel("Garantia:");
+		lblGarantia.setForeground(new Color(255, 255, 255));
 		lblGarantia.setBounds(471, 300, 60, 14);
 		panel_Articulos.add(lblGarantia);
 		
@@ -1639,12 +1869,18 @@ public class Vista {
 		Properties px = new Properties();
 		JDatePanelImpl datePanelx = new JDatePanelImpl(modelx, px);
 		datePicker_4 = new JDatePickerImpl(datePanelx, new DateLabelFormatter());
+		datePicker_4.getJFormattedTextField().setBackground(new Color(128, 128, 128));
+		datePicker_4.getJFormattedTextField().setForeground(new Color(255, 255, 255));
 		datePicker_4.setBounds(541, 199, 125, 20);
+		datePicker_4.setForeground(new Color(255, 255, 255));
+		datePicker_4.setBackground(new Color(128, 128, 128));
 		panel_Articulos.add(datePicker_4);
 		datePicker_4.setVisible(false);
 		JLabel lblErroresArti = new JLabel("");
 		
 		JButton btnInsertar = new JButton("Confirmar");
+		btnInsertar.setForeground(new Color(192, 192, 192));
+		btnInsertar.setBackground(new Color(0,76,255));
 		btnInsertar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -1678,6 +1914,8 @@ public class Vista {
 		panel_Articulos.add(btnInsertar);
 		
 		JButton btnCancelarArticulo = new JButton("Cancelar");
+		btnCancelarArticulo.setForeground(new Color(192, 192, 192));
+		btnCancelarArticulo.setBackground(new Color(0,76,255));
 		btnCancelarArticulo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cv.vaciarCampos(panel_Articulos);
@@ -1702,9 +1940,13 @@ public class Vista {
 		
 		JLabel lblPrecioTotal = new JLabel("Precio de su carrito:");
 		JComboBox<String> boxSeccion = new JComboBox<String>();
+		boxSeccion.setForeground(new Color(255, 255, 255));
+		boxSeccion.setBackground(new Color(128, 128, 128));
 		JScrollPane buscaArticulos=new JScrollPane();
-		buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
+		buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
 		JComboBox<String>  boxSuper = new JComboBox<String> ();
+		boxSuper.setForeground(new Color(255, 255, 255));
+		boxSuper.setBackground(new Color(128, 128, 128));
 		boxSuper.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -1727,7 +1969,7 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					listaArticulos=ga.cargarArticulosPorSeccion(seccionesDelSuper.get(boxSeccion.getSelectedIndex()));
-					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
+					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -1735,28 +1977,32 @@ public class Vista {
 			}
 		});
 		boxSeccion.setVisible(false);
-		boxSeccion.setBounds(10, 44, 125, 22);
+		boxSeccion.setBounds(145, 11, 125, 22);
 		panel_Compras.add(boxSeccion);
 		
 		buscaArticulos.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		buscaArticulos.setBounds(0, 77, 702, 324);
+		buscaArticulos.setBounds(10, 55, 702, 317);
 		panel_Compras.add(buscaArticulos);
 		
 		textBuscador = new JTextField();
-		textBuscador.setBounds(354, 26, 207, 20);
+		textBuscador.setForeground(new Color(255, 255, 255));
+		textBuscador.setBackground(new Color(128, 128, 128));
+		textBuscador.setBounds(386, 12, 207, 20);
 		panel_Compras.add(textBuscador);
 		textBuscador.setColumns(10);
 		
 		JButton btnBuscar = new JButton("Buscar");
+		btnBuscar.setForeground(new Color(192, 192, 192));
+		btnBuscar.setBackground(new Color(0,76,255));
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(textBuscador.getText().equals("")) {
 						listaArticulos=ga.cargarArticulos();
-						buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
+						buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
 					}else {
 					listaArticulos=ga.buscarArticulosPorNombre(textBuscador.getText(),listaArticulos);
-					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal));
+					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
 					}
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -1764,38 +2010,49 @@ public class Vista {
 				}
 			}
 		});
-		btnBuscar.setBounds(255, 25, 89, 23);
+		btnBuscar.setBounds(287, 11, 89, 23);
 		panel_Compras.add(btnBuscar);
 		
 		JButton btnAtrasCom = new JButton("Atras");
+		btnAtrasCom.setForeground(new Color(192, 192, 192));
+		btnAtrasCom.setBackground(new Color(0,76,255));
 		btnAtrasCom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				paneles.setSelectedIndex(3);
 			}
 		});
-		btnAtrasCom.setBounds(10, 402, 89, 23);
+		btnAtrasCom.setBounds(10, 383, 89, 23);
 		panel_Compras.add(btnAtrasCom);
 		
 		JButton btnVerCarrito = new JButton("Carrito");
+		btnVerCarrito.setForeground(new Color(192, 192, 192));
+		btnVerCarrito.setBackground(new Color(0,76,255));
 		btnVerCarrito.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				buscaArticulos.setViewportView(cv.mostrarCarrito(carrito,lblPrecioTotal));
+				if(articulosCarrito.size()==0) {
+				buscaArticulos.setViewportView(null);
+				}else {
+				buscaArticulos.setViewportView(cv.mostrarCarrito(articulosCarrito,carrito,lblPrecioTotal));
+				}
 			}
 		});
-		btnVerCarrito.setBounds(571, 25, 89, 23);
+		btnVerCarrito.setBounds(603, 11, 89, 23);
 		panel_Compras.add(btnVerCarrito);
 		
 		lblPrecioTotal.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblPrecioTotal.setBounds(265, 404, 228, 14);
+		lblPrecioTotal.setBounds(338, 385, 228, 14);
 		panel_Compras.add(lblPrecioTotal);
 		
 		JButton btnRealizarCompra = new JButton("Comprar");
+		btnRealizarCompra.setForeground(new Color(192, 192, 192));
+		btnRealizarCompra.setBackground(new Color(0,76,255));
 		btnRealizarCompra.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					int ultimocodigo=gp.insertarCompraYCobrar(login, carrito);
-					System.out.println(ultimocodigo);
 					gp.insertarArticulos(carrito.getListaCantidades(),ultimocodigo);
+					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
+					articulosCarrito=new ArrayList<Articulo>();
 					carrito=new Compra();
 				} catch (SQLException | ParseException e1) {
 					// TODO Auto-generated catch block
@@ -1803,8 +2060,28 @@ public class Vista {
 				}
 			}
 		});
-		btnRealizarCompra.setBounds(603, 402, 89, 23);
+		btnRealizarCompra.setBounds(603, 383, 89, 23);
 		panel_Compras.add(btnRealizarCompra);
+		
+		JButton btnGuardarCarrito = new JButton("Guardar");
+		btnGuardarCarrito.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnGuardarCarrito.setForeground(new Color(255, 255, 255));
+		btnGuardarCarrito.setBackground(new Color(0, 76, 255));
+		btnGuardarCarrito.setBounds(119, 383, 89, 23);
+		panel_Compras.add(btnGuardarCarrito);
+		
+		JButton btnCargarCarrito = new JButton("Cargar");
+		btnCargarCarrito.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnCargarCarrito.setForeground(new Color(255, 255, 255));
+		btnCargarCarrito.setBackground(new Color(0, 76, 255));
+		btnCargarCarrito.setBounds(228, 383, 89, 23);
+		panel_Compras.add(btnCargarCarrito);
 		
 		JPanel panelHistorial = new JPanel();
 		paneles.addTab("Undecima", null, panelHistorial, null);
@@ -1829,6 +2106,8 @@ public class Vista {
 		panelHistorial.add(lblArticulosComprados);
 		
 		JButton btnAtrasHis = new JButton("Atras");
+		btnAtrasHis.setForeground(new Color(192, 192, 192));
+		btnAtrasHis.setBackground(new Color(0,76,255));
 		btnAtrasHis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				paneles.setSelectedIndex(3);
@@ -1838,6 +2117,8 @@ public class Vista {
 		panelHistorial.add(btnAtrasHis);
 		
 		JButton btnVerArticulosCom = new JButton("Seleccionar");
+		btnVerArticulosCom.setForeground(new Color(192, 192, 192));
+		btnVerArticulosCom.setBackground(new Color(0,76,255));
 		btnVerArticulosCom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -1855,6 +2136,8 @@ public class Vista {
 		panelHistorial.add(btnVerArticulosCom);
 		
 		JButton btnCancelarCompra = new JButton("Devolver");
+		btnCancelarCompra.setForeground(new Color(192, 192, 192));
+		btnCancelarCompra.setBackground(new Color(0,76,255));
 		btnCancelarCompra.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -1879,6 +2162,8 @@ public class Vista {
 		
 		JSpinner cantidadDevolver = new JSpinner();
 		JButton btnSeleccionarArCom = new JButton("Modificar");
+		btnSeleccionarArCom.setForeground(new Color(192, 192, 192));
+		btnSeleccionarArCom.setBackground(new Color(0,76,255));
 		btnSeleccionarArCom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				arDevolver=cv.cogerArticuloComprado(tablaApoyo, historialArticulosComprados);
@@ -1895,23 +2180,28 @@ public class Vista {
 		panelHistorial.add(cantidadDevolver);
 		
 		JButton btnAplicar = new JButton("Confirmar");
+		btnAplicar.setForeground(new Color(192, 192, 192));
+		btnAplicar.setBackground(new Color(0,76,255));
 		btnAplicar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					
 					gp.devolverUnArticulo(login, arDevolver, (Integer)cantidadDevolver.getValue());
 					gp.compruebaDevolucionArticulo(arDevolver);
+					historialCompras.setViewportView(tabla);
 					btnVerArticulosCom.doClick();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
-				
+				} 
 			}
 		});
 		btnAplicar.setBounds(589, 357, 103, 23);
 		panelHistorial.add(btnAplicar);
 		
 		JButton btnCancelarSeleccion = new JButton("Cancelar");
+		btnCancelarSeleccion.setForeground(new Color(192, 192, 192));
+		btnCancelarSeleccion.setBackground(new Color(0,76,255));
 		btnCancelarSeleccion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tabla.setEnabled(true);
@@ -1924,6 +2214,8 @@ public class Vista {
 		panelHistorial.add(btnCancelarSeleccion);
 		
 		JButton btnCancelarDevolucion = new JButton("Cancelar");
+		btnCancelarDevolucion.setForeground(new Color(192, 192, 192));
+		btnCancelarDevolucion.setBackground(new Color(0,76,255));
 		btnCancelarDevolucion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cantidadDevolver.setModel(new SpinnerNumberModel(0, 0, 0, 1));

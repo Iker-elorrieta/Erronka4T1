@@ -22,7 +22,6 @@ import gestores.GestorArticulo;
 import gestores.GestorArticuloComprado;
 import gestores.GestorCompra;
 import gestores.GestorPersona;
-import modelo.Articulo;
 import modelo.ArticuloComprado;
 import modelo.Cliente;
 import modelo.Compra;
@@ -193,28 +192,22 @@ class TestGestorPersona {
 	}
 	@Test
 	void testMetodos() {
-		Cliente cliente = new Cliente("99999999X","Test","Test",Date.valueOf("2001-01-21"),"test@gmail.com","12345",tipoPersona.Cliente,(float)99.9,0);
+		Cliente cliente = new Cliente("AAAAAAAAX","Test","Test",Date.valueOf("2001-01-21"),"test@gmail.com","12345",tipoPersona.Cliente,(float)99.9,0);
 		Cliente prueba=null;
-		Compra co=new Compra((float)10);
-		Articulo ar=null;
+		Compra co=new Compra();
 		try {
-			ga.setListaArticulos(ga.cargarArticulos());
-			ar=ga.getListaArticulos().get(0);
-			co.anadirArticulo(ga.getListaArticulos().get(0),2);
+			co.setPrecioTotal(7);
+			GestorPersona gp=new GestorPersona();
 			gp.insertarPersona(cliente);
-			co.setPrecioTotal(co.calcularPrecioTotal());
-			
-			ArrayList<ArticuloComprado> lista=new ArrayList<ArticuloComprado>();
-			int codCompra= gp.insertarCompraYCobrar(cliente, co);
+			int codCompra=gp.insertarCompraYCobrar(cliente, co);
 			ArticuloComprado arc=new ArticuloComprado(codCompra,1,2,(float)1.99);
-			lista.add(arc);
-			gp.insertarArticulos(lista,codCompra);
+			co.getListaCantidades().add(arc);
+			gp.insertarArticulos(co.getListaCantidades(),codCompra);
 			
 			Compra c=gc.buscarCompraReciente();
 			assertNotEquals(co.getCodigoCompra(),c.getCodigoCompra());
 			assertNotEquals(co.getFechaCompra(),c.getFechaCompra());
 			assertNotEquals(co.calcularPrecioTotal(),c.calcularPrecioTotal());
-			assertNotEquals(ar.getStockActual(),ar.getStockActual()-1);
 			
 			gp.cancelarArticulos(c);
 			gp.setListaPersonas(gp.cargarPersonas());
@@ -226,19 +219,17 @@ class TestGestorPersona {
 			Compra c1=gc.buscarCompraReciente();
 			assertNotEquals(c.getCodigoCompra(),c1.getCodigoCompra());
 			assertNotEquals(c.getFechaCompra(),c1.getFechaCompra());
-			assertNotEquals(ar.getStockActual(),ar.getStockActual()+1);
 			
-			lista=new ArrayList<ArticuloComprado>();
+			co.setListaCantidades(new ArrayList<ArticuloComprado>());
 			codCompra= gp.insertarCompraYCobrar(cliente, co);
 			arc=new ArticuloComprado(codCompra,1,2,(float)1.99);
-			lista.add(arc);
-			gp.insertarArticulos(lista,codCompra);
+			co.getListaCantidades().add(arc);
+			gp.insertarArticulos(co.getListaCantidades(),codCompra);
 			
 			c=gc.buscarCompraReciente();
 			assertNotEquals(co.getCodigoCompra(),c.getCodigoCompra());
 			assertNotEquals(co.getFechaCompra(),c.getFechaCompra());
 			assertNotEquals(co.calcularPrecioTotal(),c.calcularPrecioTotal());
-			assertNotEquals(ar.getStockActual(),ar.getStockActual()-1);
 			
 			gp.devolverUnArticulo(cliente, arc, 1);
 			

@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.regex.Matcher;
@@ -20,6 +19,7 @@ import modelo.Compra;
 import modelo.Jefe;
 import modelo.Persona;
 import otros.tipoPersona;
+import referencias.PROCEDIMIENTOS;
 import referencias.TABLAS;
 
 public class GestorPersona {
@@ -225,15 +225,9 @@ public class GestorPersona {
 	public int insertarCompraYCobrar(Persona per,Compra compra) throws SQLException, ParseException {
 		// TODO Auto-generated method stub
 		Metodos mc=new Metodos();
-		Cliente cli=null;
 		Statement comando;
 			comando = (Statement) mc.conectarBaseDatos().createStatement();
-			comando.executeUpdate("INSERT INTO "+TABLAS.COMPRAS+" ("+TABLAS.DNI+","+TABLAS.PRECIOFINAL+","+TABLAS.FECHACOMPRA+")"
-					+ " VALUES ('"+per.getDni()+"','"+compra.getPrecioTotal()+"','"+LocalDateTime.now()+"')");
-			if(per instanceof Cliente) {
-				cli=(Cliente) per;
-				comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"-"+compra.calcularPrecioTotal()+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");
-			}
+			comando.executeUpdate("CALL "+PROCEDIMIENTOS.INSERTACOMPRA+" ('"+per.getDni()+"',"+compra.getPrecioTotal()+")");
 			ResultSet cargar=comando.executeQuery("SELECT "+TABLAS.CODIGOCOMPRA+" FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.DNI+"='"+per.getDni()+"' ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
 			int cod=0;
 			while(cargar.next()) {
@@ -244,22 +238,12 @@ public class GestorPersona {
 	public void insertarArticulos(ArrayList<ArticuloComprado> lista,int cod) throws SQLException {
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
 		for(ArticuloComprado ar:lista) {
-			comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULOSCOMPRADOS+" VALUES ('"+cod+"','"+ar.getIdArticulo()+"','"+ar.getCantidad()+"','"+ar.getPrecioArt()+"')");
-			comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.STOCK+"=("+TABLAS.STOCK+"-"+ar.getCantidad()+") WHERE "+TABLAS.IDARTICULO+"='"+ar.getIdArticulo()+"'");
+			comando.executeUpdate("CALL "+PROCEDIMIENTOS.INSERTARTICULO+"("+ar.getIdArticulo()+","+ar.getCantidad()+")");
 			}
 	}
 	public void cancelarArticulos(Compra com) throws SQLException {
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
-		ArrayList<ArticuloComprado> lista=new ArrayList<ArticuloComprado>();
-		ResultSet ca=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
-		while(ca.next()) {
-			ArticuloComprado arc=new ArticuloComprado(ca.getInt(TABLAS.CODIGOCOMPRA),ca.getInt(TABLAS.IDARTICULO),ca.getInt(TABLAS.CANTIDAD),ca.getFloat(TABLAS.PRECIOART));
-			lista.add(arc);
-		}
-		for(ArticuloComprado arc: lista) {
-		comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.STOCK+"=("+TABLAS.STOCK+"+"+arc.getCantidad()+") WHERE "+TABLAS.IDARTICULO+"='"+arc.getIdArticulo()+"'");
-		gac.borrarArticuloComprado(arc);
-		}
+		comando.executeUpdate("CALL "+PROCEDIMIENTOS.DEVOLVERTODOSARTICULOS+"("+com.getCodigoCompra()+")");
 	}
 	public void cancelarCompra(Persona per,Compra com) throws SQLException {
 		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
