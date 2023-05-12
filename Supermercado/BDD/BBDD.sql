@@ -261,3 +261,46 @@ BEGIN
        DELETE FROM articuloscomprados WHERE codigoCompra=codC;
 END;//
 delimiter ;
+
+CREATE ROLE 'administradorBD';
+GRANT ALL PRIVILEGES ON reto4.* TO 'administradorBD';
+
+CREATE ROLE 'usuarioJefe';
+GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.jefe TO 'usuarioJefe';
+GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.supermercados TO 'usuarioJefe';
+GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.secciones TO 'usuarioJefe';
+GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.articulos TO 'usuarioJefe';
+GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.articuloscomprados TO 'usuarioJefe';
+GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.compras TO 'usuarioJefe';
+GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.cliente TO 'usuarioJefe';
+
+CREATE ROLE 'usuarioCliente';
+GRANT SELECT, UPDATE ON reto4.articulos TO 'usuarioCliente';
+GRANT SELECT, UPDATE ON reto4.articuloscomprados TO 'usuarioCliente';
+GRANT SELECT, UPDATE ON reto4.compras TO 'usuarioCliente';
+GRANT SELECT, UPDATE, DELETE, INSERT ON reto4.cliente TO 'usuarioCliente';
+GRANT SELECT ON reto4.secciones TO 'usuarioCliente';
+GRANT SELECT ON reto4.supermercados TO 'usuarioCliente';
+
+-- creacion de Usuarios
+CREATE USER 'Jefes' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'usuarioJefe' PASSWORD EXPIRE INTERVAL 30 DAY;
+CREATE USER 'Administrador' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'administradorBD' PASSWORD EXPIRE INTERVAL 30 DAY;
+CREATE USER 'Raso1' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'usuarioCliente' PASSWORD EXPIRE INTERVAL 30 DAY;
+CREATE USER 'Raso2' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'usuarioCliente' PASSWORD EXPIRE INTERVAL 30 DAY;
+
+GRANT VIEW,INDEX,CREATE VIEW ON reto4.* TO 'Raso2';
+
+-- creacion de Vistas
+
+CREATE VIEW MostrarArticulo (idArticulo,nombreSeccion, nombreArticulo, precio, stockActual )
+AS SELECT idArticulo,nombreSeccion, nombreArticulo, precio, stockActual
+FROM articulos a JOIN secciones s ON a.codigoSeccion = s.codigoSeccion;
+
+CREATE VIEW Vista2 (nombreArticulo, cantidad, codigoCompra, precioFinal)
+AS SELECT nombreArticulo, cantidad, ac.codigoCompra, precioFinal
+FROM articulos a join articuloscomprados ac on a.idArticulo = ac.idArticulo join compras c on ac.codigoCompra=c.codigoCompra group by fechaCompra;
+
+CREATE VIEW EstadisticasInventario (Supermercado,Seccion,StockTotal,PrecioStockTotal)
+AS SELECT  codigoSuper,codigoSeccion,sum(stockActual),sum(precio)
+FROM supermercados su JOIN secciones se ON su.codigoSuper=se.codigoSuper JOIN articulos ar ON su.codigoSeccion=ar.codigoSeccion
+GROUP BY codigoSuper;
