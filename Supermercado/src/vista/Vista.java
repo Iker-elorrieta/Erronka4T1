@@ -172,9 +172,9 @@ public class Vista {
 			e4.printStackTrace();
 		}
 		try {
-			usuarios=gp.cargarPersonas();
-			supermercados=gsm.cargarSupermercados();
-			listaArticulos=ga.cargarArticulos();
+			usuarios=gp.cargarPersonas(conexion);
+			supermercados=gsm.cargarSupermercados(conexion);
+			listaArticulos=ga.cargarArticulos(conexion);
 		} catch (SQLException e3) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
@@ -474,8 +474,8 @@ public class Vista {
 						cli = new Cliente(textDNI.getText(),textNombre.getText(),textApellidos.getText(),
 						 mc.deStringADate(datePicker.getJFormattedTextField().getText()), textMail.getText(),
 						 String.valueOf(contrasenaRegi.getPassword()),tipoPersona.Cliente, (float)0,0);
-						gp.insertarPersona(cli,conexion);
-						usuarios=gp.cargarPersonas();
+						gp.insertarPersona(mc,conexion,cli);
+						usuarios=gp.cargarPersonas(conexion);
 						paneles.setSelectedIndex(1);
 					} catch (ParseException e2) {
 						// TODO Auto-generated catch block
@@ -547,7 +547,7 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				if(JOptionPane.showConfirmDialog (null, "¿Estas seguro?","AVISO", 0)==0) {
 					try {
-						gp.darseBajaPersona(login);
+						gp.darseBajaPersona(conexion,login);
 						paneles.setSelectedIndex(0);
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
@@ -581,7 +581,7 @@ public class Vista {
 				cliente.setEmail(textCEmail.getText());
 				cliente.setFechaNacimiento(mc.deStringADate(datePicker_1.getJFormattedTextField().getText()));
 				gp.comprobarCampos(cliente.getNombre(),cliente.getApellidos() , cliente.getContrasena(),cliente.getDni(), cliente.getFechaNacimiento(), cliente.getEmail());
-				gp.cambiarPerfilCliente(cliente);
+				gp.cambiarPerfilCliente(mc,conexion,cliente);
 				textCNombre.setEnabled(false);
 				textCApellidos.setEnabled(false);
 				passCContrasena.setEnabled(false);
@@ -698,7 +698,7 @@ public class Vista {
 		btnSumarDinero.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					gp.AumentarDineroCliente(cliente, Integer.valueOf(textDineroExtra.getText()));
+					gp.AumentarDineroCliente(conexion,cliente, Integer.valueOf(textDineroExtra.getText()));
 					cliente.setDinero(cliente.getDinero()+Integer.valueOf(textDineroExtra.getText()));
 					textDineroExtra.setText("");
 					textDineroActual.setText(String.valueOf(cliente.getDinero()));
@@ -744,7 +744,7 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				paneles.setSelectedIndex(8);
 				try {
-					su=gsm.buscarSupermercado(admin);
+					su=gsm.buscarSupermercado(conexion,admin);
 					admin.setSupermercado(su);
 					String [] cargaSuper=new String [1];
 					cargaSuper[0]=admin.getSupermercado().getEmpresa();
@@ -775,7 +775,7 @@ public class Vista {
 		btnPaginaSuper.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					escogeJefe.setModel(new DefaultComboBoxModel<String>(mc.cargarNombreJefe(gp.cargarJefesSinSupermercado(gsm.cargarSupermercados().size()))));
+					escogeJefe.setModel(new DefaultComboBoxModel<String>(mc.cargarNombreJefe(gp.cargarJefesSinSupermercado(conexion,gsm.cargarSupermercados(conexion).size()))));
 					paneles.setSelectedIndex(6);
 					lblErrorSeleccion.setText("");
 				} catch (SQLException e1) {
@@ -797,7 +797,7 @@ public class Vista {
 		btnAnadirSecciones.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					escogeSuper.setModel(new DefaultComboBoxModel<String>(mc.cargarEmpresa(gsm.cargarSupermercados())));
+					escogeSuper.setModel(new DefaultComboBoxModel<String>(mc.cargarEmpresa(gsm.cargarSupermercados(conexion))));
 					paneles.setSelectedIndex(7);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -830,8 +830,8 @@ public class Vista {
 		btnVerHistorial.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					historial=gc.buscarComprasPersona(login);
-					tabla=cv.cargarHistorialCompras(login,mc.cargarHistorialCompras(historial));
+					historial=gc.buscarComprasPersona(mc,conexion,login);
+					tabla=cv.cargarHistorialCompras(login,mc.cargarHistorialCompras(conexion,historial));
 					historialCompras.setViewportView(tabla);
 					paneles.setSelectedIndex(10);
 				} catch (SQLException e1) {
@@ -879,7 +879,7 @@ public class Vista {
 					btnDesbloquea.setVisible(false);
 					btnDescrip.setVisible(true);
 					manejaCambio=3;
-					tabla=cv.cargarTabla(mc.cargarArticulos(listaArticulos));
+					tabla=cv.cargarTabla(mc.cargarArticulos(conexion,listaArticulos));
 					scrollPane.setViewportView(tabla);
 				} catch (SQLException ex1) {
 					// TODO Auto-generated catch block
@@ -902,7 +902,7 @@ public class Vista {
 					btnAceptar.setVisible(false);
 				cambiaDe.setVisible(false);
 				manejaCambio=1;
-				tabla=cv.tablaUsuarios(mc.tablaUsuarios(usuarios));
+				tabla=cv.tablaUsuarios(mc.tablaUsuarios(conexion,usuarios));
 				scrollPane.setViewportView(tabla);
 				btnBloquea.setVisible(true);
 				btnDesbloquea.setVisible(true);
@@ -942,7 +942,7 @@ public class Vista {
 					btnDesbloquea.setVisible(false);
 					manejaCambio=2;
 					/** Posible problema**/
-					tabla=cv.tablaSupermercados(mc.cargaSuper(supermercados));
+					tabla=cv.tablaSupermercados(mc.cargaSuper(conexion,supermercados));
 					scrollPane.setViewportView(tabla);
 					btnDescrip.setVisible(false);
 				} catch (SQLException e1) {
@@ -958,7 +958,7 @@ public class Vista {
 		btnDesbloquea.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					cv.accionPorTabla(tabla, usuarios, false);
+					cv.accionPorTabla(conexion,tabla, usuarios, false);
 					btnVerUsuarios.doClick();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -974,7 +974,7 @@ public class Vista {
 		btnBloquea.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					cv.accionPorTabla(tabla, usuarios, true);
+					cv.accionPorTabla(conexion,tabla, usuarios, true);
 					btnVerUsuarios.doClick();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -995,19 +995,19 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(manejaCambio==1) {
-					cv.borrarPorTabla(tabla, usuarios);
+					cv.borrarPorTabla(conexion,tabla, usuarios);
 					btnVerUsuarios.doClick();
 					}
 					if(manejaCambio==2) {
-						cv.borrarSupermercadoTabla(tabla, gsm.cargarSupermercados());
+						cv.borrarSupermercadoTabla(conexion,tabla, gsm.cargarSupermercados(conexion));
 						btnVerSuper.doClick();
 					}
 					if(manejaCambio==3) {
-						cv.borrarArticuloTabla(tabla,ga.cargarArticulos());
+						cv.borrarArticuloTabla(conexion,tabla,ga.cargarArticulos(conexion));
 					    verArticulos.doClick();
 					}
 					if(manejaCambio==4) {
-						cv.borrarSeccionTabla(tabla, gs.cargarSecciones());
+						cv.borrarSeccionTabla(conexion,tabla, gs.cargarSecciones(conexion));
 						btnVerSecciones.doClick();
 					}
 				} catch (SQLException e1) {
@@ -1028,7 +1028,7 @@ public class Vista {
 					btnDesbloquea.setVisible(false);
 					manejaCambio=4;
 					/** posible error**/
-					tabla=cv.tablaSecciones(mc.cargaSecciones(seccionesDelSuper));
+					tabla=cv.tablaSecciones(mc.cargaSecciones(conexion,seccionesDelSuper));
 					scrollPane.setViewportView(tabla);
 					btnDescrip.setVisible(false);
 				} catch (SQLException e1) {
@@ -1054,19 +1054,19 @@ public class Vista {
 						btnVerUsuarios.doClick();
 					}
 					if(manejaCambio==2) {
-						cv.modificarSupermercadoTabla(tabla, gsm.cargarSupermercados());
+						cv.modificarSupermercadoTabla(conexion,tabla, gsm.cargarSupermercados(conexion));
 						btnVerSuper.doClick();
 					}
 					if(manejaCambio==3) {
-						cv.modificarArticuloTabla(tabla,ga.cargarArticulos());
+						cv.modificarArticuloTabla(conexion,tabla,ga.cargarArticulos(conexion));
 					    verArticulos.doClick();
 					}
 					if(manejaCambio==4) {
-						cv.modificarSeccionTabla(tabla, gs.cargarSecciones());
+						cv.modificarSeccionTabla(conexion,tabla, gs.cargarSecciones(conexion));
 						btnVerSecciones.doClick();
 					}
 					if(manejaCambio==5) {
-						cv.recargarStocks(tabla, listaArticulos);
+						cv.recargarStocks(conexion,tabla, listaArticulos);
 						btnCargarStocks.doClick();
 					}
 				} catch (SQLException e1) {
@@ -1112,7 +1112,7 @@ public class Vista {
 		btnAceptar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					tabla=cv.anadirDescripcion(tabla,cambiaDe.getText(),listaArticulos);
+					tabla=cv.anadirDescripcion(conexion,tabla,cambiaDe.getText(),listaArticulos);
 					tabla.updateUI();
 					btnAceptar.setVisible(false);
 					cambiaDe.setText("");
@@ -1138,7 +1138,7 @@ public class Vista {
 					btnDesbloquea.setVisible(false);
 					btnDescrip.setVisible(false);
 					manejaCambio=5;
-					tabla=cv.tablaRecargArticulos(mc.cargarRecargaArticulos());
+					tabla=cv.tablaRecargArticulos(mc.cargarRecargaArticulos(conexion));
 					scrollPane.setViewportView(tabla);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -1274,8 +1274,8 @@ public class Vista {
 					mc.deStringADate(datePicker_3.getJFormattedTextField().getText()),textGmailJefe.getText(),
 					String.valueOf(passJefe.getPassword()),tipoPersona.Jefe,
 					mc.deStringADate(datePicker_2.getJFormattedTextField().getText()),(Float)porcentajeEmpresa.getValue(),0);
-					gp.insertarPersona(nuevoJefe,conexion);
-					usuarios=gp.cargarPersonas();
+					gp.insertarPersona(mc,conexion,nuevoJefe);
+					usuarios=gp.cargarPersonas(conexion);
 					datePicker_3.getJFormattedTextField().setText("");
 					datePicker_2.getJFormattedTextField().setText("");
 					btnCancelarJefe.doClick();
@@ -1412,7 +1412,7 @@ public class Vista {
 					cv.comprobarCampos(panel_Supermercado);
 					supermercado=new Supermercado(textCodigoSuper.getText(),textEmpresa.getText(),textDireccion.getText(),(Integer) NumEmple.getValue(),null);
 					nuevoJefe=(Jefe) gp.buscarPersona(String.valueOf(escogeJefe.getItemAt(escogeJefe.getSelectedIndex())), usuarios);
-					gsm.insertarSupermercado(nuevoJefe, supermercado);
+					gsm.insertarSupermercado(conexion,nuevoJefe, supermercado);
 					btnAtrasSuper.doClick();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -1633,15 +1633,15 @@ public class Vista {
 		 		try {	
 		 			if(!textPrimeraSe.getText().equals("") && textPrimeraSe.isVisible() && supermercado.getArraySecciones().size()==0) {
 		 				seccion=new Seccion(supermercado.getCodigoSuper()+"1",tipoArticulo.valueOf(textPrimeraSe.getText()),0,null);
-		 					gs.insertarSeccion(supermercado, seccion);
+		 					gs.insertarSeccion(conexion,supermercado, seccion);
 		 			} 
 		 			if(!textSegundaSe.getText().equals("") && textSegundaSe.isVisible()&& supermercado.getArraySecciones().size()==1) {
 		 				seccion=new Seccion(supermercado.getCodigoSuper()+"2",tipoArticulo.valueOf(textSegundaSe.getText()),0,null);
-		 					gs.insertarSeccion(supermercado, seccion);
+		 					gs.insertarSeccion(conexion,supermercado, seccion);
 		 			}
 		 			if(!textSegundaSe.getText().equals("") && textTerceraSe.isVisible()&& supermercado.getArraySecciones().size()==2) {
 		 				seccion=new Seccion(supermercado.getCodigoSuper()+"3",tipoArticulo.valueOf(textTerceraSe.getText()),0,null);
-		 					gs.insertarSeccion(supermercado, seccion);
+		 					gs.insertarSeccion(conexion,supermercado, seccion);
 		 			}
 		 			btnCancelarSe.doClick();
 		 			paneles.setSelectedIndex(3);
@@ -1660,7 +1660,7 @@ public class Vista {
 		 		escogeDireccion.setVisible(true);
 		 		lblEscogeDireccion.setVisible(true);
 		 		try {
-					escogeDireccion.setModel(new DefaultComboBoxModel<String>(mc.cargarDireccionSuper(gsm.buscarSuperEmpresa(escogeSuper.getItemAt(escogeSuper.getSelectedIndex())))));
+					escogeDireccion.setModel(new DefaultComboBoxModel<String>(mc.cargarDireccionSuper(gsm.buscarSuperEmpresa(conexion,escogeSuper.getItemAt(escogeSuper.getSelectedIndex())))));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -1686,7 +1686,7 @@ public class Vista {
 			 		textPrimeraSe.setVisible(true);
 			 		tipoSeccion.setVisible(true);
 			 		lblTipo.setVisible(true);
-					supermercado=gsm.buscarSuperEmpresaDireccion(escogeSuper.getItemAt(escogeSuper.getSelectedIndex()),escogeDireccion.getItemAt(escogeDireccion.getSelectedIndex()));
+					supermercado=gsm.buscarSuperEmpresaDireccion(conexion,escogeSuper.getItemAt(escogeSuper.getSelectedIndex()),escogeDireccion.getItemAt(escogeDireccion.getSelectedIndex()));
 					if(supermercado.getArraySecciones().size()>=1) {
 						textPrimeraSe.setText(String.valueOf(supermercado.getArraySecciones().get(0).getNombreSeccion()));
 						lblSegundaSe.setVisible(true);
@@ -1901,13 +1901,13 @@ public class Vista {
 				try {
 				if(tipoArticuloCombo.getSelectedItem().equals("Comida")) {
 						nuevaComida=new Comida(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, mc.deStringADate(datePicker_4.getJFormattedTextField().getText()), textProcedencia.getText());
-						ga.insertarArticulo(insercion, nuevaComida);
+						ga.insertarArticulo(mc,conexion,insercion, nuevaComida);
 				}else if(tipoArticuloCombo.getSelectedItem().equals("Herramienta")) {
 						nuevaHerramienta=new Herramienta(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, mc.pasarBoolean(chckElectrica.isSelected()), (Integer)garantia.getValue());
-						ga.insertarArticulo(insercion, nuevaHerramienta);
+						ga.insertarArticulo(mc,conexion,insercion, nuevaHerramienta);
 				}else if(tipoArticuloCombo.getSelectedItem().equals("Ropa")) {
 						nuevaRopa=new Ropa(0, textNombreArticulo.getText(), textImagen.getText(), textDescripcion.getText(), Float.valueOf(textPrecio.getText()), 100, textTalla.getText(), textMarca.getText());
-						ga.insertarArticulo(insercion, nuevaRopa);
+						ga.insertarArticulo(mc,conexion,insercion, nuevaRopa);
 				}
 				cv.vaciarCampos(panel_Articulos);
 				datePicker_4.getJFormattedTextField().setText("");
@@ -1966,7 +1966,7 @@ public class Vista {
 		boxSuper.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					supermercados=gsm.cogerSeccionesMultiplesSu(supermercados);
+					supermercados=gsm.cogerSeccionesMultiplesSu(conexion,supermercados);
 					seccionesDelSuper=supermercados.get(boxSuper.getSelectedIndex()).getArraySecciones();
 					boxSeccion.setModel(new DefaultComboBoxModel<String>(mc.cargarNombreSeccion(seccionesDelSuper)));
 					boxSeccion.setVisible(true);
@@ -1984,7 +1984,7 @@ public class Vista {
 		boxSeccion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					listaArticulos=ga.cargarArticulosPorSeccion(seccionesDelSuper.get(boxSeccion.getSelectedIndex()));
+					listaArticulos=ga.cargarArticulosPorSeccion(conexion,seccionesDelSuper.get(boxSeccion.getSelectedIndex()));
 					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -2014,7 +2014,7 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(textBuscador.getText().equals("")) {
-						listaArticulos=ga.cargarArticulos();
+						listaArticulos=ga.cargarArticulos(conexion);
 						buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
 					}else {
 					listaArticulos=ga.buscarArticulosPorNombre(textBuscador.getText(),listaArticulos);
@@ -2104,21 +2104,23 @@ public class Vista {
 		panelHistorial.setLayout(null);
 		panelHistorial.setBackground(customColor);
 		
-		historialCompras.setBounds(0, 46, 376, 300);
+		historialCompras.setBounds(10, 46, 376, 300);
 		panelHistorial.add(historialCompras);
 		
 		JLabel lblHistorial = new JLabel("Historial de Compras");
+		lblHistorial.setForeground(new Color(255, 255, 255));
 		lblHistorial.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblHistorial.setBounds(0, 21, 222, 14);
+		lblHistorial.setBounds(10, 21, 222, 14);
 		panelHistorial.add(lblHistorial);
 		
 		JScrollPane articulosComprados = new JScrollPane();
-		articulosComprados.setBounds(379, 46, 313, 300);
+		articulosComprados.setBounds(389, 46, 313, 300);
 		panelHistorial.add(articulosComprados);
 		
 		JLabel lblArticulosComprados = new JLabel("Articulos comprados");
+		lblArticulosComprados.setForeground(new Color(255, 255, 255));
 		lblArticulosComprados.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblArticulosComprados.setBounds(379, 21, 200, 14);
+		lblArticulosComprados.setBounds(394, 21, 200, 14);
 		panelHistorial.add(lblArticulosComprados);
 		
 		JButton btnAtrasHis = new JButton("Atras");
@@ -2139,8 +2141,8 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					tabla.setEnabled(false);
-					historialArticulosComprados=gac.cargarArticuloCompradoCod(cv.cogerCodigoCompra(tabla, historial).getCodigoCompra());
-					tablaApoyo=cv.cargaArticulosComprados(mc.cargarArticulosComprados(historialArticulosComprados));
+					historialArticulosComprados=gac.cargarArticuloCompradoCod(conexion,cv.cogerCodigoCompra(tabla, historial).getCodigoCompra());
+					tablaApoyo=cv.cargaArticulosComprados(mc.cargarArticulosComprados(conexion,historialArticulosComprados));
 					articulosComprados.setViewportView(tablaApoyo);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -2156,13 +2158,12 @@ public class Vista {
 		btnCancelarCompra.setBackground(new Color(0,76,255));
 		btnCancelarCompra.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
 				try {
 					devolucion=cv.cogerCodigoCompra(tabla, historial);
 					gp.cancelarArticulos(conexion,devolucion);
 					gp.cancelarCompra(conexion,login,devolucion);
-					historial=gc.buscarComprasPersona(login);
-					tabla=cv.cargarHistorialCompras(login,mc.cargarHistorialCompras(historial));
+					historial=gc.buscarComprasPersona(mc,conexion,login);
+					tabla=cv.cargarHistorialCompras(login,mc.cargarHistorialCompras(conexion,historial));
 					historialCompras.setViewportView(tabla);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block

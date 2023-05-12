@@ -1,5 +1,6 @@
 package gestores;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,9 +17,8 @@ import referencias.TABLAS;
 
 
 public class GestorArticulo {
-	Metodos mc=new Metodos();
-
 	private ArrayList<Articulo> listaArticulos;
+	
 	public GestorArticulo() {
 		super();
 		listaArticulos=new ArrayList<Articulo>();
@@ -29,12 +29,12 @@ public class GestorArticulo {
 	public void setListaArticulos(ArrayList<Articulo> listaArticulos) {
 		this.listaArticulos = listaArticulos;
 	}
-	public ArrayList<Articulo> cargarArticulos() throws SQLException{
+	public ArrayList<Articulo> cargarArticulos(Connection conexion) throws SQLException{
 		ArrayList<Articulo> lista=new ArrayList<Articulo>();
 		Herramienta he=null;
 		Comida co=null;
 		Ropa ro=null;
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		Statement comando = (Statement) conexion.createStatement();
 		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.ELECTRICA+" OR "+TABLAS.GARANTIA+" IS NOT NULL");
 		while(carga.next()) {
 		he=new Herramienta(carga.getInt(TABLAS.IDARTICULO),carga.getString(TABLAS.NOMBREARTICULO),
@@ -59,10 +59,11 @@ public class GestorArticulo {
 				cargaR.getString(TABLAS.TALLA),cargaR.getString(TABLAS.MARCA));
 		lista.add(ro);
 		}
+		comando.close();
 		return lista;
 		}
-	public void insertarArticulo(Seccion se,Articulo ar) throws SQLException {
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+	public void insertarArticulo(Metodos mc,Connection conexion,Seccion se,Articulo ar) throws SQLException {
+		Statement comando = (Statement) conexion.createStatement();
 		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" "
 				+ "("+TABLAS.CODIGOSECCION+","+TABLAS.NOMBREARTICULO+","
 				+ ""+TABLAS.RUTAIMAGEN+","+TABLAS.DESCRIPCION+","+TABLAS.PRECIO+","
@@ -89,12 +90,13 @@ public class GestorArticulo {
 					+ "AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
 			comando.executeUpdate("UPDATE "+TABLAS.SECCION+" SET "+TABLAS.NUMAR+"=("+TABLAS.NUMAR+"+"+1+") WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
 		}
+		comando.close();
 	}
-	public void cambiarArticulo(Articulo ar) throws SQLException {
+	public void cambiarArticulo(Metodos mc,Connection conexion,Articulo ar) throws SQLException {
 		Ropa ro=null;
 		Comida co=null;
 		Herramienta he=null;
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		Statement comando = (Statement) conexion.createStatement();
 		comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "
 				+ " "+TABLAS.NOMBREARTICULO+"='"+ar.getNombreArticulo()+"',"
 				+ " "+TABLAS.RUTAIMAGEN+"='"+ar.getRutaImagen()+"', "+TABLAS.DESCRIPCION+"='"+ar.getDescripcion()+"',"
@@ -113,27 +115,19 @@ public class GestorArticulo {
 			comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.FECHACADUCIDAD+"='"+co.getFechaCaducidad()+"',"
 					+ " "+TABLAS.PROCEDENCIA+"='"+co.getProcedencia()+"' WHERE "+TABLAS.IDARTICULO+"="+ar.getIdArticulo());
 		}
+		conexion.close();
 	}
-	public void borrarArticulo(Articulo ar) throws SQLException {
-		Statement comando;
-		comando = (Statement) mc.conectarBaseDatos().createStatement();
+	public void borrarArticulo(Connection conexion,Articulo ar) throws SQLException {
+		Statement comando = (Statement) conexion.createStatement();
 		comando.executeUpdate("DELETE FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.IDARTICULO+"='"+ar.getIdArticulo()+"'");
+		comando.close();
 	}
-	public Articulo buscarArticulo(Articulo ar,ArrayList<Articulo> lista) {
-		Articulo a= ar;
-		for(Articulo ar1:lista) {
-			if(ar1.getNombreArticulo().equals(ar.getNombreArticulo())) {
-				a=ar1;	
-			}
-		}
-		return a;
-	}
-	public ArrayList<Articulo> cargarArticulosPorSeccion(Seccion se) throws SQLException{
+	public ArrayList<Articulo> cargarArticulosPorSeccion(Connection conexion,Seccion se) throws SQLException{
 		ArrayList<Articulo> lista=new ArrayList<Articulo>();
 		Herramienta he=null;
 		Comida co=null;
 		Ropa ro=null;
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		Statement comando = (Statement) conexion.createStatement();
 		if(se.getNombreSeccion().equals(tipoArticulo.Herramienta)) {
 		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
 		while(carga.next()) {
@@ -164,6 +158,7 @@ public class GestorArticulo {
 		lista.add(ro);
 			}
 		}
+		comando.close();
 		return lista;
 	}
 	public ArrayList<Articulo> buscarArticulosPorNombre(String busqueda,ArrayList<Articulo> listaArticulos) throws SQLException{
@@ -185,6 +180,15 @@ public class GestorArticulo {
 		if(!repetido) {
 			listaCarrito.add(articuloNuevo);
 		}
+	}
+	public Articulo buscarArticulo(Articulo ar,ArrayList<Articulo> lista) {
+		Articulo a= ar;
+		for(Articulo ar1:lista) {
+			if(ar1.getNombreArticulo().equals(ar.getNombreArticulo())) {
+				a=ar1;	
+			}
+		}
+		return a;
 	}
 	
 }

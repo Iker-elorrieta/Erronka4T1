@@ -39,32 +39,32 @@ class TestGestorSeccion {
 		Supermercado su=new Supermercado("ABCDE","PruebaEmpresa","Errekamari",4,null);
 		Seccion se=new Seccion("OOOO",tipoArticulo.Herramienta,0,null);
 		try {
-			g.setListaSecciones(g.cargarSecciones());
+			g.setListaSecciones(g.cargarSecciones(conexion));
 			assertTrue(g.getListaSecciones().size()>0);
 			int antesDeInsertar=g.getListaSecciones().size();
 			assertEquals(g.getListaSecciones().get(0).getCodigoSeccion(),"A0001");
 			assertEquals(g.getListaSecciones().get(0).getNombreSeccion(),tipoArticulo.Comida);
 			
-			g1.insertarPersona(jefe,conexion);
-			g2.insertarSupermercado(jefe, su);
-			g.insertarSeccion(su, se);
-			g.setListaSecciones(g.cargarSecciones());
+			g1.insertarPersona(mc,conexion,jefe);
+			g2.insertarSupermercado(conexion,jefe, su);
+			g.insertarSeccion(conexion,su, se);
+			g.setListaSecciones(g.cargarSecciones(conexion));
 			assertTrue(g.getListaSecciones().size()>antesDeInsertar);
 			assertEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getCodigoSeccion(),"OOOO");
 			assertEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getNombreSeccion(),tipoArticulo.Herramienta);
 			
 			se=new Seccion("OOOO",tipoArticulo.Ropa,0,null);
-			g.cambiarSeccion(se);
-			g.setListaSecciones(g.cargarSecciones());
+			g.cambiarSeccion(conexion,se);
+			g.setListaSecciones(g.cargarSecciones(conexion));
 			assertEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getCodigoSeccion(),"OOOO");
 			assertEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getNombreSeccion(),tipoArticulo.Ropa);
 			
-			g.borrarSeccion(se);
+			g.borrarSeccion(conexion,se);
 			se=g.getListaSecciones().get(g.getListaSecciones().size()-1);
-			g.setListaSecciones(g.cargarSecciones());
+			g.setListaSecciones(g.cargarSecciones(conexion));
 			assertNotEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getCodigoSeccion(),"OOOO");
 			assertNotEquals(g.getListaSecciones().get(g.getListaSecciones().size()-1).getNombreSeccion(),se);
-			g1.darseBajaPersona(jefe);
+			g1.darseBajaPersona(conexion,jefe);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -35,14 +36,11 @@ import modelo.Cliente;
 import modelo.Comida;
 import modelo.Compra;
 import modelo.Herramienta;
-import modelo.Jefe;
 import modelo.Persona;
 import modelo.Ropa;
 import modelo.Seccion;
 import modelo.Supermercado;
 import otros.tipoArticulo;
-import otros.tipoPersona;
-import referencias.TABLAS;
 import referencias.TITULOS;
 
 public class MetodosVista {
@@ -100,7 +98,6 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		return table;
 	}
 	public String descripcion(JTable tabla,ArrayList<Articulo> listaArticulos) throws SQLException {
-		listaArticulos = ga.cargarArticulos();
 		return listaArticulos.get(tabla.getSelectedRow()).getDescripcion();
 	}
 	public JTable tablaUsuarios(String [][] datosTabla) throws SQLException {
@@ -155,26 +152,26 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			}
 		}
 	}
-	public void borrarPorTabla(JTable tabla,ArrayList<Persona> lista) throws SQLException {
+	public void borrarPorTabla(Connection conexion,JTable tabla,ArrayList<Persona> lista) throws SQLException {
 		if(lista.get(tabla.getSelectedRow()) instanceof Cliente){
-		gp.darseBajaPersona(lista.get(tabla.getSelectedRow()));
+		gp.darseBajaPersona(conexion,lista.get(tabla.getSelectedRow()));
 		}
 	}
-	public void accionPorTabla(JTable tabla,ArrayList<Persona> lista,boolean accion) throws SQLException {
+	public void accionPorTabla(Connection conexion,JTable tabla,ArrayList<Persona> lista,boolean accion) throws SQLException {
 		if(lista.get(tabla.getSelectedRow()) instanceof Cliente) {
-		gp.cambiarEstadoUsuario((Cliente)lista.get(tabla.getSelectedRow()), accion);
+		gp.cambiarEstadoUsuario(mts,conexion,(Cliente)lista.get(tabla.getSelectedRow()), accion);
 		}
 	}
-	public void borrarSupermercadoTabla(JTable tabla,ArrayList<Supermercado> lista) throws SQLException {
-		gsm.borrarSupermercado(lista.get(tabla.getSelectedRow()));
+	public void borrarSupermercadoTabla(Connection conexion,JTable tabla,ArrayList<Supermercado> lista) throws SQLException {
+		gsm.borrarSupermercado(conexion,lista.get(tabla.getSelectedRow()));
 	}
-	public void borrarSeccionTabla(JTable tabla,ArrayList<Seccion> lista) throws SQLException {
-		gs.borrarSeccion(lista.get(tabla.getSelectedRow()));
+	public void borrarSeccionTabla(Connection conexion,JTable tabla,ArrayList<Seccion> lista) throws SQLException {
+		gs.borrarSeccion(conexion,lista.get(tabla.getSelectedRow()));
 
 }
-	public void borrarArticuloTabla(JTable tabla, ArrayList<Articulo> lista) throws SQLException {
+	public void borrarArticuloTabla(Connection conexion,JTable tabla, ArrayList<Articulo> lista) throws SQLException {
 		// TODO Auto-generated method stub
-		ga.borrarArticulo(lista.get(tabla.getSelectedRow()));
+		ga.borrarArticulo(conexion,lista.get(tabla.getSelectedRow()));
 	}
 	
 	public ArrayList<Persona> realizarCambios(JTable tabla,ArrayList<Persona> lista) throws ErroresDeOperaciones, SQLException {
@@ -187,26 +184,26 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		};
 		return lista;
 }
-	public void modificarSupermercadoTabla(JTable tabla,ArrayList<Supermercado> lista) throws SQLException {
+	public void modificarSupermercadoTabla(Connection conexion,JTable tabla,ArrayList<Supermercado> lista) throws SQLException {
 		int fila=0;
 		for(Supermercado su: lista) {
 			su.setEmpresa((String) tabla.getModel().getValueAt(fila, 1));
 			su.setDireccion((String) tabla.getModel().getValueAt(fila, 2));
 			su.setNumEmpleados(Integer.parseInt((String) tabla.getModel().getValueAt(fila, 3)));
-			gsm.cambiarSupermercado(su);
+			gsm.cambiarSupermercado(conexion,su);
 			fila++;
 		};
 	}
-	public void modificarSeccionTabla(JTable tabla,ArrayList<Seccion> lista) throws SQLException {
+	public void modificarSeccionTabla(Connection conexion,JTable tabla,ArrayList<Seccion> lista) throws SQLException {
 		int fila=0;
 		for(Seccion se: lista) {
 			se.setNombreSeccion(tipoArticulo.valueOf((String) tabla.getModel().getValueAt(fila, 1)));
 			se.setNumArticulo(Integer.parseInt((String) tabla.getModel().getValueAt(fila, 2)));
-			gs.cambiarSeccion(se);
+			gs.cambiarSeccion(conexion,se);
 			fila++;
 		};
 	}
-	public void modificarArticuloTabla(JTable tabla, ArrayList<Articulo> lista) throws SQLException, ParseException {
+	public void modificarArticuloTabla(Connection conexion,JTable tabla, ArrayList<Articulo> lista) throws SQLException, ParseException {
 	// TODO Auto-generated method stub
 		int fila=0;
 		Ropa ro=null;
@@ -221,13 +218,13 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 				ro=(Ropa) ar;
 				ro.setTalla((String) tabla.getModel().getValueAt(fila, 4));
 				ro.setMarca((String) tabla.getModel().getValueAt(fila, 5));
-				ga.cambiarArticulo(ro);
+				ga.cambiarArticulo(mts,conexion,ro);
 			}
 			if(ar instanceof Comida) {
 				co=(Comida)ar;
 				co.setFechaCaducidad(mts.deStringADate(((String) tabla.getModel().getValueAt(fila, 4))));
 				co.setProcedencia((String) tabla.getModel().getValueAt(fila, 5));
-				ga.cambiarArticulo(co);
+				ga.cambiarArticulo(mts,conexion,co);
 			}
 			if(ar instanceof Herramienta) {
 				he=(Herramienta) ar;
@@ -237,24 +234,24 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 					he.setElectrica(false);
 				}
 				he.setGarantia(Integer.parseInt(((String) tabla.getModel().getValueAt(fila, 5))));
-				ga.cambiarArticulo(he);
+				ga.cambiarArticulo(mts,conexion,he);
 			}
 			fila++;
 		}
 	}
-	public void recargarStocks(JTable tabla, ArrayList<Articulo> lista) throws SQLException {
-		lista=ga.cargarArticulos();
+	public void recargarStocks(Connection conexion,JTable tabla, ArrayList<Articulo> lista) throws SQLException {
+		lista=ga.cargarArticulos(conexion);
 		for(Articulo ar:lista) {
 			if(Integer.parseInt((String) tabla.getModel().getValueAt(tabla.getSelectedRow(), 1))==ar.getIdArticulo()) {
 				ar.setStockActual(100);
-				ga.cambiarArticulo(ar);
+				ga.cambiarArticulo(mts,conexion,ar);
 				JOptionPane.showMessageDialog(null, "Este recarga de stocks costo "+(String) tabla.getModel().getValueAt(tabla.getSelectedRow(), 5));
 			}
 		}
 	}
-	public JTable anadirDescripcion(JTable tabla, String text, ArrayList<Articulo> lista) throws SQLException {
+	public JTable anadirDescripcion(Connection conexion,JTable tabla, String text, ArrayList<Articulo> lista) throws SQLException {
 		// TODO Auto-generated method stub
-		lista=ga.cargarArticulos();
+		lista=ga.cargarArticulos(conexion);
 		lista.get(tabla.getSelectedRow()).setDescripcion(text);
 		tabla.getModel().setValueAt(lista.get(tabla.getSelectedRow()).getDescripcion(), tabla.getSelectedRow(), 2);
 		return tabla;

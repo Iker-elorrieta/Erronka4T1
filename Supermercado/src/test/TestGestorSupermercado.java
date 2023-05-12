@@ -34,28 +34,28 @@ class TestGestorSupermercado {
 		GestorSupermercado g=new GestorSupermercado();
 		GestorPersona g1=new GestorPersona();
 		try {
-			g.setListaSupers(g.cargarSupermercados());
+			g.setListaSupers(g.cargarSupermercados(conexion));
 			assertTrue(g.getListaSupers().size()>0);
 			int antesDeInsertar=g.getListaSupers().size();
 			
-			g1.insertarPersona(jefe,conexion);
-			g.insertarSupermercado(jefe, su);
-			g.setListaSupers(g.cargarSupermercados());
+			g1.insertarPersona(mc,conexion,jefe);
+			g.insertarSupermercado(conexion,jefe, su);
+			g.setListaSupers(g.cargarSupermercados(conexion));
 			assertTrue(antesDeInsertar<g.getListaSupers().size());
 			assertEquals(g.getListaSupers().get(g.getListaSupers().size()-1).getCodigoSuper(),"ABCDE");
 			assertEquals(g.getListaSupers().get(g.getListaSupers().size()-1).getEmpresa(),"PruebaEmpresa");
 			
 			su=new Supermercado("ABCDE","PruebaEmpresaCambio","Errekamari",4,null);
-			g.cambiarSupermercado(su);
-			g.setListaSupers(g.cargarSupermercados());
+			g.cambiarSupermercado(conexion,su);
+			g.setListaSupers(g.cargarSupermercados(conexion));
 			assertEquals(g.getListaSupers().get(g.getListaSupers().size()-1).getCodigoSuper(),"ABCDE");
 			assertEquals(g.getListaSupers().get(g.getListaSupers().size()-1).getEmpresa(),"PruebaEmpresaCambio");
 			
-			g.borrarSupermercado(su);
-			g.setListaSupers(g.cargarSupermercados());
+			g.borrarSupermercado(conexion,su);
+			g.setListaSupers(g.cargarSupermercados(conexion));
 			assertNotEquals(g.getListaSupers().get(g.getListaSupers().size()-1).getCodigoSuper(),"ABCDE");
 			assertNotEquals(g.getListaSupers().get(g.getListaSupers().size()-1).getEmpresa(),"PruebaEmpresaCambio");
-			g1.darseBajaPersona(jefe);
+			g1.darseBajaPersona(conexion,jefe);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

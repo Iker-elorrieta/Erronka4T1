@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,16 +15,19 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import gestores.GestorArticulo;
+import gestores.GestorCompra;
 import gestores.GestorPersona;
 import gestores.GestorSeccion;
 import gestores.GestorSupermercado;
 import modelo.*;
 import otros.tipoArticulo;
 import otros.tipoPersona;
-import referencias.CONEXION;
 import referencias.TABLAS;
 
 public class Metodos {
+	
+	//Metodos mc=new Metodos();
+	
 	private String [] Tipos= {"Comida","Herramienta","Ropa"}; 
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
@@ -33,6 +35,7 @@ public class Metodos {
 	GestorPersona gp=new GestorPersona();
 	GestorSupermercado gsm=new GestorSupermercado();
 	GestorSeccion gs=new GestorSeccion();
+	GestorCompra gc=new GestorCompra();
 	public Date deStringADate(String fecha) throws ParseException {
 		return formatter.parse(fecha);
 	}
@@ -42,10 +45,6 @@ public class Metodos {
 	public LocalDateTime deStringALocalDateTime(String fecha) throws ParseException {
 		LocalDateTime fechaS = LocalDateTime.parse(fecha, formatter1);
 		return fechaS;
-	}
-	public Connection conectarBaseDatos() throws SQLException {
-		Connection conexion = (Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-		return conexion;
 	}
 	public int pasarBoolean(Boolean statement) {
 		int resul= 0;
@@ -121,8 +120,8 @@ public class Metodos {
 		}
 		return vuelta;
 	}
-	public String [][] cargarArticulos(ArrayList<Articulo> listaArticulos) throws SQLException {
-		listaArticulos=ga.cargarArticulos();
+	public String [][] cargarArticulos(Connection conexion,ArrayList<Articulo> listaArticulos) throws SQLException {
+		listaArticulos=ga.cargarArticulos(conexion);
 		Comida co=null;
 		Ropa ro=null;
 		Herramienta he=null;
@@ -152,7 +151,8 @@ public class Metodos {
 		}
 		return datosTabla;
 	}
-	public String [][] cargarHistorialCompras(ArrayList<Compra> listaCompras) throws SQLException {
+	public String [][] cargarHistorialCompras(Connection conexion,ArrayList<Compra> listaCompras) throws SQLException, ParseException {
+		//listaCompras=gc.cargarCompras(mc,conexion);
 		String[][] datosTabla = new String[listaCompras.size()][3];
 		for(int i = 0;i<listaCompras.size();i++){
 			datosTabla[i][0] = String.valueOf(listaCompras.get(i).getCodigoCompra());
@@ -161,9 +161,9 @@ public class Metodos {
 		}
 		return datosTabla;
 	}
-	public String [][]cargarArticulosComprados(ArrayList<ArticuloComprado> listaArC) throws SQLException{
+	public String [][]cargarArticulosComprados(Connection conexion,ArrayList<ArticuloComprado> listaArC) throws SQLException{
 		String[][] datosTabla = new String[listaArC.size()][3];
-		ArrayList<Articulo> nombres=ga.cargarArticulos();
+		ArrayList<Articulo> nombres=ga.cargarArticulos(conexion);
 		for(int i = 0;i<listaArC.size();i++){
 			for(Articulo ar:nombres) {
 				if(ar.getIdArticulo()==listaArC.get(i).getIdArticulo()) {
@@ -175,8 +175,8 @@ public class Metodos {
 		}
 		return datosTabla;
 	}
-	public String [][] cargarRecargaArticulos() throws SQLException{
-		Statement comando = (Statement) conectarBaseDatos().createStatement();
+	public String [][] cargarRecargaArticulos(Connection conexion) throws SQLException{
+		Statement comando = (Statement) conexion.createStatement();
 		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSRECARGAR);
 		int numFilas=0;
 		while(carga.next()) {
@@ -196,8 +196,8 @@ public class Metodos {
 	}
 	return datosTabla;
 	}
-	public String [][] tablaUsuarios(ArrayList<Persona> listaUsuarios) throws SQLException{
-		listaUsuarios=gp.cargarPersonas();
+	public String [][] tablaUsuarios(Connection conexion,ArrayList<Persona> listaUsuarios) throws SQLException{
+		listaUsuarios=gp.cargarPersonas(conexion);
 		Cliente prueba =null;
 		Jefe jefe=null;
 		String[][] datosTabla = new String[listaUsuarios.size()][6];
@@ -224,8 +224,8 @@ public class Metodos {
 		}
 		return datosTabla;
 	}
-	public String [][] cargaSuper(ArrayList<Supermercado> lista) throws SQLException{
-		lista=gsm.cargarSupermercados();
+	public String [][] cargaSuper(Connection conexion,ArrayList<Supermercado> lista) throws SQLException{
+		lista=gsm.cargarSupermercados(conexion);
 		String[][] datosTabla = new String[lista.size()][4];
 		for(int i = 0;i<lista.size();i++){
 			datosTabla[i][0] = String.valueOf(lista.get(i).getCodigoSuper());
@@ -235,8 +235,8 @@ public class Metodos {
 		}
 		return datosTabla;
 	}
-	public String [][] cargaSecciones(ArrayList<Seccion> lista) throws SQLException{
-		lista=gs.cargarSecciones();
+	public String [][] cargaSecciones(Connection conexion,ArrayList<Seccion> lista) throws SQLException{
+		lista=gs.cargarSecciones(conexion);
 		String[][] datosTabla = new String[lista.size()][3];
 		for(int i = 0;i<lista.size();i++) {
 				datosTabla[i][0]=lista.get(i).getCodigoSeccion();

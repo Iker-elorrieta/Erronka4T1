@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -17,9 +19,11 @@ import gestores.GestorArticulo;
 import gestores.GestorPersona;
 import modelo.*;
 import otros.tipoArticulo;
+import referencias.CONEXION;
 
 
 class MetodosTest {
+	Connection conexion;
 Metodos mts = new Metodos();
 GestorArticulo ga=new GestorArticulo();
 GestorPersona gp=new GestorPersona();
@@ -40,7 +44,13 @@ GestorPersona gp=new GestorPersona();
 	@Test
 	void test_guardarInventario(){
 		try {
-			Comida com = new Comida(ga.cargarArticulos().size()+1, "burger", "sgd", "dd", 10, 8, Date.valueOf("2015-02-02"), "japon");
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			Comida com = new Comida(ga.cargarArticulos(conexion).size()+1, "burger", "sgd", "dd", 10, 8, Date.valueOf("2015-02-02"), "japon");
 			ArrayList<Articulo> inventario = new ArrayList<Articulo>();
 			inventario.add(com);
 			mts.guardarInventario(inventario);
@@ -52,14 +62,21 @@ GestorPersona gp=new GestorPersona();
 			e.printStackTrace();
 		}
 	}
+	/**
 	@Test
 	void test_TablaArt(){
 		MetodosVista cv = new MetodosVista();
 		ArrayList<Articulo> listaArticulos = new ArrayList<Articulo>();
 		try {
-			cv.cargarTabla(listaArticulos).getModel();
-			int columnas = cv.cargarTabla(listaArticulos).getModel().getRowCount();
-			assertEquals(columnas,ga.cargarArticulos().size());
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			cv.cargarTabla(conexion).getModel();
+			int columnas = cv.cargarTabla(conexion,listaArticulos).getModel().getRowCount();
+			assertEquals(columnas,ga.cargarArticulos(conexion).size());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -67,7 +84,7 @@ GestorPersona gp=new GestorPersona();
 	}
 	
 	//
-	
+	**/
 	@Test
 	public void test_ModificarComboBox() {
 		

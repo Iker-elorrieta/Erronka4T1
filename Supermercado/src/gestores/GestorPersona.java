@@ -24,9 +24,7 @@ import referencias.PROCEDIMIENTOS;
 import referencias.TABLAS;
 
 public class GestorPersona {
-	Metodos mc=new Metodos();
-	GestorSupermercado gsm=new GestorSupermercado();
-	GestorArticuloComprado gac=new GestorArticuloComprado();
+	
 	private ArrayList<Persona> listaPersonas;
 	
 	public GestorPersona() {
@@ -41,11 +39,11 @@ public class GestorPersona {
 	public void setListaPersonas(ArrayList<Persona> listaPersonas) {
 		this.listaPersonas = listaPersonas;
 	}
-	public ArrayList<Persona> cargarPersonas() throws SQLException{
+	public ArrayList<Persona> cargarPersonas(Connection conexion) throws SQLException{
 		ArrayList<Persona> listaPersonas=new ArrayList<Persona>();
 		Cliente comprador=null;
 		Jefe jefe=null;
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		Statement comando = (Statement) conexion.createStatement();
 		ResultSet cuenta=comando.executeQuery("SELECT * FROM "+TABLAS.PERSONAS);
 		while(cuenta.next()) {
 			if(cuenta.getString(TABLAS.TIPO).equals("Cliente")) {
@@ -75,7 +73,7 @@ public class GestorPersona {
 		}
 		return listaPersonas;
 }
-	public void insertarPersona(Persona persona, Connection conexion) throws ErroresDeRegistro, SQLException {
+	public void insertarPersona(Metodos mc,Connection conexion,Persona persona ) throws ErroresDeRegistro, SQLException {
 		Statement comando = (Statement) conexion.createStatement();
 		Cliente c=null;
 		Jefe j=null;
@@ -92,13 +90,13 @@ public class GestorPersona {
 		}
 		comando.close();
 }
-	public void darseBajaPersona(Persona persona) throws SQLException {
-		Statement comando;
-			comando = (Statement) mc.conectarBaseDatos().createStatement();
-			comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+persona.getDni()+"'");
+	public void darseBajaPersona(Connection conexion,Persona persona) throws SQLException {
+		Statement comando = (Statement) conexion.createStatement();
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+persona.getDni()+"'");
+		comando.close();
 }
-	public void cambiarPerfilCliente(Persona persona) throws SQLException {
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+	public void cambiarPerfilCliente(Metodos mc,Connection conexion,Persona persona) throws SQLException {
+		Statement comando = (Statement) conexion.createStatement();
 		Cliente cli=null;
 		Jefe je=null;
 		if(persona instanceof Cliente) {
@@ -118,20 +116,20 @@ public class GestorPersona {
 					+ " "+TABLAS.DIOS+"='"+mc.pasarBoolean(je.isDios())+"', "+TABLAS.TIPO+"='"+je.getTipo()+"', "+TABLAS.PORCENTAJEEMPRESA+"='"+je.getPorcentajeEmpresa()+"'"
 					+ " WHERE "+TABLAS.DNI+"='"+je.getDni()+"'");
 		}
+		comando.close();
 }
-	public void AumentarDineroCliente(Cliente cliente,int dinero) throws SQLException, ErroresDeOperaciones {
-		Statement comando;
-			comando = (Statement) mc.conectarBaseDatos().createStatement();
+	public void AumentarDineroCliente(Connection conexion,Cliente cliente,int dinero) throws SQLException, ErroresDeOperaciones {
+		Statement comando = (Statement) conexion.createStatement();
 			if(dinero<0) {
 				throw new ErroresDeOperaciones("No puede retirar dinero");
 			}else {
 				comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"+"+dinero+") WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
 			}
+			comando.close();
 	}
-	public void cambiarEstadoUsuario(Cliente cliente,boolean opcion) throws SQLException {
-		Statement comando;
-			comando = (Statement) mc.conectarBaseDatos().createStatement();
-			comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.BLOQUEADO+"='"+mc.pasarBoolean(opcion)+"' WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+	public void cambiarEstadoUsuario(Metodos mc,Connection conexion,Cliente cliente,boolean opcion) throws SQLException {
+		Statement comando = (Statement) conexion.createStatement();
+		comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.BLOQUEADO+"='"+mc.pasarBoolean(opcion)+"' WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
 	}
 	public void comprobarCampos(String nombre,String apellidos, String contrasena,String DNI,String fechaNa,String email) throws ErroresDeRegistro {
 		if(nombre.equals("")|apellidos.equals("")|contrasena.equals("")|DNI.equals("")|fechaNa.equals("")|email.equals("")) {
@@ -193,11 +191,11 @@ public class GestorPersona {
 		}
 		return nueva;
 	}
-	public ArrayList<Jefe> cargarJefesSinSupermercado(int numSuper) throws SQLException, ErroresDeOperaciones {
-		ArrayList<Persona> lista=cargarPersonas();
+	public ArrayList<Jefe> cargarJefesSinSupermercado(Connection conexion,int numSuper) throws SQLException, ErroresDeOperaciones {
+		ArrayList<Persona> lista=cargarPersonas(conexion);
 		ArrayList<Jefe> jefeSinSuper=new ArrayList<Jefe>();
 		String [] dniJefes=new String[numSuper];
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		Statement comando = (Statement) conexion.createStatement();
 		ResultSet cuenta=comando.executeQuery("SELECT "+TABLAS.DNIJEFE+" FROM "+TABLAS.SUPERMERCADO);
 		int i=0;
 		while(cuenta.next()) {
@@ -222,6 +220,7 @@ public class GestorPersona {
 				}
 			}
 		}
+		comando.close();
 		return jefeSinSuper;
 	}
 	public int insertarCompraYCobrar(Connection conexion,Persona per,Compra compra) throws SQLException, ParseException {
@@ -235,10 +234,7 @@ public class GestorPersona {
 				cod=cargar.getInt(TABLAS.CODIGOCOMPRA);
 			}
 			comando.close();
-	
 			return cod;
-			
-		
 	}
 	public void insertarArticulos(Connection conexion,ArrayList<ArticuloComprado> lista,int cod) throws SQLException {
 		Statement comando = (Statement) conexion.createStatement();
@@ -250,26 +246,25 @@ public class GestorPersona {
 	public void cancelarArticulos(Connection conexion,Compra com) throws SQLException {
 		Statement comando = (Statement) conexion.createStatement();
 		comando.executeUpdate("CALL "+PROCEDIMIENTOS.DEVOLVERTODOSARTICULOS+"("+com.getCodigoCompra()+")");
+		comando.close();
 	}
 	public void cancelarCompra(Connection conexion,Persona per,Compra com) throws SQLException {
 		Cliente cli=null;
-		
 		Statement comando = (Statement) conexion.createStatement();
 		ResultSet cargaDinero=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
 		float dineroDevolver=-1;
 		while(cargaDinero.next()) {
 			dineroDevolver=cargaDinero.getFloat(TABLAS.PRECIOFINAL);
 		}
-		
 		if(per instanceof Cliente) {
 			cli=(Cliente)per;
 			System.out.println("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+cli.getDinero()+"+"+dineroDevolver+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");
 			comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+cli.getDinero()+"+"+dineroDevolver+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");	
 		}
 		comando.executeUpdate("DELETE FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
+		comando.close();
 	}
 	public void devolverUnArticulo(Connection conexion,Persona per,ArticuloComprado arc,int numeroDevolver) throws SQLException, InterruptedException {
-		Metodos mc=new Metodos();
 		Cliente cli=null;
 		Statement comando = (Statement) conexion.createStatement();
 		if(per instanceof Cliente) {
@@ -282,7 +277,7 @@ public class GestorPersona {
 			comando.execute("UPDATE "+TABLAS.ARTICULOSCOMPRADOS+" SET "+TABLAS.CANTIDAD+"=("+arc.getCantidad()+"-"+numeroDevolver+")"
 			+ " WHERE "+TABLAS.IDARTICULO+ "="+arc.getIdArticulo()+" AND "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra());
 		}
-		
+		comando.close();
 	}
 	public void compruebaDevolucionArticulo(Connection conexion,ArticuloComprado arc) throws SQLException {
 		int numArc=0;
@@ -293,6 +288,7 @@ public class GestorPersona {
 		}
 		if(numArc==0) {
 			comando.execute("DELETE FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+arc.getCodigoCompra()+"'");
-		}	
+		}
+		comando.close();
 	}
 }

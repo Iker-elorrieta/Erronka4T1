@@ -39,40 +39,40 @@ class TestGestorArticuloComprado {
 		Compra co=new Compra((float)1.98);
 		
 		try {
-			gac.setListaArticulosComprados(gac.cargarArticulosComprados());
+			gac.setListaArticulosComprados(gac.cargarArticulosComprados(conexion));
 			assertTrue(gac.getListaArticulosComprados().size()>0);
 			int antesDeInsertar=gac.getListaArticulosComprados().size();
 			
-			g1.insertarPersona(cliente,conexion);
-			g.insertarCompra(cliente, co);
-			g.setListaCompras(g.cargarCompras());
-			co=g.buscarCompraReciente();
+			g1.insertarPersona(mc,conexion,cliente);
+			g.insertarCompra(conexion,cliente, co);
+			g.setListaCompras(g.cargarCompras(mc,conexion));
+			co=g.buscarCompraReciente(mc,conexion);
 			ArticuloComprado ac=new ArticuloComprado(co.getCodigoCompra(), 1, 1, (float)3.99);
 			ArticuloComprado ac1=null;
-			gac.insertarArticuloComprado(co, ac);
+			gac.insertarArticuloComprado(conexion,co, ac);
 			
-			gac.setListaArticulosComprados(gac.cargarArticulosComprados());
+			gac.setListaArticulosComprados(gac.cargarArticulosComprados(conexion));
 			ac1=gac.getListaArticulosComprados().get(antesDeInsertar);
 			assertEquals(ac1.getCantidad(),ac.getCantidad());
 			assertEquals(ac1.getCodigoCompra(),ac.getCodigoCompra());
 			assertEquals(ac1.getIdArticulo(),ac.getIdArticulo());
 			
 			Compra coBusqueda=new Compra(1,(float)3.99,null);
-			gac.setListaArticulosComprados(gac.cargarArticulosDeUnaCompra(coBusqueda));
+			gac.setListaArticulosComprados(gac.cargarArticulosDeUnaCompra(conexion,coBusqueda));
 			assertEquals(gac.getListaArticulosComprados().get(0).getPrecioArt(),coBusqueda.getPrecioTotal());
 			assertEquals(gac.getListaArticulosComprados().get(0).getCodigoCompra(),coBusqueda.getCodigoCompra());
 			
 			ac=new ArticuloComprado(co.getCodigoCompra(), 1, 2, (float)9.49);
-			gac.cambiarArticuloComprado(ac);
-			gac.setListaArticulosComprados(gac.cargarArticulosComprados());
+			gac.cambiarArticuloComprado(conexion,ac);
+			gac.setListaArticulosComprados(gac.cargarArticulosComprados(conexion));
 			ac1=gac.getListaArticulosComprados().get(antesDeInsertar);
 			assertEquals(ac1.getCantidad(),ac.getCantidad());
 			assertEquals(ac1.getCodigoCompra(),ac.getCodigoCompra());
 			assertEquals(ac1.getIdArticulo(),ac.getIdArticulo());
 			assertEquals(ac1.getPrecioArt(),ac.getPrecioArt());
 			
-			gac.borrarArticuloComprado(ac1);
-			g1.darseBajaPersona(cliente);
+			gac.borrarArticuloComprado(conexion,ac1);
+			g1.darseBajaPersona(conexion,cliente);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -29,10 +29,11 @@ import referencias.CONEXION;
 import referencias.TABLAS;
 
 class TestGestorArticulo {
-	Metodos mc=new Metodos();
-	Connection conexion;
+	
 	@Test
 	void test() {
+		Metodos mc=new Metodos();
+		Connection conexion = null;
 		try {
 			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
 		} catch (SQLException e1) {
@@ -51,21 +52,21 @@ class TestGestorArticulo {
 		Comida co=new Comida(0, "Fruta del dragon", "fdd.png", "", (float)3.49, 99, Date.valueOf("2023-12-31"),"Brasil");
 		Herramienta he=new Herramienta(0, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 1, 4);
 		try {
-			ga.setListaArticulos(ga.cargarArticulos());
+			ga.setListaArticulos(ga.cargarArticulos(conexion));
 			assertTrue(ga.getListaArticulos().size()>0);
 			int antesDeInsertar=ga.getListaArticulos().size();
 			
-			g1.insertarPersona(jefe,conexion);
-			g2.insertarSupermercado(jefe, su);
-			g.insertarSeccion(su, se);
-			ga.insertarArticulo(se, ro);
-			ga.insertarArticulo(se, co);
-			ga.insertarArticulo(se, he);
-			ga.setListaArticulos(ga.cargarArticulos());
+			g1.insertarPersona(mc,conexion,jefe);
+			g2.insertarSupermercado(conexion,jefe, su);
+			g.insertarSeccion(conexion,su, se);
+			ga.insertarArticulo(mc,conexion,se, ro);
+			ga.insertarArticulo(mc,conexion,se, co);
+			ga.insertarArticulo(mc,conexion,se, he);
+			ga.setListaArticulos(ga.cargarArticulos(conexion));
 			assertTrue(ga.getListaArticulos().size()>antesDeInsertar);
 			
 			
-			Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+			Statement comando = (Statement) conexion.createStatement();
 			ResultSet cargaHe=comando.executeQuery("SELECT "+TABLAS.IDARTICULO+" FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.ELECTRICA+" OR "+TABLAS.GARANTIA+" IS NOT NULL ORDER BY "+TABLAS.IDARTICULO+" DESC LIMIT 1");
 			while(cargaHe.next()) {
 				he=new Herramienta(cargaHe.getInt(TABLAS.IDARTICULO), "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 0, 2);
@@ -78,10 +79,10 @@ class TestGestorArticulo {
 			while(cargaCo.next()) {
 				co=new Comida(cargaCo.getInt(TABLAS.IDARTICULO), "Fruta del dragon", "fdd.png", "", (float)3.49, 99, Date.valueOf("2023-12-31"),"Cuenca");
 			}
-			ga.cambiarArticulo(he);
-			ga.cambiarArticulo(co);
-			ga.cambiarArticulo(ro);
-			ga.setListaArticulos(ga.cargarArticulos());
+			ga.cambiarArticulo(mc,conexion,he);
+			ga.cambiarArticulo(mc,conexion,co);
+			ga.cambiarArticulo(mc,conexion,ro);
+			ga.setListaArticulos(ga.cargarArticulos(conexion));
 			Ropa r=null;
 			Herramienta h=null;
 			Comida c=null;
@@ -98,12 +99,12 @@ class TestGestorArticulo {
 			assertEquals(r.getTalla(),r.getTalla());
 			assertEquals(r.getMarca(),r.getMarca());
 			
-			ga.borrarArticulo(r);
-			ga.borrarArticulo(h);
-			ga.borrarArticulo(c);
-			ga.setListaArticulos(ga.cargarArticulos());
+			ga.borrarArticulo(conexion,r);
+			ga.borrarArticulo(conexion,h);
+			ga.borrarArticulo(conexion,c);
+			ga.setListaArticulos(ga.cargarArticulos(conexion));
 			assertEquals(ga.getListaArticulos().size(),antesDeInsertar);
-			g1.darseBajaPersona(jefe);
+			g1.darseBajaPersona(conexion,jefe);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

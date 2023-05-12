@@ -41,10 +41,16 @@ class TestGestorPersona {
 	GestorCompra gc=new GestorCompra();
 	@Test
 	void test() {
+		try {
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		GestorPersona g=new GestorPersona();
 		try {
 			Cliente cliente = new Cliente("99999999X","Test","Test",Date.valueOf("2001-01-21"),"test@gmail.com","12345",tipoPersona.Cliente,(float)99.9,0);
-			g.setListaPersonas(g.cargarPersonas());
+			g.setListaPersonas(g.cargarPersonas(conexion));
 			
 			assertTrue(g.getListaPersonas()!=null);
 			assertTrue(g.getListaPersonas().size()>0);
@@ -52,52 +58,52 @@ class TestGestorPersona {
 			assertEquals(g.getListaPersonas().get(0).getDni(),"00000000A");
 			assertEquals(g.getListaPersonas().get(0).getEmail(),"admin@gmail.com");
 			
-			g.insertarPersona(cliente,conexion);
-			g.setListaPersonas(g.cargarPersonas());
+			g.insertarPersona(mc,conexion,cliente);
+			g.setListaPersonas(g.cargarPersonas(conexion));
 			assertTrue(g.getListaPersonas().size()>antesInsert);
 			assertEquals(g.getListaPersonas().get(g.getListaPersonas().size()-1).getDni(),"99999999X");
 			assertEquals(g.getListaPersonas().get(g.getListaPersonas().size()-1).getEmail(),"test@gmail.com");
 			
 			
 			cliente=new Cliente("99999999X","Test","Test",Date.valueOf("2001-01-21"),"testCambio@gmail.com","12345",tipoPersona.Cliente,(float)99.9,0);
-			g.cambiarPerfilCliente(cliente);
+			g.cambiarPerfilCliente(mc,conexion,cliente);
 			
-			g.setListaPersonas(g.cargarPersonas());
+			g.setListaPersonas(g.cargarPersonas(conexion));
 			assertEquals(g.getListaPersonas().get(g.getListaPersonas().size()-1).getDni(),"99999999X");
 			assertEquals(g.getListaPersonas().get(g.getListaPersonas().size()-1).getEmail(),"testCambio@gmail.com");
 			
 			Cliente cliDinero=(Cliente)g.getListaPersonas().get(g.getListaPersonas().size()-1);
 			try {
-				g.AumentarDineroCliente(cliente, 10);
+				g.AumentarDineroCliente(conexion,cliente, 10);
 			} catch (ErroresDeOperaciones e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			g.cambiarEstadoUsuario(cliente, true);
-			g.setListaPersonas(g.cargarPersonas());
+			g.cambiarEstadoUsuario(mc,conexion,cliente, true);
+			g.setListaPersonas(g.cargarPersonas(conexion));
 			Cliente dineroCambio=(Cliente)g.getListaPersonas().get(g.getListaPersonas().size()-1);
 			assertNotEquals(cliDinero.getDinero(),dineroCambio.getDinero());
 			assertNotEquals(cliDinero.isBloqueado(),dineroCambio.isBloqueado());
 			
-			g.darseBajaPersona(cliente);
-			g.setListaPersonas(g.cargarPersonas());
+			g.darseBajaPersona(conexion,cliente);
+			g.setListaPersonas(g.cargarPersonas(conexion));
 			assertNotEquals(g.getListaPersonas().get(g.getListaPersonas().size()-1).getDni(),"99999999X");
 			assertNotEquals(g.getListaPersonas().get(g.getListaPersonas().size()-1).getEmail(),"testCambio@gmail.com");
 			
 			Jefe jefe=new Jefe("77777777C","Test","Test",Date.valueOf("2001-01-21"),"testJefe@gmail.com","12345",tipoPersona.Jefe,Date.valueOf("2019-09-09"),(float)55.5,0);
-			g.insertarPersona(jefe,conexion);
-			g.setListaPersonas(g.cargarPersonas());
+			g.insertarPersona(mc,conexion,jefe);
+			g.setListaPersonas(g.cargarPersonas(conexion));
 			assertTrue(g.getListaPersonas().size()>antesInsert);
 			
 			
 			jefe=new Jefe("77777777C","Test","Test",Date.valueOf("2001-01-21"),"testJefeCambio@gmail.com","12345",tipoPersona.Jefe,Date.valueOf("2019-09-09"),(float)55.5,0);
-			g.cambiarPerfilCliente(jefe);
-			g.setListaPersonas(g.cargarPersonas());
+			g.cambiarPerfilCliente(mc,conexion,jefe);
+			g.setListaPersonas(g.cargarPersonas(conexion));
 			Persona buscada=g.buscarPersona("77777777C", g.getListaPersonas());
 			assertEquals(buscada.getDni(),"77777777C");
 			assertEquals(buscada.getEmail(),"testJefeCambio@gmail.com");
 			
-			g.darseBajaPersona(jefe);
+			g.darseBajaPersona(conexion,jefe);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -159,7 +165,13 @@ class TestGestorPersona {
 	void test_iniciarSesion(){
 		ArrayList<Persona> listaUser=null;
 		try {
-			listaUser=gp.cargarPersonas();
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			listaUser=gp.cargarPersonas(conexion);
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -209,29 +221,29 @@ class TestGestorPersona {
 		try {
 			co.setPrecioTotal(7);
 			GestorPersona gp=new GestorPersona();
-			gp.insertarPersona(cliente,conexion);
+			gp.insertarPersona(mc,conexion,cliente);
 			int codCompra=gp.insertarCompraYCobrar(conexion,cliente, co);
 			ArticuloComprado arc=new ArticuloComprado(codCompra,1,2,(float)1.99);
 			co.getListaCantidades().add(arc);
 			gp.insertarArticulos(conexion,co.getListaCantidades(),codCompra);
 			
-			Compra c=gc.buscarCompraReciente();
+			Compra c=gc.buscarCompraReciente(mc,conexion);
 			assertNotEquals(co.getCodigoCompra(),c.getCodigoCompra());
 			assertNotEquals(co.getFechaCompra(),c.getFechaCompra());
 			assertNotEquals(co.calcularPrecioTotal(),c.calcularPrecioTotal());
 			
 			gp.cancelarArticulos(conexion,c);
-			gp.setListaPersonas(gp.cargarPersonas());
+			gp.setListaPersonas(gp.cargarPersonas(conexion));
 			int posicion=gp.getListaPersonas().indexOf(cliente);
 			prueba=(Cliente) gp.getListaPersonas().get(posicion);
 			assertNotEquals(prueba.getDinero(),cliente.getDinero());
 			
 			gp.cancelarCompra(conexion,cliente,c);
-			Compra c1=gc.buscarCompraReciente();
+			Compra c1=gc.buscarCompraReciente(mc,conexion);
 			assertNotEquals(c.getCodigoCompra(),c1.getCodigoCompra());
 			assertNotEquals(c.getFechaCompra(),c1.getFechaCompra());	
 			
-			gp.darseBajaPersona(cliente);
+			gp.darseBajaPersona(conexion,cliente);
 		} catch (ErroresDeRegistro e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -253,12 +265,12 @@ class TestGestorPersona {
 		co.setPrecioTotal(7);
 		GestorPersona gp=new GestorPersona();
 		try {
-			gp.insertarPersona(cliente,conexion);
+			gp.insertarPersona(mc,conexion,cliente);
 			int codCompra=gp.insertarCompraYCobrar(conexion,cliente, co);
 			ArticuloComprado arc=new ArticuloComprado(codCompra,1,2,(float)1.99);
 			co.getListaCantidades().add(arc);
 			gp.insertarArticulos(conexion,co.getListaCantidades(),codCompra);
-			Compra c=gc.buscarCompraReciente();
+			Compra c=gc.buscarCompraReciente(mc,conexion);
 			assertNotEquals(co.getCodigoCompra(),c.getCodigoCompra());
 			assertNotEquals(co.getFechaCompra(),c.getFechaCompra());
 			assertNotEquals(co.calcularPrecioTotal(),c.calcularPrecioTotal());
@@ -288,7 +300,7 @@ class TestGestorPersona {
 				existe++;
 			}
 			assertEquals(-1,existe);
-			gp.darseBajaPersona(cliente);
+			gp.darseBajaPersona(conexion,cliente);
 		} catch (ErroresDeRegistro e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
