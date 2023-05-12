@@ -2,7 +2,9 @@ package test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -23,12 +25,20 @@ import modelo.Seccion;
 import modelo.Supermercado;
 import otros.tipoArticulo;
 import otros.tipoPersona;
+import referencias.CONEXION;
 import referencias.TABLAS;
 
 class TestGestorArticulo {
 	Metodos mc=new Metodos();
+	Connection conexion;
 	@Test
 	void test() {
+		try {
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		GestorArticulo ga=new GestorArticulo();
 		GestorSeccion g=new GestorSeccion();
 		GestorSupermercado g2=new GestorSupermercado();
@@ -45,7 +55,7 @@ class TestGestorArticulo {
 			assertTrue(ga.getListaArticulos().size()>0);
 			int antesDeInsertar=ga.getListaArticulos().size();
 			
-			g1.insertarPersona(jefe);
+			g1.insertarPersona(jefe,conexion);
 			g2.insertarSupermercado(jefe, su);
 			g.insertarSeccion(su, se);
 			ga.insertarArticulo(se, ro);

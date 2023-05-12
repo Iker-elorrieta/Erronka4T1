@@ -2,7 +2,9 @@ package test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.ParseException;
 
@@ -17,11 +19,19 @@ import modelo.ArticuloComprado;
 import modelo.Cliente;
 import modelo.Compra;
 import otros.tipoPersona;
+import referencias.CONEXION;
 
 class TestGestorArticuloComprado {
 	Metodos mc=new Metodos();
+	Connection conexion;
 	@Test
 	void test() {
+		try {
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		GestorCompra g=new GestorCompra();
 		GestorPersona g1=new GestorPersona();
 		GestorArticuloComprado gac=new GestorArticuloComprado();
@@ -33,7 +43,7 @@ class TestGestorArticuloComprado {
 			assertTrue(gac.getListaArticulosComprados().size()>0);
 			int antesDeInsertar=gac.getListaArticulosComprados().size();
 			
-			g1.insertarPersona(cliente);
+			g1.insertarPersona(cliente,conexion);
 			g.insertarCompra(cliente, co);
 			g.setListaCompras(g.cargarCompras());
 			co=g.buscarCompraReciente();

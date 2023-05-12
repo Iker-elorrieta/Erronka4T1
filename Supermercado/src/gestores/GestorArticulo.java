@@ -175,6 +175,17 @@ public class GestorArticulo {
 		}
 		return lista;
 	}
+	public void diferenciarCarrito(Articulo articuloNuevo, ArrayList<Articulo> listaCarrito){
+		boolean repetido=false;
+		for(Articulo ar:listaCarrito) {
+			if(articuloNuevo.getIdArticulo()==ar.getIdArticulo()) {
+				repetido=true;
+			}
+		}
+		if(!repetido) {
+			listaCarrito.add(articuloNuevo);
+		}
+	}
 	
 }
 

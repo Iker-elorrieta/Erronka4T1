@@ -2,7 +2,9 @@ package test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
@@ -17,11 +19,19 @@ import modelo.Seccion;
 import modelo.Supermercado;
 import otros.tipoArticulo;
 import otros.tipoPersona;
+import referencias.CONEXION;
 
 class TestGestorSeccion {
 	Metodos mc=new Metodos();
+	Connection conexion;
 	@Test
 	void test() {
+		try {
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		GestorSeccion g=new GestorSeccion();
 		GestorSupermercado g2=new GestorSupermercado();
 		GestorPersona g1=new GestorPersona();
@@ -35,7 +45,7 @@ class TestGestorSeccion {
 			assertEquals(g.getListaSecciones().get(0).getCodigoSeccion(),"A0001");
 			assertEquals(g.getListaSecciones().get(0).getNombreSeccion(),tipoArticulo.Comida);
 			
-			g1.insertarPersona(jefe);
+			g1.insertarPersona(jefe,conexion);
 			g2.insertarSupermercado(jefe, su);
 			g.insertarSeccion(su, se);
 			g.setListaSecciones(g.cargarSecciones());

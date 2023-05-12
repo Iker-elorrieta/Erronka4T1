@@ -1,5 +1,6 @@
 package gestores;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -74,8 +75,8 @@ public class GestorPersona {
 		}
 		return listaPersonas;
 }
-	public void insertarPersona(Persona persona) throws ErroresDeRegistro, SQLException {
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+	public void insertarPersona(Persona persona, Connection conexion) throws ErroresDeRegistro, SQLException {
+		Statement comando = (Statement) conexion.createStatement();
 		Cliente c=null;
 		Jefe j=null;
 		if(persona instanceof Cliente) {
@@ -89,6 +90,7 @@ public class GestorPersona {
 					+ "("+TABLAS.DNI+","+TABLAS.NOMBRE+","+TABLAS.APELLIDOS+","+TABLAS.FECHANACIMIENTO+","+TABLAS.EMAIL+","+TABLAS.CONTRASENA+","+TABLAS.TIPO+","+TABLAS.FECHAADQUISICION+","+TABLAS.PORCENTAJEEMPRESA+","+TABLAS.DIOS+")"
 					+ " VALUES ('"+j.getDni()+"','"+j.getNombre()+"','"+j.getApellidos()+"','"+String.valueOf(j.getFechaNacimiento())+"','"+j.getEmail()+"','"+j.getContrasena()+"','"+j.getTipo()+"','"+j.getFechaAdquisicion()+"','"+j.getPorcentajeEmpresa()+"',"+j.isDios()+")");
 		}
+		comando.close();
 }
 	public void darseBajaPersona(Persona persona) throws SQLException {
 		Statement comando;
@@ -222,44 +224,54 @@ public class GestorPersona {
 		}
 		return jefeSinSuper;
 	}
-	public int insertarCompraYCobrar(Persona per,Compra compra) throws SQLException, ParseException {
+	public int insertarCompraYCobrar(Connection conexion,Persona per,Compra compra) throws SQLException, ParseException {
 		// TODO Auto-generated method stub
-		Metodos mc=new Metodos();
 		Statement comando;
-			comando = (Statement) mc.conectarBaseDatos().createStatement();
+			comando = (Statement) conexion.createStatement();
 			comando.executeUpdate("CALL "+PROCEDIMIENTOS.INSERTACOMPRA+" ('"+per.getDni()+"',"+compra.getPrecioTotal()+")");
 			ResultSet cargar=comando.executeQuery("SELECT "+TABLAS.CODIGOCOMPRA+" FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.DNI+"='"+per.getDni()+"' ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
 			int cod=0;
 			while(cargar.next()) {
 				cod=cargar.getInt(TABLAS.CODIGOCOMPRA);
 			}
+			comando.close();
+	
 			return cod;
+			
+		
 	}
-	public void insertarArticulos(ArrayList<ArticuloComprado> lista,int cod) throws SQLException {
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+	public void insertarArticulos(Connection conexion,ArrayList<ArticuloComprado> lista,int cod) throws SQLException {
+		Statement comando = (Statement) conexion.createStatement();
 		for(ArticuloComprado ar:lista) {
 			comando.executeUpdate("CALL "+PROCEDIMIENTOS.INSERTARTICULO+"("+ar.getIdArticulo()+","+ar.getCantidad()+")");
 			}
+		comando.close();
 	}
-	public void cancelarArticulos(Compra com) throws SQLException {
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+	public void cancelarArticulos(Connection conexion,Compra com) throws SQLException {
+		Statement comando = (Statement) conexion.createStatement();
 		comando.executeUpdate("CALL "+PROCEDIMIENTOS.DEVOLVERTODOSARTICULOS+"("+com.getCodigoCompra()+")");
 	}
-	public void cancelarCompra(Persona per,Compra com) throws SQLException {
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
-		Statement comandoDos = (Statement) mc.conectarBaseDatos().createStatement();
+	public void cancelarCompra(Connection conexion,Persona per,Compra com) throws SQLException {
+		Cliente cli=null;
+		
+		Statement comando = (Statement) conexion.createStatement();
 		ResultSet cargaDinero=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
+		float dineroDevolver=-1;
 		while(cargaDinero.next()) {
-			if(per instanceof Cliente) {
-				comandoDos.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"+"+cargaDinero.getFloat(TABLAS.PRECIOFINAL)+")");	
-			}
-			comandoDos.executeUpdate("DELETE FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
+			dineroDevolver=cargaDinero.getFloat(TABLAS.PRECIOFINAL);
 		}
+		
+		if(per instanceof Cliente) {
+			cli=(Cliente)per;
+			System.out.println("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+cli.getDinero()+"+"+dineroDevolver+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");
+			comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+cli.getDinero()+"+"+dineroDevolver+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");	
+		}
+		comando.executeUpdate("DELETE FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
 	}
-	public void devolverUnArticulo(Persona per,ArticuloComprado arc,int numeroDevolver) throws SQLException {
+	public void devolverUnArticulo(Connection conexion,Persona per,ArticuloComprado arc,int numeroDevolver) throws SQLException, InterruptedException {
 		Metodos mc=new Metodos();
 		Cliente cli=null;
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		Statement comando = (Statement) conexion.createStatement();
 		if(per instanceof Cliente) {
 			cli=(Cliente) per;
 		comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"+"+arc.getCantidad()*arc.getPrecioArt()+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");
@@ -267,13 +279,14 @@ public class GestorPersona {
 		if(arc.getCantidad()<=numeroDevolver) {
 				comando.execute("DELETE FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.IDARTICULO+"="+arc.getIdArticulo()+" AND "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra()+"");
 		}else {
-			comando.execute("UPDATE "+TABLAS.ARTICULOSCOMPRADOS+" SET "+TABLAS.CANTIDAD+"=("+arc.getCantidad()+"-"+numeroDevolver+")");
+			comando.execute("UPDATE "+TABLAS.ARTICULOSCOMPRADOS+" SET "+TABLAS.CANTIDAD+"=("+arc.getCantidad()+"-"+numeroDevolver+")"
+			+ " WHERE "+TABLAS.IDARTICULO+ "="+arc.getIdArticulo()+" AND "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra());
 		}
 		
 	}
-	public void compruebaDevolucionArticulo(ArticuloComprado arc) throws SQLException {
+	public void compruebaDevolucionArticulo(Connection conexion,ArticuloComprado arc) throws SQLException {
 		int numArc=0;
-		Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+		Statement comando = (Statement) conexion.createStatement();
 		ResultSet cargatres=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra()+"");
 		while(cargatres.next()) {
 			numArc++;

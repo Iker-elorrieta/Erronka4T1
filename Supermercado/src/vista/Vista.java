@@ -32,11 +32,14 @@ import modelo.*;
 import otros.DateLabelFormatter;
 import otros.tipoArticulo;
 import otros.tipoPersona;
+import referencias.CONEXION;
 
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -91,6 +94,8 @@ public class Vista {
 	
 	private JTable tabla;
 	private JTable tablaApoyo;
+	
+	private Connection conexion;
 	
 	private Comida nuevaComida;
 	private Ropa nuevaRopa;
@@ -152,21 +157,29 @@ public class Vista {
 	 * Create the application.
 	 */
 	public Vista() {
-		try {
-			usuarios=gp.cargarPersonas();
-			supermercados=gsm.cargarSupermercados();
-			listaArticulos=ga.cargarArticulos();
 			initialize();
-		} catch (SQLException e3) {
-			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
-		}
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
+		try {
+			conexion= (Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		} catch (SQLException e4) {
+			// TODO Auto-generated catch block
+			e4.printStackTrace();
+		}
+		try {
+			usuarios=gp.cargarPersonas();
+			supermercados=gsm.cargarSupermercados();
+			listaArticulos=ga.cargarArticulos();
+		} catch (SQLException e3) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
+		}
+		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 740, 492);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -461,7 +474,7 @@ public class Vista {
 						cli = new Cliente(textDNI.getText(),textNombre.getText(),textApellidos.getText(),
 						 mc.deStringADate(datePicker.getJFormattedTextField().getText()), textMail.getText(),
 						 String.valueOf(contrasenaRegi.getPassword()),tipoPersona.Cliente, (float)0,0);
-						gp.insertarPersona(cli);
+						gp.insertarPersona(cli,conexion);
 						usuarios=gp.cargarPersonas();
 						paneles.setSelectedIndex(1);
 					} catch (ParseException e2) {
@@ -736,7 +749,7 @@ public class Vista {
 					String [] cargaSuper=new String [1];
 					cargaSuper[0]=admin.getSupermercado().getEmpresa();
 					suAnadirArticulo.setModel(new DefaultComboBoxModel<String>(cargaSuper));
-					tipoArticuloCombo.setModel(new DefaultComboBoxModel<String>(	mc.deArrayListAStringArrayNombreSeccion(admin.getSupermercado().getArraySecciones())));
+					tipoArticuloCombo.setModel(new DefaultComboBoxModel<String>(	mc.cargarNombreSeccion(admin.getSupermercado().getArraySecciones())));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -762,7 +775,7 @@ public class Vista {
 		btnPaginaSuper.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					escogeJefe.setModel(new DefaultComboBoxModel<String>(mc.deArrayListAStringArrayJefe(gp.cargarJefesSinSupermercado(gsm.cargarSupermercados().size()))));
+					escogeJefe.setModel(new DefaultComboBoxModel<String>(mc.cargarNombreJefe(gp.cargarJefesSinSupermercado(gsm.cargarSupermercados().size()))));
 					paneles.setSelectedIndex(6);
 					lblErrorSeleccion.setText("");
 				} catch (SQLException e1) {
@@ -784,7 +797,7 @@ public class Vista {
 		btnAnadirSecciones.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					escogeSuper.setModel(new DefaultComboBoxModel<String>(mc.deArrayListAStringArraySuper(gsm.cargarSupermercados())));
+					escogeSuper.setModel(new DefaultComboBoxModel<String>(mc.cargarEmpresa(gsm.cargarSupermercados())));
 					paneles.setSelectedIndex(7);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -818,7 +831,7 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					historial=gc.buscarComprasPersona(login);
-					tabla=cv.cargarHistorialCompras(login,historial);
+					tabla=cv.cargarHistorialCompras(login,mc.cargarHistorialCompras(historial));
 					historialCompras.setViewportView(tabla);
 					paneles.setSelectedIndex(10);
 				} catch (SQLException e1) {
@@ -866,7 +879,7 @@ public class Vista {
 					btnDesbloquea.setVisible(false);
 					btnDescrip.setVisible(true);
 					manejaCambio=3;
-					tabla=cv.cargarTabla(listaArticulos);
+					tabla=cv.cargarTabla(mc.cargarArticulos(listaArticulos));
 					scrollPane.setViewportView(tabla);
 				} catch (SQLException ex1) {
 					// TODO Auto-generated catch block
@@ -889,7 +902,7 @@ public class Vista {
 					btnAceptar.setVisible(false);
 				cambiaDe.setVisible(false);
 				manejaCambio=1;
-				tabla=cv.tablaUsuarios(usuarios);
+				tabla=cv.tablaUsuarios(mc.tablaUsuarios(usuarios));
 				scrollPane.setViewportView(tabla);
 				btnBloquea.setVisible(true);
 				btnDesbloquea.setVisible(true);
@@ -928,7 +941,8 @@ public class Vista {
 					btnBloquea.setVisible(false);
 					btnDesbloquea.setVisible(false);
 					manejaCambio=2;
-					tabla=cv.tablaSupermercados();
+					/** Posible problema**/
+					tabla=cv.tablaSupermercados(mc.cargaSuper(supermercados));
 					scrollPane.setViewportView(tabla);
 					btnDescrip.setVisible(false);
 				} catch (SQLException e1) {
@@ -1013,7 +1027,8 @@ public class Vista {
 					btnBloquea.setVisible(false);
 					btnDesbloquea.setVisible(false);
 					manejaCambio=4;
-					tabla=cv.tablaSecciones();
+					/** posible error**/
+					tabla=cv.tablaSecciones(mc.cargaSecciones(seccionesDelSuper));
 					scrollPane.setViewportView(tabla);
 					btnDescrip.setVisible(false);
 				} catch (SQLException e1) {
@@ -1123,7 +1138,7 @@ public class Vista {
 					btnDesbloquea.setVisible(false);
 					btnDescrip.setVisible(false);
 					manejaCambio=5;
-					tabla=cv.tablaRecargArticulos();
+					tabla=cv.tablaRecargArticulos(mc.cargarRecargaArticulos());
 					scrollPane.setViewportView(tabla);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -1259,7 +1274,7 @@ public class Vista {
 					mc.deStringADate(datePicker_3.getJFormattedTextField().getText()),textGmailJefe.getText(),
 					String.valueOf(passJefe.getPassword()),tipoPersona.Jefe,
 					mc.deStringADate(datePicker_2.getJFormattedTextField().getText()),(Float)porcentajeEmpresa.getValue(),0);
-					gp.insertarPersona(nuevoJefe);
+					gp.insertarPersona(nuevoJefe,conexion);
 					usuarios=gp.cargarPersonas();
 					datePicker_3.getJFormattedTextField().setText("");
 					datePicker_2.getJFormattedTextField().setText("");
@@ -1645,7 +1660,7 @@ public class Vista {
 		 		escogeDireccion.setVisible(true);
 		 		lblEscogeDireccion.setVisible(true);
 		 		try {
-					escogeDireccion.setModel(new DefaultComboBoxModel<String>(mc.deArrayListAStringArrayDireccion(gsm.buscarSuperEmpresa(escogeSuper.getItemAt(escogeSuper.getSelectedIndex())))));
+					escogeDireccion.setModel(new DefaultComboBoxModel<String>(mc.cargarDireccionSuper(gsm.buscarSuperEmpresa(escogeSuper.getItemAt(escogeSuper.getSelectedIndex())))));
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -1939,6 +1954,7 @@ public class Vista {
 		panel_Compras.setBackground(customColor);
 		
 		JLabel lblPrecioTotal = new JLabel("Precio de su carrito:");
+		lblPrecioTotal.setForeground(new Color(255, 255, 255));
 		JComboBox<String> boxSeccion = new JComboBox<String>();
 		boxSeccion.setForeground(new Color(255, 255, 255));
 		boxSeccion.setBackground(new Color(128, 128, 128));
@@ -1952,7 +1968,7 @@ public class Vista {
 				try {
 					supermercados=gsm.cogerSeccionesMultiplesSu(supermercados);
 					seccionesDelSuper=supermercados.get(boxSuper.getSelectedIndex()).getArraySecciones();
-					boxSeccion.setModel(new DefaultComboBoxModel<String>(mc.deArrayListAStringArrayNombreSeccion(seccionesDelSuper)));
+					boxSeccion.setModel(new DefaultComboBoxModel<String>(mc.cargarNombreSeccion(seccionesDelSuper)));
 					boxSeccion.setVisible(true);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -1961,7 +1977,7 @@ public class Vista {
 				
 			}
 		});
-		boxSuper.setModel(new DefaultComboBoxModel<String>(mc.deArrayListAStringArraySuper(supermercados)));
+		boxSuper.setModel(new DefaultComboBoxModel<String>(mc.cargarEmpresa(supermercados)));
 		boxSuper.setBounds(10, 11, 125, 22);
 		panel_Compras.add(boxSuper);
 		
@@ -2049,8 +2065,8 @@ public class Vista {
 		btnRealizarCompra.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					int ultimocodigo=gp.insertarCompraYCobrar(login, carrito);
-					gp.insertarArticulos(carrito.getListaCantidades(),ultimocodigo);
+					int ultimocodigo=gp.insertarCompraYCobrar(conexion,login, carrito);
+					gp.insertarArticulos(conexion,carrito.getListaCantidades(),ultimocodigo);
 					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
 					articulosCarrito=new ArrayList<Articulo>();
 					carrito=new Compra();
@@ -2124,7 +2140,7 @@ public class Vista {
 				try {
 					tabla.setEnabled(false);
 					historialArticulosComprados=gac.cargarArticuloCompradoCod(cv.cogerCodigoCompra(tabla, historial).getCodigoCompra());
-					tablaApoyo=cv.cargaArticulosComprados(historialArticulosComprados);
+					tablaApoyo=cv.cargaArticulosComprados(mc.cargarArticulosComprados(historialArticulosComprados));
 					articulosComprados.setViewportView(tablaApoyo);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -2143,10 +2159,10 @@ public class Vista {
 				
 				try {
 					devolucion=cv.cogerCodigoCompra(tabla, historial);
-					gp.cancelarArticulos(devolucion);
-					gp.cancelarCompra(login,devolucion);
+					gp.cancelarArticulos(conexion,devolucion);
+					gp.cancelarCompra(conexion,login,devolucion);
 					historial=gc.buscarComprasPersona(login);
-					tabla=cv.cargarHistorialCompras(login,historial);
+					tabla=cv.cargarHistorialCompras(login,mc.cargarHistorialCompras(historial));
 					historialCompras.setViewportView(tabla);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -2185,12 +2201,14 @@ public class Vista {
 		btnAplicar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					
-					gp.devolverUnArticulo(login, arDevolver, (Integer)cantidadDevolver.getValue());
-					gp.compruebaDevolucionArticulo(arDevolver);
+					gp.devolverUnArticulo(conexion,login, arDevolver, (Integer)cantidadDevolver.getValue());
+					gp.compruebaDevolucionArticulo(conexion,arDevolver);
 					historialCompras.setViewportView(tabla);
 					btnVerArticulosCom.doClick();
 				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} 

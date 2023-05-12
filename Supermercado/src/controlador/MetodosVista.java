@@ -6,9 +6,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 
@@ -55,36 +53,7 @@ GestorSupermercado gsm=new GestorSupermercado();
 GestorSeccion gs=new GestorSeccion();
 GestorCompra gc=new GestorCompra();
 	
-	public JTable cargarTabla(ArrayList<Articulo> listaArticulos) throws SQLException {
-		listaArticulos = ga.cargarArticulos();
-		Comida co=null;
-		Ropa ro=null;
-		Herramienta he=null;
-		String[][] datosTabla = new String[listaArticulos.size()][6];
-		for(int i = 0;i<listaArticulos.size();i++){
-			datosTabla[i][0] = String.valueOf(listaArticulos.get(i).getNombreArticulo());
-			datosTabla[i][1] = String.valueOf(listaArticulos.get(i).getRutaImagen());
-			datosTabla[i][2] = String.valueOf(listaArticulos.get(i).getDescripcion());
-			datosTabla[i][3] = String.valueOf(listaArticulos.get(i).getPrecio());
-			if(listaArticulos.get(i) instanceof Comida) {
-				co=(Comida)listaArticulos.get(i);
-				datosTabla[i][4] = co.getFechaCaducidad();
-				datosTabla[i][5] = co.getProcedencia();
-			}else if(listaArticulos.get(i) instanceof Ropa) {
-				ro=(Ropa) listaArticulos.get(i);
-				datosTabla[i][4] = ro.getTalla();
-				datosTabla[i][5] = ro.getMarca();
-			}else if(listaArticulos.get(i) instanceof Herramienta) {
-				he=(Herramienta) listaArticulos.get(i);
-				if(he.getElectrica()) {
-					datosTabla[i][4] = "Si";
-				}else {
-					datosTabla[i][4] = "No";
-				}
-
-				datosTabla[i][5] = String.valueOf(he.getGarantia());
-			}
-		}
+	public JTable cargarTabla(String [][] datosTabla) throws SQLException {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -94,14 +63,7 @@ GestorCompra gc=new GestorCompra();
 		));
 		return table;
 	}
-public JTable cargarHistorialCompras(Persona per,ArrayList<Compra> listaCompras) throws SQLException, ParseException {
-	String[][] datosTabla = new String[listaCompras.size()][3];
-	for(int i = 0;i<listaCompras.size();i++){
-		datosTabla[i][0] = String.valueOf(listaCompras.get(i).getCodigoCompra());
-		datosTabla[i][1] = String.valueOf(listaCompras.get(i).getPrecioTotal());
-		datosTabla[i][2] = String.valueOf(listaCompras.get(i).getFechaCompra());
-		
-	}
+public JTable cargarHistorialCompras(Persona per,String [][] datosTabla) throws SQLException, ParseException {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -114,18 +76,7 @@ public JTable cargarHistorialCompras(Persona per,ArrayList<Compra> listaCompras)
 public Compra cogerCodigoCompra(JTable tabla,ArrayList<Compra> listaCompras) {
 	return listaCompras.get(tabla.getSelectedRow());
 }
-public JTable cargaArticulosComprados(ArrayList<ArticuloComprado> listaArC) throws SQLException {
-	String[][] datosTabla = new String[listaArC.size()][3];
-	ArrayList<Articulo> nombres=ga.cargarArticulos();
-	for(int i = 0;i<listaArC.size();i++){
-		for(Articulo ar:nombres) {
-			if(ar.getIdArticulo()==listaArC.get(i).getIdArticulo()) {
-				datosTabla[i][0] = String.valueOf(ar.getNombreArticulo());
-			}
-		}
-		datosTabla[i][1] = String.valueOf(listaArC.get(i).getCantidad());
-		datosTabla[i][2] = String.valueOf(listaArC.get(i).getPrecioArt());
-	}
+public JTable cargaArticulosComprados(String [][] datosTabla) throws SQLException {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -138,25 +89,7 @@ public JTable cargaArticulosComprados(ArrayList<ArticuloComprado> listaArC) thro
 public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloComprado> listaArC) {
 	return listaArC.get(tabla.getSelectedRow());
 }
-	public JTable tablaRecargArticulos() throws SQLException {
-			Statement comando = (Statement) mts.conectarBaseDatos().createStatement();
-			ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSRECARGAR);
-			int numFilas=0;
-			while(carga.next()) {
-				numFilas++;
-			}
-		String[][] datosTabla = new String[numFilas][6];
-		int cuenta=0;
-		carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSRECARGAR);
-		while(carga.next()) {
-			datosTabla[cuenta][0]=carga.getString(TABLAS.ENCARGADO);
-			datosTabla[cuenta][1]=carga.getString(TABLAS.IDARTICULO);
-			datosTabla[cuenta][2]=carga.getString(TABLAS.NOMBREARTICULO);
-			datosTabla[cuenta][3]=carga.getString(TABLAS.PRECIO);
-			datosTabla[cuenta][4]=carga.getString(TABLAS.STOCKNECESARIO);
-			datosTabla[cuenta][5]=carga.getString(TABLAS.PRECIOTOTAL);
-			cuenta++;
-		}
+	public JTable tablaRecargArticulos(String [][]datosTabla) throws SQLException {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -170,32 +103,7 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		listaArticulos = ga.cargarArticulos();
 		return listaArticulos.get(tabla.getSelectedRow()).getDescripcion();
 	}
-	public JTable tablaUsuarios(ArrayList<Persona> listaUsuarios) throws SQLException {
-		listaUsuarios=gp.cargarPersonas();
-		Cliente prueba =null;
-		Jefe jefe=null;
-		String[][] datosTabla = new String[listaUsuarios.size()][6];
-		for(int i = 0;i<listaUsuarios.size();i++){
-			datosTabla[i][0] = String.valueOf(listaUsuarios.get(i).getNombre());
-			datosTabla[i][1] = String.valueOf(listaUsuarios.get(i).getApellidos());
-			datosTabla[i][2] = String.valueOf(listaUsuarios.get(i).getEmail());
-			datosTabla[i][3] = String.valueOf(listaUsuarios.get(i).getTipo());
-			if(listaUsuarios.get(i).getTipo().equals(tipoPersona.Cliente)) {
-				prueba=(Cliente)listaUsuarios.get(i);
-				if(prueba.isBloqueado()) {
-				datosTabla[i][4] = String.valueOf("Bloqueado");
-				}else {
-				datosTabla[i][4] = String.valueOf("Cliente");	
-				}
-			}else {
-				jefe=(Jefe)listaUsuarios.get(i);
-				if(jefe.isDios()) {
-				datosTabla[i][4] = String.valueOf("Root");
-				}else {
-				datosTabla[i][4] = String.valueOf("Administrador");	
-				}
-			}
-		}
+	public JTable tablaUsuarios(String [][] datosTabla) throws SQLException {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -205,15 +113,7 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		));
 		return table;
 	}
-	public JTable tablaSupermercados() throws SQLException {
-		ArrayList<Supermercado> lista=gsm.cargarSupermercados();
-		String[][] datosTabla = new String[lista.size()][4];
-		for(int i = 0;i<lista.size();i++){
-			datosTabla[i][0] = String.valueOf(lista.get(i).getCodigoSuper());
-			datosTabla[i][1] = String.valueOf(lista.get(i).getEmpresa());
-			datosTabla[i][2] = String.valueOf(lista.get(i).getDireccion());
-			datosTabla[i][3] = String.valueOf(lista.get(i).getNumEmpleados());
-		}
+	public JTable tablaSupermercados(String [][] datosTabla) throws SQLException {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -223,14 +123,7 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		));
 		return table;
 	}
-	public JTable tablaSecciones() throws SQLException {
-		ArrayList<Seccion> lista=gs.cargarSecciones();
-		String[][] datosTabla = new String[gs.cargarSecciones().size()][3];
-		for(int i = 0;i<lista.size();i++) {
-				datosTabla[i][0]=lista.get(i).getCodigoSeccion();
-				datosTabla[i][1]=String.valueOf(lista.get(i).getNombreSeccion());
-				datosTabla[i][2]=String.valueOf(lista.get(i).getNumArticulo());
-		}
+	public JTable tablaSecciones(String [][] datosTabla) throws SQLException {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -240,7 +133,6 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		));
 		return table;
 	}
-	
 	public void comprobarCampos(JPanel panel) throws ErroresDeOperaciones {
 		for(Component componente:panel.getComponents()) {
 			if(componente instanceof JTextField) {
@@ -448,7 +340,7 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			btnCogerArticulo.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					carrito.anadirArticulo(ar, (Integer)cantidad.getValue());
-					articulosMostrar.add(ar);
+					ga.diferenciarCarrito(ar, articulosMostrar);
 					carrito.setPrecioTotal(carrito.calcularPrecioTotal());
 					verPrecio.setText("Precio del carrito: "+carrito.getPrecioTotal());
 				}

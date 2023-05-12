@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ import modelo.Compra;
 import modelo.Jefe;
 import modelo.Persona;
 import otros.tipoPersona;
+import referencias.CONEXION;
 import referencias.TABLAS;
 
 class TestGestorPersona {
@@ -49,7 +52,7 @@ class TestGestorPersona {
 			assertEquals(g.getListaPersonas().get(0).getDni(),"00000000A");
 			assertEquals(g.getListaPersonas().get(0).getEmail(),"admin@gmail.com");
 			
-			g.insertarPersona(cliente);
+			g.insertarPersona(cliente,conexion);
 			g.setListaPersonas(g.cargarPersonas());
 			assertTrue(g.getListaPersonas().size()>antesInsert);
 			assertEquals(g.getListaPersonas().get(g.getListaPersonas().size()-1).getDni(),"99999999X");
@@ -82,7 +85,7 @@ class TestGestorPersona {
 			assertNotEquals(g.getListaPersonas().get(g.getListaPersonas().size()-1).getEmail(),"testCambio@gmail.com");
 			
 			Jefe jefe=new Jefe("77777777C","Test","Test",Date.valueOf("2001-01-21"),"testJefe@gmail.com","12345",tipoPersona.Jefe,Date.valueOf("2019-09-09"),(float)55.5,0);
-			g.insertarPersona(jefe);
+			g.insertarPersona(jefe,conexion);
 			g.setListaPersonas(g.cargarPersonas());
 			assertTrue(g.getListaPersonas().size()>antesInsert);
 			
@@ -190,59 +193,89 @@ class TestGestorPersona {
 			
 		}
 	}
+	Connection conexion;
 	@Test
 	void testMetodos() {
-		Cliente cliente = new Cliente("AAAAAAAAX","Test","Test",Date.valueOf("2001-01-21"),"test@gmail.com","12345",tipoPersona.Cliente,(float)99.9,0);
+
+			try {
+				conexion= (Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		Cliente cliente = new Cliente("BBBBBBBBX","Test","Test",Date.valueOf("2001-01-21"),"test@gmail.com","12345",tipoPersona.Cliente,(float)99.9,0);
 		Cliente prueba=null;
 		Compra co=new Compra();
 		try {
 			co.setPrecioTotal(7);
 			GestorPersona gp=new GestorPersona();
-			gp.insertarPersona(cliente);
-			int codCompra=gp.insertarCompraYCobrar(cliente, co);
+			gp.insertarPersona(cliente,conexion);
+			int codCompra=gp.insertarCompraYCobrar(conexion,cliente, co);
 			ArticuloComprado arc=new ArticuloComprado(codCompra,1,2,(float)1.99);
 			co.getListaCantidades().add(arc);
-			gp.insertarArticulos(co.getListaCantidades(),codCompra);
+			gp.insertarArticulos(conexion,co.getListaCantidades(),codCompra);
 			
 			Compra c=gc.buscarCompraReciente();
 			assertNotEquals(co.getCodigoCompra(),c.getCodigoCompra());
 			assertNotEquals(co.getFechaCompra(),c.getFechaCompra());
 			assertNotEquals(co.calcularPrecioTotal(),c.calcularPrecioTotal());
 			
-			gp.cancelarArticulos(c);
+			gp.cancelarArticulos(conexion,c);
 			gp.setListaPersonas(gp.cargarPersonas());
 			int posicion=gp.getListaPersonas().indexOf(cliente);
 			prueba=(Cliente) gp.getListaPersonas().get(posicion);
 			assertNotEquals(prueba.getDinero(),cliente.getDinero());
 			
-			gp.cancelarCompra(cliente,c);
+			gp.cancelarCompra(conexion,cliente,c);
 			Compra c1=gc.buscarCompraReciente();
 			assertNotEquals(c.getCodigoCompra(),c1.getCodigoCompra());
-			assertNotEquals(c.getFechaCompra(),c1.getFechaCompra());
+			assertNotEquals(c.getFechaCompra(),c1.getFechaCompra());	
 			
-			co.setListaCantidades(new ArrayList<ArticuloComprado>());
-			codCompra= gp.insertarCompraYCobrar(cliente, co);
-			arc=new ArticuloComprado(codCompra,1,2,(float)1.99);
+			gp.darseBajaPersona(cliente);
+		} catch (ErroresDeRegistro e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	@Test
+	void testMetodos2() {
+		try {
+			Connection 	conexion= (Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+	
+		Cliente cliente = new Cliente("AAAAAAAAX","Test","Test",Date.valueOf("2001-01-21"),"test@gmail.com","12345",tipoPersona.Cliente,(float)99.9,0);
+		Compra co=new Compra();
+		co.setPrecioTotal(7);
+		GestorPersona gp=new GestorPersona();
+		try {
+			gp.insertarPersona(cliente,conexion);
+			int codCompra=gp.insertarCompraYCobrar(conexion,cliente, co);
+			ArticuloComprado arc=new ArticuloComprado(codCompra,1,2,(float)1.99);
 			co.getListaCantidades().add(arc);
-			gp.insertarArticulos(co.getListaCantidades(),codCompra);
-			
-			c=gc.buscarCompraReciente();
+			gp.insertarArticulos(conexion,co.getListaCantidades(),codCompra);
+			Compra c=gc.buscarCompraReciente();
 			assertNotEquals(co.getCodigoCompra(),c.getCodigoCompra());
 			assertNotEquals(co.getFechaCompra(),c.getFechaCompra());
 			assertNotEquals(co.calcularPrecioTotal(),c.calcularPrecioTotal());
 			
-			gp.devolverUnArticulo(cliente, arc, 1);
+			gp.devolverUnArticulo(conexion,cliente, arc, 1);
 			
-			Statement comando = (Statement) mc.conectarBaseDatos().createStatement();
+			Statement comando = (Statement) conexion.createStatement();
 			ResultSet carga=comando.executeQuery("SELECT "+TABLAS.CANTIDAD+" FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+arc.getCodigoCompra()+"'");
 			int cant=arc.getCantidad();
 			while(carga.next()) {
 				cant=carga.getInt(TABLAS.CANTIDAD);
 			}
 			assertNotEquals(cant,arc.getCantidad());
-			
-			gp.devolverUnArticulo(cliente, arc, 1);
-			gp.compruebaDevolucionArticulo(arc);
+		
+			arc.setCantidad(arc.getCantidad()-1);
+			gp.devolverUnArticulo(conexion,cliente, arc, 1);
+			gp.compruebaDevolucionArticulo(conexion,arc);
 			carga=comando.executeQuery("SELECT "+TABLAS.CANTIDAD+" FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+arc.getCodigoCompra()+"'");
 			int existe=-1;
 			while(carga.next()) {
@@ -255,7 +288,6 @@ class TestGestorPersona {
 				existe++;
 			}
 			assertEquals(-1,existe);
-			
 			gp.darseBajaPersona(cliente);
 		} catch (ErroresDeRegistro e) {
 			// TODO Auto-generated catch block
@@ -266,7 +298,15 @@ class TestGestorPersona {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 	}
 
 }

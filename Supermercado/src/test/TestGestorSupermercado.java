@@ -2,7 +2,9 @@ package test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
@@ -14,11 +16,19 @@ import gestores.GestorSupermercado;
 import modelo.Jefe;
 import modelo.Supermercado;
 import otros.tipoPersona;
+import referencias.CONEXION;
 
 class TestGestorSupermercado {
 	Metodos mc=new Metodos();
+	Connection conexion;
 	@Test
 	void test() {
+		try {
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		Jefe jefe=new Jefe("77777777C","Test","Test",Date.valueOf("2001-01-21"),"testJefe@gmail.com","12345",tipoPersona.Jefe,Date.valueOf("2019-09-09"),(float)55.5,0);
 		Supermercado su=new Supermercado("ABCDE","PruebaEmpresa","Errekamari",4,null);
 		GestorSupermercado g=new GestorSupermercado();
@@ -28,7 +38,7 @@ class TestGestorSupermercado {
 			assertTrue(g.getListaSupers().size()>0);
 			int antesDeInsertar=g.getListaSupers().size();
 			
-			g1.insertarPersona(jefe);
+			g1.insertarPersona(jefe,conexion);
 			g.insertarSupermercado(jefe, su);
 			g.setListaSupers(g.cargarSupermercados());
 			assertTrue(antesDeInsertar<g.getListaSupers().size());

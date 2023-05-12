@@ -87,7 +87,7 @@ GestorPersona gp=new GestorPersona();
 				listaT.add(new Jefe("22222222B", "Jefe 2", null, null, null, null, null, null, 0, 0));
 				listaT.add(new Jefe("33333333C", "Jefe 3", null, null, null, null, null, null, 0, 0));
 				
-				assertEquals(mts.deArrayListAStringArrayJefe(listaT)[0], "11111111A");
+				assertEquals(mts.cargarNombreJefe(listaT)[0], "11111111A");
 	}
 	
 	@Test
@@ -97,7 +97,7 @@ GestorPersona gp=new GestorPersona();
 		listaT.add(new Supermercado("ASDF", "Mercadona", null, 0, null));
 		listaT.add(new Supermercado("DJSADH", "Coviran", null, 0, null));
 		
-		assertEquals(mts.deArrayListAStringArraySuper(listaT)[0], "Eroski");
+		assertEquals(mts.cargarEmpresa(listaT)[0], "Eroski");
 	}
 	
 	@Test
@@ -107,7 +107,7 @@ GestorPersona gp=new GestorPersona();
 		listaT.add(new Supermercado("ASDF", "Mercadona", "wahsington", 0, null));
 		listaT.add(new Supermercado("DJSADH", "Coviran", "canada", 0, null));
 		
-		assertEquals(mts.deArrayListAStringArrayDireccion(listaT)[0], "ohio");
+		assertEquals(mts.cargarDireccionSuper(listaT)[0], "ohio");
 	}
 	
 	@Test
@@ -117,7 +117,7 @@ GestorPersona gp=new GestorPersona();
 		listaT.add(new Seccion(null, tipoArticulo.Ropa, 0, null));
 		listaT.add(new Seccion(null, tipoArticulo.Herramienta, 0, null));
 		
-		assertEquals(mts.deArrayListAStringArrayNombreSeccion(listaT)[0].toString(), String.valueOf(tipoArticulo.Comida));
+		assertEquals(mts.cargarNombreSeccion(listaT)[0].toString(), String.valueOf(tipoArticulo.Comida));
 	}
 	
 	@Test
