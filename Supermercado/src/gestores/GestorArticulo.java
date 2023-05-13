@@ -115,7 +115,7 @@ public class GestorArticulo {
 			comando.executeUpdate("UPDATE "+TABLAS.ARTICULO+" SET "+TABLAS.FECHACADUCIDAD+"='"+co.getFechaCaducidad()+"',"
 					+ " "+TABLAS.PROCEDENCIA+"='"+co.getProcedencia()+"' WHERE "+TABLAS.IDARTICULO+"="+ar.getIdArticulo());
 		}
-		conexion.close();
+		comando.close();
 	}
 	public void borrarArticulo(Connection conexion,Articulo ar) throws SQLException {
 		Statement comando = (Statement) conexion.createStatement();

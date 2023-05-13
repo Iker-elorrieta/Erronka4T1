@@ -17,7 +17,6 @@ import referencias.TABLAS;
 public class GestorSupermercado {
 	private ArrayList<Supermercado> listaSupers;
 	
-	
 	public GestorSupermercado() {
 		super();
 		listaSupers = new ArrayList<Supermercado>();
@@ -99,8 +98,9 @@ public class GestorSupermercado {
 		}
 		if(su==null) {
 			throw new ErroresDeOperaciones("No se pudo encontrar el supermercado escogido");
-		}
+		}else {
 		su=cogerSeccionesSuper(conexion,su);
+		}
 		comando.close();
 		return lista;
 	}
@@ -113,9 +113,10 @@ public class GestorSupermercado {
 		}
 		if(su==null) {
 			throw new ErroresDeOperaciones("No se pudo encontrar el supermercado escogido");
-		}
+		}else {
 		su=cogerSeccionesSuper(conexion,su);
 		comando.close();
+		}
 		return su;
 	}
 	public Supermercado cogerSeccionesSuper(Connection conexion,Supermercado su) throws SQLException{

@@ -8,15 +8,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
 import controlador.Metodos;
-import excepciones.ErroresDeRegistro;
 import gestores.GestorArticulo;
-import gestores.GestorPersona;
-import gestores.GestorSeccion;
-import gestores.GestorSupermercado;
+import modelo.Articulo;
 import modelo.Comida;
 import modelo.Herramienta;
 import modelo.Jefe;
@@ -29,89 +27,248 @@ import referencias.CONEXION;
 import referencias.TABLAS;
 
 class TestGestorArticulo {
-	
+	Metodos mc=new Metodos();
+	Connection conexion;
+	GestorArticulo ga=new GestorArticulo();
+	Jefe jefe=new Jefe("77777777C","Test","Test",Date.valueOf("2001-01-21"),"testJefe@gmail.com","12345",tipoPersona.Jefe,Date.valueOf("2019-09-09"),(float)55.5,0);
+	Supermercado su=new Supermercado("ABCDE","PruebaEmpresa","Errekamari",4,null);
+	Seccion se=new Seccion(su.getCodigoSuper()+"1",tipoArticulo.Herramienta,0,null);
+	Ropa ro=new Ropa(0, "Chanclas", "chanclas.png", "", (float)5.88, 99, "XL", "Supreme");
+	Comida co=new Comida(0, "Fruta del dragon", "fdd.png", "", (float)3.49, 99, Date.valueOf("2023-12-31"),"Brasil");
+	Herramienta he=new Herramienta(0, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 1, 4);
 	@Test
-	void test() {
-		Metodos mc=new Metodos();
-		Connection conexion = null;
-		try {
+	void testGetterSetter() {
+		ArrayList<Articulo> lista=null;
+		ga.setListaArticulos(lista);
+		assertEquals(lista,ga.getListaArticulos());
+	}
+	@Test
+	void testInsertar() {
+		Statement comando=null;
+			try {
 			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		GestorArticulo ga=new GestorArticulo();
-		GestorSeccion g=new GestorSeccion();
-		GestorSupermercado g2=new GestorSupermercado();
-		GestorPersona g1=new GestorPersona();
-		Jefe jefe=new Jefe("77777777C","Test","Test",Date.valueOf("2001-01-21"),"testJefe@gmail.com","12345",tipoPersona.Jefe,Date.valueOf("2019-09-09"),(float)55.5,0);
-		
-		Supermercado su=new Supermercado("ABCDE","PruebaEmpresa","Errekamari",4,null);
-		Seccion se=new Seccion("OOOO",tipoArticulo.Herramienta,0,null);
-		Ropa ro=new Ropa(0, "Chanclas", "chanclas.png", "", (float)5.88, 99, "XL", "Supreme");
-		Comida co=new Comida(0, "Fruta del dragon", "fdd.png", "", (float)3.49, 99, Date.valueOf("2023-12-31"),"Brasil");
-		Herramienta he=new Herramienta(0, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 1, 4);
+			comando= (Statement) conexion.createStatement();
+			comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+			+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+			comando.executeUpdate("INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES "
+			+ "('"+jefe.getDni()+"', '"+su.getCodigoSuper()+"', '"+su.getEmpresa()+"', '"+su.getDireccion()+"', "+su.getNumEmpleados()+");");
+			comando.executeUpdate("INSERT INTO "+TABLAS.SECCION+" VALUES ('"+su.getCodigoSuper()+"','"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"','"+se.getNumArticulo()+"')");
+			ga.insertarArticulo(mc, conexion, se, co);
+			ga.insertarArticulo(mc, conexion, se, ro);
+			ga.insertarArticulo(mc, conexion, se, he);
+			Comida coPrueba=null;
+			Ropa roPrueba=null;
+			Herramienta hePrueba=null;
+			ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.NOMBREARTICULO+"='"+co.getNombreArticulo()+"' AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			while(carga.next()) {
+				coPrueba=new Comida(carga.getInt(TABLAS.IDARTICULO),carga.getString(TABLAS.NOMBREARTICULO),
+				carga.getString(TABLAS.RUTAIMAGEN),carga.getString(TABLAS.DESCRIPCION),
+				carga.getFloat(TABLAS.PRECIO),carga.getInt(TABLAS.STOCK),
+				carga.getDate(TABLAS.FECHACADUCIDAD),carga.getString(TABLAS.PROCEDENCIA));
+			}
+			assertEquals(co.getNombreArticulo(),coPrueba.getNombreArticulo());
+			assertEquals(co.getDescripcion(),coPrueba.getDescripcion());
+			assertEquals(co.getFechaCaducidad(),coPrueba.getFechaCaducidad());
+			assertEquals(co.getPrecio(),coPrueba.getPrecio());
+			assertEquals(co.getRutaImagen(),coPrueba.getRutaImagen());
+			assertEquals(co.getProcedencia(),coPrueba.getProcedencia());
+			assertEquals(co.getStockActual(),coPrueba.getStockActual());
+			carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.NOMBREARTICULO+"='"+he.getNombreArticulo()+"' AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			while(carga.next()) {
+				hePrueba=new Herramienta(carga.getInt(TABLAS.IDARTICULO),carga.getString(TABLAS.NOMBREARTICULO),
+						carga.getString(TABLAS.RUTAIMAGEN),carga.getString(TABLAS.DESCRIPCION),
+						carga.getFloat(TABLAS.PRECIO),carga.getInt(TABLAS.STOCK),
+						carga.getInt(TABLAS.ELECTRICA),carga.getInt(TABLAS.GARANTIA));
+			}
+			assertEquals(he.getNombreArticulo(),hePrueba.getNombreArticulo());
+			assertEquals(he.getDescripcion(),hePrueba.getDescripcion());
+			assertEquals(he.getPrecio(),hePrueba.getPrecio());
+			assertEquals(he.getRutaImagen(),hePrueba.getRutaImagen());
+			assertEquals(he.getStockActual(),hePrueba.getStockActual());
+			assertEquals(he.getGarantia(),hePrueba.getGarantia());
+			assertEquals(he.getElectrica(),hePrueba.getElectrica());
+			carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.NOMBREARTICULO+"='"+ro.getNombreArticulo()+"' AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			while(carga.next()) {
+				roPrueba=new Ropa(carga.getInt(TABLAS.IDARTICULO),carga.getString(TABLAS.NOMBREARTICULO),
+						carga.getString(TABLAS.RUTAIMAGEN),carga.getString(TABLAS.DESCRIPCION),
+						carga.getFloat(TABLAS.PRECIO),carga.getInt(TABLAS.STOCK),
+						carga.getString(TABLAS.TALLA),carga.getString(TABLAS.MARCA));
+				}
+			assertEquals(ro.getNombreArticulo(),roPrueba.getNombreArticulo());
+			assertEquals(ro.getDescripcion(),roPrueba.getDescripcion());
+			assertEquals(ro.getPrecio(),roPrueba.getPrecio());
+			assertEquals(ro.getRutaImagen(),roPrueba.getRutaImagen());
+			assertEquals(ro.getStockActual(),roPrueba.getStockActual());
+			assertEquals(ro.getTalla(),roPrueba.getTalla());
+			assertEquals(ro.getMarca(),roPrueba.getMarca());
+			comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+			comando.close();
+			conexion.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	}
+	@Test
+	void testCargar() {
+		Statement comando=null;
 		try {
-			ga.setListaArticulos(ga.cargarArticulos(conexion));
-			assertTrue(ga.getListaArticulos().size()>0);
-			int antesDeInsertar=ga.getListaArticulos().size();
-			
-			g1.insertarPersona(mc,conexion,jefe);
-			g2.insertarSupermercado(conexion,jefe, su);
-			g.insertarSeccion(conexion,su, se);
-			ga.insertarArticulo(mc,conexion,se, ro);
-			ga.insertarArticulo(mc,conexion,se, co);
-			ga.insertarArticulo(mc,conexion,se, he);
-			ga.setListaArticulos(ga.cargarArticulos(conexion));
-			assertTrue(ga.getListaArticulos().size()>antesDeInsertar);
-			
-			
-			Statement comando = (Statement) conexion.createStatement();
-			ResultSet cargaHe=comando.executeQuery("SELECT "+TABLAS.IDARTICULO+" FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.ELECTRICA+" OR "+TABLAS.GARANTIA+" IS NOT NULL ORDER BY "+TABLAS.IDARTICULO+" DESC LIMIT 1");
-			while(cargaHe.next()) {
-				he=new Herramienta(cargaHe.getInt(TABLAS.IDARTICULO), "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 0, 2);
-			}
-			ResultSet cargaRo=comando.executeQuery("SELECT "+TABLAS.IDARTICULO+" FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.TALLA+" OR "+TABLAS.MARCA+" IS NOT NULL ORDER BY "+TABLAS.IDARTICULO+" DESC LIMIT 1");
-			while(cargaRo.next()) {
-			ro=new Ropa(cargaRo.getInt(TABLAS.IDARTICULO), "Chanclas", "chanclas.png", "", (float)5.88, 99, "S", "Mercadona");
-			}
-			ResultSet cargaCo=comando.executeQuery("SELECT "+TABLAS.IDARTICULO+" FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.FECHACADUCIDAD+" OR "+TABLAS.PROCEDENCIA+" IS NOT NULL ORDER BY "+TABLAS.IDARTICULO+" DESC LIMIT 1");
-			while(cargaCo.next()) {
-				co=new Comida(cargaCo.getInt(TABLAS.IDARTICULO), "Fruta del dragon", "fdd.png", "", (float)3.49, 99, Date.valueOf("2023-12-31"),"Cuenca");
-			}
-			ga.cambiarArticulo(mc,conexion,he);
-			ga.cambiarArticulo(mc,conexion,co);
-			ga.cambiarArticulo(mc,conexion,ro);
-			ga.setListaArticulos(ga.cargarArticulos(conexion));
-			Ropa r=null;
-			Herramienta h=null;
-			Comida c=null;
-			h=(Herramienta) ga.buscarArticulo(he,ga.getListaArticulos());
-			c=(Comida) ga.buscarArticulo(co,ga.getListaArticulos());
-			r=(Ropa) ga.buscarArticulo(ro,ga.getListaArticulos());
-			System.out.println(h.toString()+" "+he.toString());
-			assertEquals(h.getNombreArticulo(),he.getNombreArticulo());
-			assertEquals(h.getGarantia(),he.getGarantia());
-			assertEquals(h.getElectrica(),he.getElectrica());
-			assertEquals(c.getNombreArticulo(),co.getNombreArticulo());
-			assertEquals(c.getProcedencia(),co.getProcedencia());
-			assertEquals(r.getNombreArticulo(),r.getNombreArticulo());
-			assertEquals(r.getTalla(),r.getTalla());
-			assertEquals(r.getMarca(),r.getMarca());
-			
-			ga.borrarArticulo(conexion,r);
-			ga.borrarArticulo(conexion,h);
-			ga.borrarArticulo(conexion,c);
-			ga.setListaArticulos(ga.cargarArticulos(conexion));
-			assertEquals(ga.getListaArticulos().size(),antesDeInsertar);
-			g1.darseBajaPersona(conexion,jefe);
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		comando.executeUpdate("INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+su.getCodigoSuper()+"', '"+su.getEmpresa()+"', '"+su.getDireccion()+"', "+su.getNumEmpleados()+");");
+		comando.executeUpdate("INSERT INTO "+TABLAS.SECCION+" VALUES ('"+su.getCodigoSuper()+"','"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"','"+se.getNumArticulo()+"')");
+		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `fechaCaducidad`, `procedencia`) VALUES "
+		+ "(0, '"+se.getCodigoSeccion()+"', '"+co.getNombreArticulo()+"', '"+co.getRutaImagen()+"', '"+co.getDescripcion()+"', "+co.getPrecio()+", "+co.getStockActual()+", '"+co.getFechaCaducidad()+"', '"+co.getProcedencia()+"')");
+		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`,  `electrica`, `garantia`) VALUES "
+		+ "(0, '"+se.getCodigoSeccion()+"', '"+he.getNombreArticulo()+"', '"+he.getRutaImagen()+"', '"+he.getDescripcion()+"', "+he.getPrecio()+", "+he.getStockActual()+", "+he.getElectrica()+", "+he.getGarantia()+")");
+		comando.executeUpdate("INSERT INTO `articulos` (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `talla`, `marca`) VALUES "
+		+ "(0, '"+se.getCodigoSeccion()+"', '"+ro.getNombreArticulo()+"', '"+ro.getRutaImagen()+"', '"+ro.getDescripcion()+"', "+ro.getPrecio()+", "+ro.getStockActual()+", '"+ro.getTalla()+"', '"+ro.getMarca()+"')");
+		ArrayList<Articulo> lista=new ArrayList<Articulo>();
+		ArrayList<Articulo> listaComprobar=new ArrayList<Articulo>();
+		Herramienta hePrueba=null;
+		Comida coPrueba=null;
+		Ropa roPrueba=null;
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.ELECTRICA+" OR "+TABLAS.GARANTIA+" IS NOT NULL");
+		while(carga.next()) {
+		hePrueba=new Herramienta(carga.getInt(TABLAS.IDARTICULO),carga.getString(TABLAS.NOMBREARTICULO),
+				carga.getString(TABLAS.RUTAIMAGEN),carga.getString(TABLAS.DESCRIPCION),
+				carga.getFloat(TABLAS.PRECIO),carga.getInt(TABLAS.STOCK),
+				carga.getInt(TABLAS.ELECTRICA),carga.getInt(TABLAS.GARANTIA));
+		lista.add(hePrueba);
+		}
+		ResultSet cargaC=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.FECHACADUCIDAD+" OR "+TABLAS.PROCEDENCIA+" IS NOT NULL");
+		while(cargaC.next()) {
+		coPrueba=new Comida(cargaC.getInt(TABLAS.IDARTICULO),cargaC.getString(TABLAS.NOMBREARTICULO),
+				cargaC.getString(TABLAS.RUTAIMAGEN),cargaC.getString(TABLAS.DESCRIPCION),
+				cargaC.getFloat(TABLAS.PRECIO),cargaC.getInt(TABLAS.STOCK),
+				cargaC.getDate(TABLAS.FECHACADUCIDAD),cargaC.getString(TABLAS.PROCEDENCIA));
+		lista.add(coPrueba);
+		}
+		ResultSet cargaR=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.TALLA+" OR "+TABLAS.MARCA+" IS NOT NULL");
+		while(cargaR.next()) {
+		roPrueba=new Ropa(cargaR.getInt(TABLAS.IDARTICULO),cargaR.getString(TABLAS.NOMBREARTICULO),
+				cargaR.getString(TABLAS.RUTAIMAGEN),cargaR.getString(TABLAS.DESCRIPCION),
+				cargaR.getFloat(TABLAS.PRECIO),cargaR.getInt(TABLAS.STOCK),
+				cargaR.getString(TABLAS.TALLA),cargaR.getString(TABLAS.MARCA));
+		lista.add(roPrueba);
+		}
+		listaComprobar=ga.cargarArticulos(conexion);
+		assertEquals(listaComprobar,lista);
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.close();
+		conexion.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ErroresDeRegistro e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
+	@Test
+	void testCambiar() {
+		Statement comando=null;
+		try {
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+			comando= (Statement) conexion.createStatement();
+			comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+			+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+			comando.executeUpdate("INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES "
+			+ "('"+jefe.getDni()+"', '"+su.getCodigoSuper()+"', '"+su.getEmpresa()+"', '"+su.getDireccion()+"', "+su.getNumEmpleados()+");");
+			comando.executeUpdate("INSERT INTO "+TABLAS.SECCION+" VALUES ('"+su.getCodigoSuper()+"','"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"','"+se.getNumArticulo()+"')");
+			comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `fechaCaducidad`, `procedencia`) VALUES "
+			+ "(0, '"+se.getCodigoSeccion()+"', '"+co.getNombreArticulo()+"', '"+co.getRutaImagen()+"', '"+co.getDescripcion()+"', "+co.getPrecio()+", "+co.getStockActual()+", '"+co.getFechaCaducidad()+"', '"+co.getProcedencia()+"')");
+			comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`,  `electrica`, `garantia`) VALUES "
+			+ "(0, '"+se.getCodigoSeccion()+"', '"+he.getNombreArticulo()+"', '"+he.getRutaImagen()+"', '"+he.getDescripcion()+"', "+he.getPrecio()+", "+he.getStockActual()+", "+he.getElectrica()+", "+he.getGarantia()+")");
+			comando.executeUpdate("INSERT INTO `articulos` (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `talla`, `marca`) VALUES "
+			+ "(0, '"+se.getCodigoSeccion()+"', '"+ro.getNombreArticulo()+"', '"+ro.getRutaImagen()+"', '"+ro.getDescripcion()+"', "+ro.getPrecio()+", "+ro.getStockActual()+", '"+ro.getTalla()+"', '"+ro.getMarca()+"')");
+			int primerID=-1;
+			int segundoID=-1;
+			int tercerID=-1;
+			ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.NOMBREARTICULO+"='"+co.getNombreArticulo()+"' AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			while(carga.next()) {
+				primerID=carga.getInt(TABLAS.IDARTICULO);
+			}
+			carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.NOMBREARTICULO+"='"+he.getNombreArticulo()+"' AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			while(carga.next()) {
+				segundoID=carga.getInt(TABLAS.IDARTICULO);
+			}
+			carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.NOMBREARTICULO+"='"+ro.getNombreArticulo()+"' AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			while(carga.next()) {
+				tercerID=carga.getInt(TABLAS.IDARTICULO);
+			}
+			Comida coPrueba=co;
+			coPrueba.setIdArticulo(primerID);
+			coPrueba.setNombreArticulo("Diferente");
+			coPrueba.setDescripcion("Cambiada");
+			coPrueba.setPrecio((float)10);
+			coPrueba.setProcedencia("Madrid");
+			coPrueba.setFechaCaducidad(new java.util.Date());
+			Herramienta hePrueba=he;
+			hePrueba.setIdArticulo(segundoID);
+			hePrueba.setNombreArticulo("Otro");
+			hePrueba.setElectrica(false);
+			hePrueba.setGarantia(2);
+			Ropa roPrueba=ro;
+			roPrueba.setIdArticulo(tercerID);
+			roPrueba.setNombreArticulo("Cambio");
+			roPrueba.setMarca("Shein");
+			roPrueba.setTalla("XS");
+			roPrueba.setRutaImagen("cambiada.png");
+			ga.cambiarArticulo(mc, conexion, hePrueba);
+			ga.cambiarArticulo(mc, conexion, roPrueba);
+			ga.cambiarArticulo(mc, conexion, coPrueba);
+			Comida coComprobar=null;
+			Ropa roComprobar=null;
+			Herramienta heComprobar=null;
+			carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.NOMBREARTICULO+"='"+coPrueba.getNombreArticulo()+"' AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			while(carga.next()) {
+				coComprobar=new Comida(carga.getInt(TABLAS.IDARTICULO),carga.getString(TABLAS.NOMBREARTICULO),
+				carga.getString(TABLAS.RUTAIMAGEN),carga.getString(TABLAS.DESCRIPCION),
+				carga.getFloat(TABLAS.PRECIO),carga.getInt(TABLAS.STOCK),
+				carga.getDate(TABLAS.FECHACADUCIDAD),carga.getString(TABLAS.PROCEDENCIA));
+			}
+			assertEquals(coComprobar.getNombreArticulo(),coPrueba.getNombreArticulo());
+			assertEquals(coComprobar.getDescripcion(),coPrueba.getDescripcion());
+			assertEquals(coComprobar.getFechaCaducidad(),coPrueba.getFechaCaducidad());
+			assertEquals(coComprobar.getPrecio(),coPrueba.getPrecio());
+			assertEquals(coComprobar.getRutaImagen(),coPrueba.getRutaImagen());
+			assertEquals(coComprobar.getProcedencia(),coPrueba.getProcedencia());
+			assertEquals(coComprobar.getStockActual(),coPrueba.getStockActual());
+			carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.NOMBREARTICULO+"='"+hePrueba.getNombreArticulo()+"' AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			while(carga.next()) {
+				heComprobar=new Herramienta(carga.getInt(TABLAS.IDARTICULO),carga.getString(TABLAS.NOMBREARTICULO),
+						carga.getString(TABLAS.RUTAIMAGEN),carga.getString(TABLAS.DESCRIPCION),
+						carga.getFloat(TABLAS.PRECIO),carga.getInt(TABLAS.STOCK),
+						carga.getInt(TABLAS.ELECTRICA),carga.getInt(TABLAS.GARANTIA));
+			}
+			assertEquals(heComprobar.getNombreArticulo(),hePrueba.getNombreArticulo());
+			assertEquals(heComprobar.getDescripcion(),hePrueba.getDescripcion());
+			assertEquals(heComprobar.getPrecio(),hePrueba.getPrecio());
+			assertEquals(heComprobar.getRutaImagen(),hePrueba.getRutaImagen());
+			assertEquals(heComprobar.getStockActual(),hePrueba.getStockActual());
+			assertEquals(heComprobar.getGarantia(),hePrueba.getGarantia());
+			assertEquals(heComprobar.getElectrica(),hePrueba.getElectrica());
+			carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.NOMBREARTICULO+"='"+roPrueba.getNombreArticulo()+"' AND "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"'");
+			while(carga.next()) {
+				roComprobar=new Ropa(carga.getInt(TABLAS.IDARTICULO),carga.getString(TABLAS.NOMBREARTICULO),
+						carga.getString(TABLAS.RUTAIMAGEN),carga.getString(TABLAS.DESCRIPCION),
+						carga.getFloat(TABLAS.PRECIO),carga.getInt(TABLAS.STOCK),
+						carga.getString(TABLAS.TALLA),carga.getString(TABLAS.MARCA));
+				}
+			assertEquals(roComprobar.getNombreArticulo(),roPrueba.getNombreArticulo());
+			assertEquals(roComprobar.getDescripcion(),roPrueba.getDescripcion());
+			assertEquals(roComprobar.getPrecio(),roPrueba.getPrecio());
+			assertEquals(roComprobar.getRutaImagen(),roPrueba.getRutaImagen());
+			assertEquals(roComprobar.getStockActual(),roPrueba.getStockActual());
+			assertEquals(roComprobar.getTalla(),roPrueba.getTalla());
+			assertEquals(roComprobar.getMarca(),roPrueba.getMarca());
+			comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+			comando.close();
+			conexion.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
