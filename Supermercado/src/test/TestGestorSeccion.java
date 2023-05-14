@@ -21,7 +21,7 @@ import otros.tipoArticulo;
 import otros.tipoPersona;
 import referencias.CONEXION;
 import referencias.TABLAS;
-
+@SuppressWarnings("javadoc")
 class TestGestorSeccion {
 	Metodos mc=new Metodos();
 	GestorSeccion gse=new GestorSeccion();

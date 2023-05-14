@@ -29,7 +29,10 @@ import referencias.TABLAS;
  *
  */
 public class GestorPersona {
-	
+	/**
+	 * Para cambiar el articulo devuelto.
+	 */
+	GestorArticuloComprado gac=new GestorArticuloComprado();
 	/**
 	 * La lista de personas.
 	 */
@@ -371,7 +374,6 @@ public class GestorPersona {
 		}
 		if(per instanceof Cliente) {
 			cli=(Cliente)per;
-			System.out.println("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+cli.getDinero()+"+"+dineroDevolver+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");
 			comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+cli.getDinero()+"+"+dineroDevolver+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");	
 		}
 		comando.executeUpdate("DELETE FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
@@ -383,19 +385,21 @@ public class GestorPersona {
 	 * @param arc Articulo a devolver.
 	 * @param numeroDevolver Cantidad a devolver.
 	 * @throws SQLException Fallo de conexion.
+	 * @throws ParseException Si no consigur el datos de la fecha de la tabla.
 	 */
-	public void devolverUnArticulo(Connection conexion,Persona per,ArticuloComprado arc,int numeroDevolver) throws SQLException {
+	public void devolverUnArticulo(Connection conexion,Persona per,ArticuloComprado arc,int numeroDevolver) throws SQLException, ParseException {
 		Cliente cli=null;
 		Statement comando = (Statement) conexion.createStatement();
 		if(per instanceof Cliente) {
 			cli=(Cliente) per;
 		comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"+"+arc.getCantidad()*arc.getPrecioArt()+") WHERE "+TABLAS.DNI+"='"+cli.getDni()+"'");
-		}	
+		}
 		if(arc.getCantidad()<=numeroDevolver) {
 				comando.execute("DELETE FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.IDARTICULO+"="+arc.getIdArticulo()+" AND "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra()+"");
 		}else {
-			comando.execute("UPDATE "+TABLAS.ARTICULOSCOMPRADOS+" SET "+TABLAS.CANTIDAD+"=("+arc.getCantidad()+"-"+numeroDevolver+")"
-			+ " WHERE "+TABLAS.IDARTICULO+ "="+arc.getIdArticulo()+" AND "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra());
+			ArticuloComprado arcCambiado=arc;
+			arcCambiado.setCantidad(arcCambiado.getCantidad()-numeroDevolver);
+			gac.cambiarArticuloComprado(conexion, arc);
 		}
 		comando.close();
 	}
@@ -407,7 +411,7 @@ public class GestorPersona {
 	public void compruebaDevolucionArticulo(Connection conexion,ArticuloComprado arc) throws SQLException {
 		int numArc=0;
 		Statement comando = (Statement) conexion.createStatement();
-		ResultSet cargatres=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra()+"");
+		ResultSet cargatres=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"="+arc.getCodigoCompra()+" AND "+TABLAS.IDARTICULO+"="+arc.getIdArticulo()+"");
 		while(cargatres.next()) {
 			numArc++;
 		}

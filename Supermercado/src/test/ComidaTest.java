@@ -8,7 +8,7 @@ import java.sql.Date;
 import org.junit.jupiter.api.Test;
 
 import modelo.Comida;
-
+@SuppressWarnings("javadoc")
 class ComidaTest {
 
 Comida obj = new Comida(0, null, null, null, 0, 0, null, null);

@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import controlador.Metodos;
-import modelo.Cliente;
 import modelo.Compra;
 import modelo.Persona;
 import referencias.TABLAS;
@@ -86,13 +85,13 @@ public class GestorCompra {
 	}
 	/**Para cambiar los datos de una compra.
 	 * @param conexion La conexion.
-	 * @param cli El cliente al que le pertenece la conexion.
+	 * @param per El cliente al que le pertenece la conexion.
 	 * @param com La compra a cambiar.
 	 * @throws SQLException
 	 */
-	public void cambiarCompra(Connection conexion,Cliente cli, Compra com) throws SQLException {
+	public void cambiarCompra(Connection conexion,Persona per, Compra com) throws SQLException {
 		Statement comando = (Statement) conexion.createStatement();
-		comando.executeUpdate("UPDATE "+TABLAS.COMPRAS+" SET "+TABLAS.DNI+"='"+cli.getDni()+"',"
+		comando.executeUpdate("UPDATE "+TABLAS.COMPRAS+" SET "+TABLAS.DNI+"='"+per.getDni()+"',"
 				+ " "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"', "+TABLAS.PRECIOFINAL+"='"+com.getPrecioTotal()+"',"
 				+ " "+TABLAS.FECHACOMPRA+"='"+com.getFechaCompra()+"' WHERE "+TABLAS.CODIGOCOMPRA+"='"+com.getCodigoCompra()+"'");
 		comando.close();

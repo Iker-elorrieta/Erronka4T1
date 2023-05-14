@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import modelo.Ropa;
+@SuppressWarnings("javadoc")
 class RopaTest {
 
 Ropa obj = new Ropa(0, null, null, null, 0, 0, null, null);

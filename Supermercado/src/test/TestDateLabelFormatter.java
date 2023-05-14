@@ -4,12 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 
 import otros.DateLabelFormatter;
-
+@SuppressWarnings("javadoc")
 class TestDateLabelFormatter {
 
 	@Test
@@ -21,6 +22,14 @@ class TestDateLabelFormatter {
 		try {
 			fecha=(Date) dlf.stringToValue(control);
 			assertEquals(dateFormatter.parse(control),fecha);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			dlf.valueToString(null);
+			dlf.valueToString(Calendar.getInstance());
+		//	assertEquals();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

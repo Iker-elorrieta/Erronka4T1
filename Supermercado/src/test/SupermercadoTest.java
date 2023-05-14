@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import modelo.Seccion;
 import modelo.Supermercado;
-
+@SuppressWarnings("javadoc")
 class SupermercadoTest {
 	ArrayList<Seccion> arraySecciones = new ArrayList<Seccion>();
 Supermercado sup = new Supermercado(null, null, null, 0, null);

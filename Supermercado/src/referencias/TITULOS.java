@@ -1,5 +1,5 @@
 package referencias;
-
+@SuppressWarnings("javadoc")
 public class TITULOS {
 	public final static String CODIGO="Codigo";
 	public final static String IDENTIFICADOR="Identificador";

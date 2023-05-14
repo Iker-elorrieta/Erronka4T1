@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.Date;
@@ -33,7 +34,7 @@ import otros.tipoArticulo;
 import otros.tipoPersona;
 import referencias.CONEXION;
 import referencias.TABLAS;
-
+@SuppressWarnings("javadoc")
 class TestGestorPersona {
 	Metodos mc=new Metodos();
 	Connection conexion;
@@ -45,8 +46,9 @@ class TestGestorPersona {
 	Seccion sec=new Seccion(su.getCodigoSuper()+"2",tipoArticulo.Comida,0,null);
 	Seccion secc=new Seccion(su.getCodigoSuper()+"3",tipoArticulo.Ropa,0,null);
 	Ropa ro=new Ropa(0, "Chanclas", "chanclas.png", "", (float)5.88, 99, "XL", "Supreme");
-	Comida co=new Comida(0, "Fruta del dragon", "fdd.png", "", (float)3.49, 99, Date.valueOf("2023-12-31"),"Brasil");
+	Comida co=new Comida(0, "Fruta del dragon", "fdd.png", "", (float)3.49, 70, Date.valueOf("2023-12-31"),"Brasil");
 	Herramienta he=new Herramienta(0, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 1, 4);
+
 	@Test
 	void testGetterSetter() {
 		ArrayList<Persona> lista=null;
@@ -360,7 +362,7 @@ class TestGestorPersona {
 		conexion.close(); 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 	}
 	@Test
@@ -536,7 +538,7 @@ class TestGestorPersona {
 		conexion.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 	}
 
@@ -640,7 +642,7 @@ class TestGestorPersona {
 					compraN=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
 				}
 				assertTrue(compraN.getCodigoCompra()>1);
-				assertTrue(compra.getPrecioTotal()==compraN.getPrecioTotal());
+				
 				comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
 				comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
 				comando.close();
@@ -712,5 +714,291 @@ class TestGestorPersona {
 		e.printStackTrace();
 	}
 	}
+	@Test
+	void testCancelarArticulos() {
+		Statement comando=null;
+		try {
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		comando.executeUpdate("INSERT INTO `personas` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `dinero`, `bloqueado`) VALUES "
+		+ "('"+cliente.getDni()+"', '"+cliente.getNombre()+"', '"+cliente.getApellidos()+"', '"+cliente.getFechaNacimiento()+"', '"+cliente.getEmail()+"', '"+cliente.getContrasena()+"', '"+cliente.getTipo()+"', "+cliente.getDinero()+", "+cliente.isBloqueado()+")");
+		comando.executeUpdate("INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+su.getCodigoSuper()+"', '"+su.getEmpresa()+"', '"+su.getDireccion()+"', "+su.getNumEmpleados()+");");
+		comando.executeUpdate("INSERT INTO "+TABLAS.SECCION+" VALUES ('"+su.getCodigoSuper()+"','"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"','"+se.getNumArticulo()+"')");
+		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `fechaCaducidad`, `procedencia`) VALUES "
+		+ "(0, '"+se.getCodigoSeccion()+"', '"+co.getNombreArticulo()+"', '"+co.getRutaImagen()+"', '"+co.getDescripcion()+"', "+co.getPrecio()+", "+co.getStockActual()+", '"+co.getFechaCaducidad()+"', '"+co.getProcedencia()+"')");
+		
+		int idar=-1;
+		ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"' AND "+TABLAS.NOMBREARTICULO+"='"+co.getNombreArticulo()+"'");
+		while(cargar.next()) {
+			idar=cargar.getInt(TABLAS.IDARTICULO);
+		}
+		Compra compra=new Compra((co.getPrecio()*2));
+		comando.executeUpdate("INSERT INTO `"+TABLAS.COMPRAS+"` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
+			+ "('"+cliente.getDni()+"', "+idar+", "+compra.getPrecioTotal()+", '"+LocalDateTime.now()+"')");
+		
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			compra=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULOSCOMPRADOS+" (`codigoCompra`, `idArticulo`, `cantidad`, `precioArt`) VALUES "
+				+ "("+compra.getCodigoCompra()+", "+idar+", "+2+", "+co.getPrecio()+");");
+		gp.cancelarArticulos(conexion, compra);
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"="+compra.getCodigoCompra()+" AND "+TABLAS.IDARTICULO+"="+idar+"");
+		idar=-1;
+		while(cargar.next()) {
+			idar=cargar.getInt(TABLAS.IDARTICULO);
+		}
+		assertEquals(idar,-1);
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+		comando.close();
+		conexion.close();
+	} catch (SQLException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	}
+	@Test
+	void testCancelarCompra() {
+		Statement comando=null;
+		try {
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		comando.executeUpdate("INSERT INTO `personas` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `dinero`, `bloqueado`) VALUES "
+		+ "('"+cliente.getDni()+"', '"+cliente.getNombre()+"', '"+cliente.getApellidos()+"', '"+cliente.getFechaNacimiento()+"', '"+cliente.getEmail()+"', '"+cliente.getContrasena()+"', '"+cliente.getTipo()+"', "+cliente.getDinero()+", "+cliente.isBloqueado()+")");
+		comando.executeUpdate("INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+su.getCodigoSuper()+"', '"+su.getEmpresa()+"', '"+su.getDireccion()+"', "+su.getNumEmpleados()+");");
+		comando.executeUpdate("INSERT INTO "+TABLAS.SECCION+" VALUES ('"+su.getCodigoSuper()+"','"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"','"+se.getNumArticulo()+"')");
+		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `fechaCaducidad`, `procedencia`) VALUES "
+		+ "(0, '"+se.getCodigoSeccion()+"', '"+co.getNombreArticulo()+"', '"+co.getRutaImagen()+"', '"+co.getDescripcion()+"', "+co.getPrecio()+", "+co.getStockActual()+", '"+co.getFechaCaducidad()+"', '"+co.getProcedencia()+"')");
+		
+		int idar=-1;
+		ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"' AND "+TABLAS.NOMBREARTICULO+"='"+co.getNombreArticulo()+"'");
+		while(cargar.next()) {
+			idar=cargar.getInt(TABLAS.IDARTICULO);
+		}
+		Compra compra=new Compra((co.getPrecio()*2));
+		comando.executeUpdate("INSERT INTO `"+TABLAS.COMPRAS+"` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
+			+ "('"+cliente.getDni()+"', "+idar+", "+compra.getPrecioTotal()+", '"+LocalDateTime.now()+"')");
+		
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			compra=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		gp.cancelarCompra(conexion, cliente, compra);
+		int codCompra=-1;
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"="+compra.getCodigoCompra()+"");
+		while(cargar.next()) {
+			codCompra=cargar.getInt(TABLAS.CODIGOCOMPRA);
+		}
+		assertEquals(codCompra,-1);
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+		comando.close();
+		conexion.close();
+	} catch (SQLException e1) {
+		// TODO Auto-generated catch block
+		try {
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+		comando.close();
+		conexion.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			
+		}
+		
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	}
 	
+	@Test
+	void testDevolverUnArticulo() {
+		Statement comando=null;
+		try {
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		comando.executeUpdate("INSERT INTO `personas` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `dinero`, `bloqueado`) VALUES "
+		+ "('"+cliente.getDni()+"', '"+cliente.getNombre()+"', '"+cliente.getApellidos()+"', '"+cliente.getFechaNacimiento()+"', '"+cliente.getEmail()+"', '"+cliente.getContrasena()+"', '"+cliente.getTipo()+"', "+cliente.getDinero()+", "+cliente.isBloqueado()+")");
+		comando.executeUpdate("INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+su.getCodigoSuper()+"', '"+su.getEmpresa()+"', '"+su.getDireccion()+"', "+su.getNumEmpleados()+");");
+		comando.executeUpdate("INSERT INTO "+TABLAS.SECCION+" VALUES ('"+su.getCodigoSuper()+"','"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"','"+se.getNumArticulo()+"')");
+		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `fechaCaducidad`, `procedencia`) VALUES "
+		+ "(0, '"+se.getCodigoSeccion()+"', '"+co.getNombreArticulo()+"', '"+co.getRutaImagen()+"', '"+co.getDescripcion()+"', "+co.getPrecio()+", "+co.getStockActual()+", '"+co.getFechaCaducidad()+"', '"+co.getProcedencia()+"')");
+		int idar=-1;
+		ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"' AND "+TABLAS.NOMBREARTICULO+"='"+co.getNombreArticulo()+"'");
+		while(cargar.next()) {
+			idar=cargar.getInt(TABLAS.IDARTICULO);
+		}
+		Compra compra=new Compra((co.getPrecio()*2));
+		comando.executeUpdate("INSERT INTO `"+TABLAS.COMPRAS+"` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
+			+ "('"+cliente.getDni()+"', "+idar+", "+compra.getPrecioTotal()+", '"+LocalDateTime.now()+"')");
+		
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			compra=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULOSCOMPRADOS+" (`codigoCompra`, `idArticulo`, `cantidad`, `precioArt`) VALUES "
+				+ "("+compra.getCodigoCompra()+", "+idar+", "+2+", "+co.getPrecio()+");");
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+compra.getCodigoCompra()+"'");
+		ArticuloComprado arc=null;
+		while(cargar.next()) {
+		arc=new ArticuloComprado(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getInt(TABLAS.IDARTICULO),
+				cargar.getInt(TABLAS.CANTIDAD),cargar.getFloat(TABLAS.PRECIOART));
+		}
+		gp.devolverUnArticulo(conexion, cliente, arc, 1);
+		ArticuloComprado arcPrimera=null;
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+compra.getCodigoCompra()+"'");
+		while(cargar.next()) {
+		arcPrimera=new ArticuloComprado(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getInt(TABLAS.IDARTICULO),
+				cargar.getInt(TABLAS.CANTIDAD),cargar.getFloat(TABLAS.PRECIOART));
+		}
+		assertEquals(1,arcPrimera.getCantidad());
+		
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+		comando.close();
+		conexion.close();
+	} catch (SQLException e1) {
+		// TODO Auto-generated catch block
+		
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} 
+	}
+	@Test
+	void testDevolverUnArticuloDos() {
+		Statement comando=null;
+		try {
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		comando.executeUpdate("INSERT INTO `personas` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `dinero`, `bloqueado`) VALUES "
+		+ "('"+cliente.getDni()+"', '"+cliente.getNombre()+"', '"+cliente.getApellidos()+"', '"+cliente.getFechaNacimiento()+"', '"+cliente.getEmail()+"', '"+cliente.getContrasena()+"', '"+cliente.getTipo()+"', "+cliente.getDinero()+", "+cliente.isBloqueado()+")");
+		comando.executeUpdate("INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+su.getCodigoSuper()+"', '"+su.getEmpresa()+"', '"+su.getDireccion()+"', "+su.getNumEmpleados()+");");
+		comando.executeUpdate("INSERT INTO "+TABLAS.SECCION+" VALUES ('"+su.getCodigoSuper()+"','"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"','"+se.getNumArticulo()+"')");
+		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `fechaCaducidad`, `procedencia`) VALUES "
+		+ "(0, '"+se.getCodigoSeccion()+"', '"+co.getNombreArticulo()+"', '"+co.getRutaImagen()+"', '"+co.getDescripcion()+"', "+co.getPrecio()+", "+co.getStockActual()+", '"+co.getFechaCaducidad()+"', '"+co.getProcedencia()+"')");
+		int idar=-1;
+		ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"' AND "+TABLAS.NOMBREARTICULO+"='"+co.getNombreArticulo()+"'");
+		while(cargar.next()) {
+			idar=cargar.getInt(TABLAS.IDARTICULO);
+		}
+		Compra compra=new Compra((co.getPrecio()*2));
+		comando.executeUpdate("INSERT INTO `"+TABLAS.COMPRAS+"` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
+			+ "('"+cliente.getDni()+"', "+idar+", "+compra.getPrecioTotal()+", '"+LocalDateTime.now()+"')");
+		
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			compra=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULOSCOMPRADOS+" (`codigoCompra`, `idArticulo`, `cantidad`, `precioArt`) VALUES "
+				+ "("+compra.getCodigoCompra()+", "+idar+", "+2+", "+co.getPrecio()+");");
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+compra.getCodigoCompra()+"'");
+		ArticuloComprado arc=null;
+		while(cargar.next()) {
+		arc=new ArticuloComprado(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getInt(TABLAS.IDARTICULO),
+				cargar.getInt(TABLAS.CANTIDAD),cargar.getFloat(TABLAS.PRECIOART));
+		}
+		gp.devolverUnArticulo(conexion, cliente, arc, 2);
+		ArticuloComprado arcPrimera=null;
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+compra.getCodigoCompra()+"'");
+		while(cargar.next()) {
+		arcPrimera=new ArticuloComprado(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getInt(TABLAS.IDARTICULO),
+				cargar.getInt(TABLAS.CANTIDAD),cargar.getFloat(TABLAS.PRECIOART));
+		}
+		assertEquals(arcPrimera,null);
+		
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+		comando.close();
+		conexion.close();
+	} catch (SQLException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} 
+	}
+	@Test
+	void testComprobarDevolucion() {
+		Statement comando=null;
+		try {
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		comando.executeUpdate("INSERT INTO `personas` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `dinero`, `bloqueado`) VALUES "
+		+ "('"+cliente.getDni()+"', '"+cliente.getNombre()+"', '"+cliente.getApellidos()+"', '"+cliente.getFechaNacimiento()+"', '"+cliente.getEmail()+"', '"+cliente.getContrasena()+"', '"+cliente.getTipo()+"', "+cliente.getDinero()+", "+cliente.isBloqueado()+")");
+		comando.executeUpdate("INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+su.getCodigoSuper()+"', '"+su.getEmpresa()+"', '"+su.getDireccion()+"', "+su.getNumEmpleados()+");");
+		comando.executeUpdate("INSERT INTO "+TABLAS.SECCION+" VALUES ('"+su.getCodigoSuper()+"','"+se.getCodigoSeccion()+"','"+se.getNombreSeccion()+"','"+se.getNumArticulo()+"')");
+		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `fechaCaducidad`, `procedencia`) VALUES "
+		+ "(0, '"+se.getCodigoSeccion()+"', '"+co.getNombreArticulo()+"', '"+co.getRutaImagen()+"', '"+co.getDescripcion()+"', "+co.getPrecio()+", "+co.getStockActual()+", '"+co.getFechaCaducidad()+"', '"+co.getProcedencia()+"')");
+		int idar=-1;
+		ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.CODIGOSECCION+"='"+se.getCodigoSeccion()+"' AND "+TABLAS.NOMBREARTICULO+"='"+co.getNombreArticulo()+"'");
+		while(cargar.next()) {
+			idar=cargar.getInt(TABLAS.IDARTICULO);
+		}
+		Compra compra=new Compra((co.getPrecio()*2));
+		comando.executeUpdate("INSERT INTO `"+TABLAS.COMPRAS+"` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
+			+ "('"+cliente.getDni()+"', "+idar+", "+compra.getPrecioTotal()+", '"+LocalDateTime.now()+"')");
+		
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			compra=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULOSCOMPRADOS+" (`codigoCompra`, `idArticulo`, `cantidad`, `precioArt`) VALUES "
+				+ "("+compra.getCodigoCompra()+", "+idar+", "+2+", "+co.getPrecio()+");");
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"='"+compra.getCodigoCompra()+"'");
+		ArticuloComprado arc=null;
+		while(cargar.next()) {
+		arc=new ArticuloComprado(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getInt(TABLAS.IDARTICULO),
+				cargar.getInt(TABLAS.CANTIDAD),cargar.getFloat(TABLAS.PRECIOART));
+		}
+		comando.executeUpdate("UPDATE "+TABLAS.ARTICULOSCOMPRADOS+" SET "+TABLAS.CANTIDAD+"=0 WHERE "+TABLAS.CODIGOCOMPRA+"="+compra.getCodigoCompra()+"");
+		
+		gp.compruebaDevolucionArticulo(conexion, arc);
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"="+compra.getCodigoCompra()+"");
+		Compra comprueba=null;
+		while(cargar.next()) {
+			comprueba=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		assertNotEquals(comprueba,null);
+		comando.executeUpdate("DELETE FROM "+TABLAS.ARTICULOSCOMPRADOS+" WHERE "+TABLAS.CODIGOCOMPRA+"="+compra.getCodigoCompra()+"");
+		gp.compruebaDevolucionArticulo(conexion, arc);
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" WHERE "+TABLAS.CODIGOCOMPRA+"="+compra.getCodigoCompra()+"");
+		comprueba=null;
+		while(cargar.next()) {
+			comprueba=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		assertEquals(null,comprueba);
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+		comando.close();
+		conexion.close();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
 }

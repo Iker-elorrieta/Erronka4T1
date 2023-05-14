@@ -25,7 +25,7 @@ import otros.tipoArticulo;
 import otros.tipoPersona;
 import referencias.CONEXION;
 import referencias.TABLAS;
-
+@SuppressWarnings("javadoc")
 class TestGestorArticulo {
 	Metodos mc=new Metodos();
 	Connection conexion;

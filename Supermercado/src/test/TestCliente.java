@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import controlador.Metodos;
 import modelo.Cliente;
 import otros.tipoPersona;
-
+@SuppressWarnings("javadoc")
 class TestCliente {
 	DateFormat formateador= new SimpleDateFormat("dd/M/yy");
 	Metodos mc=new Metodos();

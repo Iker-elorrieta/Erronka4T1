@@ -24,7 +24,7 @@ import otros.tipoArticulo;
 import otros.tipoPersona;
 import referencias.CONEXION;
 import referencias.TABLAS;
-
+@SuppressWarnings("javadoc")
 class TestGestorSupermercado {
 	Metodos mc=new Metodos();
 	GestorSupermercado g=new GestorSupermercado();

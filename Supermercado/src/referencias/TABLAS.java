@@ -1,5 +1,5 @@
 package referencias;
-
+@SuppressWarnings("javadoc")
 public class TABLAS {
 	public final static String PERSONAS="personas";
 	public final static String DNI="dni";

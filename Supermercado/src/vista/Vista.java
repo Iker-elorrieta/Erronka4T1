@@ -38,6 +38,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -165,21 +166,13 @@ public class Vista {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		
 		try {
 			conexion= (Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-		} catch (SQLException e4) {
-			// TODO Auto-generated catch block
-			e4.printStackTrace();
-		}
-		try {
+		
+		
 			usuarios=gp.cargarPersonas(conexion);
 			supermercados=gsm.cargarSupermercados(conexion);
 			listaArticulos=ga.cargarArticulos(conexion);
-		} catch (SQLException e3) {
-			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
-		}
 		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 740, 492);
@@ -187,7 +180,7 @@ public class Vista {
 		frame.getContentPane().setLayout(null);
 		
 		JTabbedPane paneles = new JTabbedPane(JTabbedPane.TOP);
-		paneles.setBounds(0, 0, 724, 453);
+		paneles.setBounds(0, -25, 724, 478);
 		frame.getContentPane().add(paneles);
 		
 		JPanel panel_Bienvenido = new JPanel();
@@ -2053,7 +2046,7 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					int ultimocodigo=gp.insertarCompraYCobrar(conexion,login, carrito);
-					System.out.println(ultimocodigo);
+					mc.generarTicket(login, carrito,listaArticulos);
 					gp.insertarArticulos(conexion,carrito.getListaCantidades(),ultimocodigo);
 					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
 					articulosCarrito=new ArrayList<Articulo>();
@@ -2061,31 +2054,14 @@ public class Vista {
 				} catch (SQLException | ParseException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
 		btnRealizarCompra.setBounds(603, 383, 89, 23);
 		panel_Compras.add(btnRealizarCompra);
-		
-		JButton btnGuardarCarrito = new JButton("Guardar");
-		btnGuardarCarrito.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnGuardarCarrito.setForeground(new Color(255, 255, 255));
-		btnGuardarCarrito.setBackground(new Color(0, 76, 255));
-		btnGuardarCarrito.setBounds(119, 383, 89, 23);
-		panel_Compras.add(btnGuardarCarrito);
-		
-		JButton btnCargarCarrito = new JButton("Cargar");
-		btnCargarCarrito.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnCargarCarrito.setForeground(new Color(255, 255, 255));
-		btnCargarCarrito.setBackground(new Color(0, 76, 255));
-		btnCargarCarrito.setBounds(228, 383, 89, 23);
-		panel_Compras.add(btnCargarCarrito);
 		
 		JPanel panelHistorial = new JPanel();
 		paneles.addTab("Undecima", null, panelHistorial, null);
@@ -2197,6 +2173,9 @@ public class Vista {
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				} 
 			}
 		});
@@ -2228,5 +2207,10 @@ public class Vista {
 		});
 		btnCancelarDevolucion.setBounds(387, 391, 99, 23);
 		panelHistorial.add(btnCancelarDevolucion);
+		
+		} catch (SQLException e3) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "No se pudo conectar a la base de datos.");
+		}
 	}
 }

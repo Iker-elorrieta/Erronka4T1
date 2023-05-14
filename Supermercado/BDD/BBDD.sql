@@ -68,7 +68,7 @@ UNIQUE(codigoSeccion,nombreArticulo)
 CREATE TABLE articuloscomprados (
   codigoCompra int NOT NULL,
   idArticulo int NOT NULL,
-  cantidad int NOT NULL CHECK (cantidad > 0),
+  cantidad int NOT NULL,
   precioArt float NOT NULL,
 CONSTRAINT FK_codCompra FOREIGN KEY (codigoCompra) REFERENCES compras(codigoCompra)
 ON DELETE CASCADE ON UPDATE CASCADE,
@@ -262,23 +262,37 @@ BEGIN
 END;//
 delimiter ;
 
+-- creacion de Vistas
+
+CREATE VIEW MostrarArticulo (idArticulo,nombreSeccion, nombreArticulo, precio, stockActual )
+AS SELECT idArticulo,tipo, nombreArticulo, precio, stock
+FROM articulos a JOIN secciones s ON a.codigoSeccion = s.codigoSeccion;
+
+CREATE VIEW Vista2 (nombreArticulo, cantidad, codigoCompra, precioFinal)
+AS SELECT nombreArticulo, cantidad, ac.codigoCompra, precioFinal
+FROM articulos a join articuloscomprados ac on a.idArticulo = ac.idArticulo join compras c on ac.codigoCompra=c.codigoCompra group by fechaCompra;
+
+CREATE VIEW EstadisticasInventario (Supermercado,Seccion,StockTotal,PrecioStockTotal)
+AS SELECT  su.codigoSuper,se.codigoSeccion,sum(ar.stock),sum(ar.precio)
+FROM supermercados su JOIN secciones se ON su.codigoSuper=se.codigoSuper JOIN articulos ar ON se.codigoSeccion=ar.codigoSeccion
+GROUP BY codigoSuper;
+
 CREATE ROLE 'administradorBD';
 GRANT ALL PRIVILEGES ON reto4.* TO 'administradorBD';
 
 CREATE ROLE 'usuarioJefe';
-GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.jefe TO 'usuarioJefe';
+GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.personas TO 'usuarioJefe';
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.supermercados TO 'usuarioJefe';
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.secciones TO 'usuarioJefe';
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.articulos TO 'usuarioJefe';
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.articuloscomprados TO 'usuarioJefe';
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.compras TO 'usuarioJefe';
-GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.cliente TO 'usuarioJefe';
 
 CREATE ROLE 'usuarioCliente';
 GRANT SELECT, UPDATE ON reto4.articulos TO 'usuarioCliente';
 GRANT SELECT, UPDATE ON reto4.articuloscomprados TO 'usuarioCliente';
 GRANT SELECT, UPDATE ON reto4.compras TO 'usuarioCliente';
-GRANT SELECT, UPDATE, DELETE, INSERT ON reto4.cliente TO 'usuarioCliente';
+GRANT SELECT, UPDATE, DELETE, INSERT ON reto4.personas TO 'usuarioCliente';
 GRANT SELECT ON reto4.secciones TO 'usuarioCliente';
 GRANT SELECT ON reto4.supermercados TO 'usuarioCliente';
 
@@ -289,18 +303,3 @@ CREATE USER 'Raso1' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'usuarioCliente' PASS
 CREATE USER 'Raso2' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'usuarioCliente' PASSWORD EXPIRE INTERVAL 30 DAY;
 
 GRANT VIEW,INDEX,CREATE VIEW ON reto4.* TO 'Raso2';
-
--- creacion de Vistas
-
-CREATE VIEW MostrarArticulo (idArticulo,nombreSeccion, nombreArticulo, precio, stockActual )
-AS SELECT idArticulo,nombreSeccion, nombreArticulo, precio, stockActual
-FROM articulos a JOIN secciones s ON a.codigoSeccion = s.codigoSeccion;
-
-CREATE VIEW Vista2 (nombreArticulo, cantidad, codigoCompra, precioFinal)
-AS SELECT nombreArticulo, cantidad, ac.codigoCompra, precioFinal
-FROM articulos a join articuloscomprados ac on a.idArticulo = ac.idArticulo join compras c on ac.codigoCompra=c.codigoCompra group by fechaCompra;
-
-CREATE VIEW EstadisticasInventario (Supermercado,Seccion,StockTotal,PrecioStockTotal)
-AS SELECT  codigoSuper,codigoSeccion,sum(stockActual),sum(precio)
-FROM supermercados su JOIN secciones se ON su.codigoSuper=se.codigoSuper JOIN articulos ar ON su.codigoSeccion=ar.codigoSeccion
-GROUP BY codigoSuper;

@@ -11,7 +11,7 @@ import modelo.ArticuloComprado;
 import modelo.Compra;
 import modelo.Herramienta;
 import modelo.Ropa;
-
+@SuppressWarnings("javadoc")
 class CompraTest {
 	LocalDateTime myObj = LocalDateTime.now();
 	String tiempo=String.valueOf(myObj);

@@ -17,7 +17,7 @@ import gestores.GestorPersona;
 
 import modelo.Jefe;
 import modelo.Supermercado;
-
+@SuppressWarnings("javadoc")
 class TestJefe {
 	DateFormat formateador= new SimpleDateFormat("dd/M/yy");
 	Metodos mc=new Metodos();

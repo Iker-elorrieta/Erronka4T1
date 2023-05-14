@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import modelo.Herramienta;
-
+@SuppressWarnings("javadoc")
 class HerramientaTest {
 
 Herramienta obj = new Herramienta(0, null, null, null, 0, 0, 0, 0);

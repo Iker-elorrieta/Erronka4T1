@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import modelo.Articulo;
 import modelo.Seccion;
 import otros.tipoArticulo;
-
+@SuppressWarnings("javadoc")
 class SeccionTest {
 
 	ArrayList<Articulo> arrayArticulos = new ArrayList<Articulo>();

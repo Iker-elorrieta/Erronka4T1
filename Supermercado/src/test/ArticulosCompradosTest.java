@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import modelo.ArticuloComprado;
 
+@SuppressWarnings("javadoc")
 class ArticulosCompradosTest {
 
 ArticuloComprado obj = new ArticuloComprado(0, 0, 0, 0);

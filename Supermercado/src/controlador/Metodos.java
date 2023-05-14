@@ -123,19 +123,6 @@ public class Metodos {
 		}
 		return resul;
 	}
-	/**Para guardar todos los articulos
-	 * en un txt.
-	 * @param lista Los articulos a cambiar.
-	 * @throws IOException No se pudo realizar la operacion.
-	 */
-	public void guardarInventario(ArrayList<Articulo> lista) throws IOException {
-			FileWriter fich = new FileWriter(".\\Inventario.txt");
-			BufferedWriter buf=new BufferedWriter(fich);
-			for(Articulo ar: lista) {
-				buf.write(ar.toString());
-			}
-			buf.close();
-	}
 	/**Cambiar las secciones que se muestran
 	 * al crear las secciones de un supermercado.
 	 * @param tipos Los tipos de secciones.
@@ -390,6 +377,26 @@ public class Metodos {
 				datosTabla[i][2]=String.valueOf(lista.get(i).getNumArticulo());
 		}
 		return datosTabla;
+	}
+	/**Metodo para generar un ticket de compra.
+	 * @param login El comprador.
+	 * @param carrito La compra.
+	 * @param listaArticulos 
+	 * @throws IOException 
+	 */
+	public void generarTicket(Persona login, Compra carrito, ArrayList<Articulo> listaArticulos) throws IOException {
+		FileWriter fich = new FileWriter(".\\Tickets\\"+login.getEmail()+".txt");
+		BufferedWriter buf=new BufferedWriter(fich);
+		buf.write("La persona "+login.getNombre()+" compro:\r\n");
+		for(ArticuloComprado ar: carrito.getListaCantidades()) {
+			for(Articulo arc: listaArticulos) {
+				if(arc.getIdArticulo()==ar.getIdArticulo()) {
+					buf.write(ar.getCantidad()+" de "+arc.getNombreArticulo()+" de un valor individual de "+arc.getPrecio()+"\r\n");
+				}
+			}
+		}
+		buf.write("Costandole un total de "+carrito.getPrecioTotal()+" euros");
+		buf.close();
 	}
 	
 	
