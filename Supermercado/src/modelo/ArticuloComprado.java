@@ -2,6 +2,7 @@
 
 import java.util.Objects;
 
+@SuppressWarnings("javadoc")
 public class ArticuloComprado {
 	private int codigoCompra;
 	private int idArticulo;

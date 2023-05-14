@@ -6,6 +6,7 @@ import controlador.Metodos;
 import otros.Comprador;
 import otros.tipoPersona;
 
+@SuppressWarnings("javadoc")
 public abstract class Persona implements Comprador{
 	Metodos mc=new Metodos();
 	protected String dni;

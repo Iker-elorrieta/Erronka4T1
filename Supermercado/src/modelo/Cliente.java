@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import otros.tipoPersona;
 
+@SuppressWarnings("javadoc")
 public class Cliente extends Persona {
 	private float dinero;
 	private boolean bloqueado;

@@ -52,6 +52,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.JCheckBox;
 
+@SuppressWarnings("javadoc")
 public class Vista {
 
 	private JFrame frame;
@@ -708,10 +709,7 @@ public class Vista {
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					textDineroExtra.setText("");
-				} catch (ErroresDeOperaciones e1) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null, e1.getMessage());
-				}
+				} 
 			}
 		});
 		btnSumarDinero.setBounds(63, 276, 89, 23);
@@ -1066,13 +1064,10 @@ public class Vista {
 						btnVerSecciones.doClick();
 					}
 					if(manejaCambio==5) {
-						cv.recargarStocks(conexion,tabla, listaArticulos);
+						cv.recargarStocks(conexion,admin,tabla, listaArticulos);
 						btnCargarStocks.doClick();
 					}
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ErroresDeOperaciones e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (ParseException e1) {
@@ -1087,15 +1082,10 @@ public class Vista {
 		btnDescrip.setBackground(new Color(0,76,255));
 		btnDescrip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
 					btnAceptar.setVisible(true);
 					cambiaDe.setVisible(true);
 					cambiaDe.setText(cv.descripcion(tabla, listaArticulos));
 					tabla.setEnabled(false);
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 			}
 		});
 		
@@ -1286,10 +1276,7 @@ public class Vista {
 				} catch (ParseException e1) {
 					// TODO Auto-generated catch block
 					lblErroresASS.setText(e1.getMessage());
-				} catch (ErroresDeRegistro e1) {
-					// TODO Auto-generated catch block
-					lblErroresASS.setText(e1.getMessage());
-				} catch (SQLException e1) {
+				}  catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					lblErroresASS.setText(e1.getMessage());
 				} catch (ErroresDeOperaciones e1) {
@@ -2066,6 +2053,7 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					int ultimocodigo=gp.insertarCompraYCobrar(conexion,login, carrito);
+					System.out.println(ultimocodigo);
 					gp.insertarArticulos(conexion,carrito.getListaCantidades(),ultimocodigo);
 					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
 					articulosCarrito=new ArrayList<Articulo>();
@@ -2207,9 +2195,6 @@ public class Vista {
 					historialCompras.setViewportView(tabla);
 					btnVerArticulosCom.doClick();
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} 

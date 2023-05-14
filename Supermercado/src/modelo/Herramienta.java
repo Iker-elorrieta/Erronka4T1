@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import controlador.Metodos;
 
+@SuppressWarnings("javadoc")
 public class Herramienta extends Articulo{
 	Metodos mc=new Metodos();
 	private boolean electrica;

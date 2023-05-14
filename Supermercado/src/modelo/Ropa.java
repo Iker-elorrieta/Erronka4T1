@@ -2,6 +2,7 @@ package modelo;
 
 import java.util.Objects;
 
+@SuppressWarnings("javadoc")
 public class Ropa extends Articulo{
 	private String talla;
 	private String marca;

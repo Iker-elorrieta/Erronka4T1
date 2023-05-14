@@ -63,9 +63,6 @@ class TestGestorCompra {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ErroresDeRegistro e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 

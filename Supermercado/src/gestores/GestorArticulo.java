@@ -16,19 +16,42 @@ import otros.tipoArticulo;
 import referencias.TABLAS;
 
 
+/**
+ * El gestor de articulos.
+ * @author Erlantz
+ *
+ */
 public class GestorArticulo {
+	/**
+	 * La lista de articulos.
+	 */
 	private ArrayList<Articulo> listaArticulos;
 	
+	/**
+	 * El constructo.
+	 */
 	public GestorArticulo() {
 		super();
 		listaArticulos=new ArrayList<Articulo>();
 	}
+	/**Coger la lista de un gestor.
+	 * @return La lista.
+	 */
 	public ArrayList<Articulo> getListaArticulos() {
 		return listaArticulos;
 	}
+	/**Para dar una lista al gestor.
+	 * @param listaArticulos La lista.
+	 */
 	public void setListaArticulos(ArrayList<Articulo> listaArticulos) {
 		this.listaArticulos = listaArticulos;
 	}
+	/**Coger todos los articulos de la
+	 * BBDD.
+	 * @param conexion La conexion.
+	 * @return La lista de articulos.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public ArrayList<Articulo> cargarArticulos(Connection conexion) throws SQLException{
 		ArrayList<Articulo> lista=new ArrayList<Articulo>();
 		Herramienta he=null;
@@ -62,6 +85,14 @@ public class GestorArticulo {
 		comando.close();
 		return lista;
 		}
+	/**
+	 * Para insertar un articulo en la BBDD.
+	 * @param mc Para cambiar el boolean.
+	 * @param conexion La conexion.
+	 * @param se La seccion del articulo.
+	 * @param ar El articulo a insertar.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public void insertarArticulo(Metodos mc,Connection conexion,Seccion se,Articulo ar) throws SQLException {
 		Statement comando = (Statement) conexion.createStatement();
 		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" "
@@ -92,6 +123,12 @@ public class GestorArticulo {
 		}
 		comando.close();
 	}
+	/**Para cambiar un articulo.
+	 * @param mc Cambia el int a boolean.
+	 * @param conexion La conexion.
+	 * @param ar El articulo a cambiar.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public void cambiarArticulo(Metodos mc,Connection conexion,Articulo ar) throws SQLException {
 		Ropa ro=null;
 		Comida co=null;
@@ -117,11 +154,22 @@ public class GestorArticulo {
 		}
 		comando.close();
 	}
+	/**Borrar el articulo de la BBDD.
+	 * @param conexion La conexion.
+	 * @param ar El articulo.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public void borrarArticulo(Connection conexion,Articulo ar) throws SQLException {
 		Statement comando = (Statement) conexion.createStatement();
 		comando.executeUpdate("DELETE FROM "+TABLAS.ARTICULO+" WHERE "+TABLAS.IDARTICULO+"='"+ar.getIdArticulo()+"'");
 		comando.close();
 	}
+	/**Para cargar los articulos de una seccion.
+	 * @param conexion La conexion.
+	 * @param se La seccion a comprobar.
+	 * @return Los articulos de la seccion.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public ArrayList<Articulo> cargarArticulosPorSeccion(Connection conexion,Seccion se) throws SQLException{
 		ArrayList<Articulo> lista=new ArrayList<Articulo>();
 		Herramienta he=null;
@@ -161,6 +209,13 @@ public class GestorArticulo {
 		comando.close();
 		return lista;
 	}
+	/**Para buscar los nombres de un articulo
+	 * con una lista.
+	 * @param busqueda Lo que se quiere buscar.
+	 * @param listaArticulos Los articulos.
+	 * @return La lista de articulo.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public ArrayList<Articulo> buscarArticulosPorNombre(String busqueda,ArrayList<Articulo> listaArticulos) throws SQLException{
 		ArrayList<Articulo> lista=new ArrayList<Articulo>();
 		for(Articulo ar:listaArticulos) {
@@ -170,6 +225,11 @@ public class GestorArticulo {
 		}
 		return lista;
 	}
+	/**Para ver si debe de anadir un artciulo nuevo
+	 * al carrito.
+	 * @param articuloNuevo El articulo a comprobar.
+	 * @param listaCarrito Los articulos del carrito.
+	 */
 	public void diferenciarCarrito(Articulo articuloNuevo, ArrayList<Articulo> listaCarrito){
 		boolean repetido=false;
 		for(Articulo ar:listaCarrito) {
@@ -181,6 +241,11 @@ public class GestorArticulo {
 			listaCarrito.add(articuloNuevo);
 		}
 	}
+	/**Coger un articulo de la lista.
+	 * @param ar El articulo a revisar.
+	 * @param lista La list de articulos.
+	 * @return El articulo buscado.
+	 */
 	public Articulo buscarArticulo(Articulo ar,ArrayList<Articulo> lista) {
 		Articulo a= ar;
 		for(Articulo ar1:lista) {

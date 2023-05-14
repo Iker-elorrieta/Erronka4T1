@@ -36,6 +36,7 @@ import modelo.Cliente;
 import modelo.Comida;
 import modelo.Compra;
 import modelo.Herramienta;
+import modelo.Jefe;
 import modelo.Persona;
 import modelo.Ropa;
 import modelo.Seccion;
@@ -43,15 +44,48 @@ import modelo.Supermercado;
 import otros.tipoArticulo;
 import referencias.TITULOS;
 
+/**Este clase se utilizara para operar los elementos
+ * dinamicos de la aplicacion.
+ * @author Erlantz
+ *
+ */
 public class MetodosVista {
+/**
+ * La clase de metodos, principalmente para recoger
+ * datos y cambiar formatos.
+ */
 Metodos mts = new Metodos();
+/**
+ * El gestor de articulo que utilizaremos sobre las 
+ * operaciones con articulos.
+ */
 GestorArticulo ga=new GestorArticulo();
+/**
+ * El gestor de persona que utilizaremos sobre las 
+ * operaciones con las cuentas de las personas.
+ */
 GestorPersona gp=new GestorPersona();
+/**
+ * El gestor de supermercado que utilizaremos sobre las 
+ * operaciones con los supermercados.
+ */
 GestorSupermercado gsm=new GestorSupermercado();
+/**
+ * El gestor de secciones que utilizaremos sobre las 
+ * operaciones con las secciones y sus articulos.
+ */
 GestorSeccion gs=new GestorSeccion();
+/**
+ * El gestor de compras que utilizaremos sobre las 
+ * operaciones con las compras.
+ */
 GestorCompra gc=new GestorCompra();
 	
-	public JTable cargarTabla(String [][] datosTabla) throws SQLException {
+	/**La tablas de articulos
+	 * @param datosTabla Los datos
+	 * @return La tabla con los datos cargados.
+	 */
+	public JTable cargarTabla(String [][] datosTabla) {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -61,7 +95,12 @@ GestorCompra gc=new GestorCompra();
 		));
 		return table;
 	}
-public JTable cargarHistorialCompras(Persona per,String [][] datosTabla) throws SQLException, ParseException {
+/**Para cargar la tabla con el historial de compras.
+ * @param per La persona a la que le pertenecen las compra.
+ * @param datosTabla Los datos de las compras.
+ * @return La tabla.
+ */
+public JTable cargarHistorialCompras(Persona per,String [][] datosTabla) {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -71,10 +110,20 @@ public JTable cargarHistorialCompras(Persona per,String [][] datosTabla) throws 
 		));
 		return table;
 	}
+/**Coger el codigo de compra para cargar
+ * los articulos comprados.
+ * @param tabla La tabla de compras.
+ * @param listaCompras La lista de compras.
+ * @return La compra.
+ */
 public Compra cogerCodigoCompra(JTable tabla,ArrayList<Compra> listaCompras) {
 	return listaCompras.get(tabla.getSelectedRow());
 }
-public JTable cargaArticulosComprados(String [][] datosTabla) throws SQLException {
+/**Para cargar la lista de articulos comprados.
+ * @param datosTabla Los datos a mostrar.
+ * @return La tabla a mostrar-
+ */
+public JTable cargaArticulosComprados(String [][] datosTabla) {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -84,10 +133,19 @@ public JTable cargaArticulosComprados(String [][] datosTabla) throws SQLExceptio
 		));
 		return table;
 }
+/**Coger el articulo seleccionado.
+ * @param tabla La tabla.
+ * @param listaArC La lista de articulos comprados.
+ * @return El articulocomprado seleccionado.
+ */
 public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloComprado> listaArC) {
 	return listaArC.get(tabla.getSelectedRow());
 }
-	public JTable tablaRecargArticulos(String [][]datosTabla) throws SQLException {
+	/**La tabla con los datos de la recarga de articulos.
+	 * @param datosTabla Los datos a mostrar.
+	 * @return La tabla.
+	 */
+	public JTable tablaRecargArticulos(String [][]datosTabla) {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -97,10 +155,19 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		));
 		return table;
 	}
-	public String descripcion(JTable tabla,ArrayList<Articulo> listaArticulos) throws SQLException {
+	/**Para coger la descripcion del articulo seleccionado.
+	 * @param tabla La tabla de articulos.
+	 * @param listaArticulos Los articulos en un Array.
+	 * @return La descripcion del articulo escogido.
+	 */
+	public String descripcion(JTable tabla,ArrayList<Articulo> listaArticulos) {
 		return listaArticulos.get(tabla.getSelectedRow()).getDescripcion();
 	}
-	public JTable tablaUsuarios(String [][] datosTabla) throws SQLException {
+	/**La carga de la tabla de usuarios.
+	 * @param datosTabla Los datos a mostrar.
+	 * @return La tabla con los datos.
+	 */
+	public JTable tablaUsuarios(String [][] datosTabla) {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -110,7 +177,11 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		));
 		return table;
 	}
-	public JTable tablaSupermercados(String [][] datosTabla) throws SQLException {
+	/**Para cargar la tabla de supermercados.
+	 * @param datosTabla Los datos a mostar.
+	 * @return La tabla con los datos.
+	 */
+	public JTable tablaSupermercados(String [][] datosTabla) {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -120,7 +191,11 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		));
 		return table;
 	}
-	public JTable tablaSecciones(String [][] datosTabla) throws SQLException {
+	/**Para cargar la tabla de las secciones.
+	 * @param datosTabla Los datos a mostrar.
+	 * @return La tabla de secciones.
+	 */
+	public JTable tablaSecciones(String [][] datosTabla) {
 		JTable table = new JTable();
 		table.setModel(new DefaultTableModel(
 			datosTabla,
@@ -130,6 +205,10 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		));
 		return table;
 	}
+	/**Para comprobar si quedan campos vacios de un panel.
+	 * @param panel El panel a comprobar.
+	 * @throws ErroresDeOperaciones Fallo en las operaciones.
+	 */
 	public void comprobarCampos(JPanel panel) throws ErroresDeOperaciones {
 		for(Component componente:panel.getComponents()) {
 			if(componente instanceof JTextField) {
@@ -145,6 +224,9 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			}
 		}
 	}
+	/**Para vaciar los textfields del panel.
+	 * @param panel El panel a cambiar.
+	 */
 	public void vaciarCampos(JPanel panel) {
 		for(Component componente:panel.getComponents()) {
 			if(componente instanceof JTextField) {
@@ -152,29 +234,65 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			}
 		}
 	}
+	/**Para borrar una persona seleccionada de la tabla.
+	 * @param conexion La conexion.
+	 * @param tabla La tabla de personas.
+	 * @param lista La lista de personas a cambiar.
+	 * @throws SQLException Fallo en laconexion.
+	 */
 	public void borrarPorTabla(Connection conexion,JTable tabla,ArrayList<Persona> lista) throws SQLException {
 		if(lista.get(tabla.getSelectedRow()) instanceof Cliente){
 		gp.darseBajaPersona(conexion,lista.get(tabla.getSelectedRow()));
 		}
 	}
+	/**Para cambiar el estado de un usuario.
+	 * @param conexion La conexion.
+	 * @param tabla La tabla de personas.
+	 * @param lista La lista de personas.
+	 * @param accion Si se bloquea o no.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public void accionPorTabla(Connection conexion,JTable tabla,ArrayList<Persona> lista,boolean accion) throws SQLException {
 		if(lista.get(tabla.getSelectedRow()) instanceof Cliente) {
 		gp.cambiarEstadoUsuario(mts,conexion,(Cliente)lista.get(tabla.getSelectedRow()), accion);
 		}
 	}
+	/**Para borrar el supermercado seleccionado.
+	 * @param conexion La conexion.
+	 * @param tabla La tabla de supermercados.
+	 * @param lista La lista de supermercados.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public void borrarSupermercadoTabla(Connection conexion,JTable tabla,ArrayList<Supermercado> lista) throws SQLException {
 		gsm.borrarSupermercado(conexion,lista.get(tabla.getSelectedRow()));
 	}
+	/**Para borrar la seccion seleccionada.
+	 * @param conexion La conexion.
+	 * @param tabla La tabla de secciones
+	 * @param lista La lista de secciones.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public void borrarSeccionTabla(Connection conexion,JTable tabla,ArrayList<Seccion> lista) throws SQLException {
 		gs.borrarSeccion(conexion,lista.get(tabla.getSelectedRow()));
 
 }
+	/**Borrar el articulo seleccionado.
+	 * @param conexion La conexion.
+	 * @param tabla La tabla de articulos.
+	 * @param lista El Array de articulos.
+	 * @throws SQLException
+	 */
 	public void borrarArticuloTabla(Connection conexion,JTable tabla, ArrayList<Articulo> lista) throws SQLException {
 		// TODO Auto-generated method stub
 		ga.borrarArticulo(conexion,lista.get(tabla.getSelectedRow()));
 	}
 	
-	public ArrayList<Persona> realizarCambios(JTable tabla,ArrayList<Persona> lista) throws ErroresDeOperaciones, SQLException {
+	/**Para aplicar los cambios a la base de datos.
+	 * @param tabla La tabla a cambiar
+	 * @param lista La lista de personas.
+	 * @return El Array de personas modificadas.
+	 */
+	public ArrayList<Persona> realizarCambios(JTable tabla,ArrayList<Persona> lista) {
 		int fila=0;
 		for(Persona per: lista) {
 			per.setNombre((String) tabla.getModel().getValueAt(fila, 0));
@@ -184,6 +302,12 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		};
 		return lista;
 }
+	/**Para aplicar los cambios de la tabla a la BBDD.
+	 * @param conexion La conexion.
+	 * @param tabla La tabla modificada.
+	 * @param lista La lista de supermercados.
+	 * @throws SQLException Fllo en la conexion.
+	 */
 	public void modificarSupermercadoTabla(Connection conexion,JTable tabla,ArrayList<Supermercado> lista) throws SQLException {
 		int fila=0;
 		for(Supermercado su: lista) {
@@ -194,6 +318,12 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			fila++;
 		};
 	}
+	/**Para cambiar la tabla de secciones en base a los cambios de la JTable.
+	 * @param conexion La conexion.
+	 * @param tabla La tabla de las secciones.
+	 * @param lista La lista de secciones a cambiar.
+	 * @throws SQLException
+	 */
 	public void modificarSeccionTabla(Connection conexion,JTable tabla,ArrayList<Seccion> lista) throws SQLException {
 		int fila=0;
 		for(Seccion se: lista) {
@@ -203,6 +333,14 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			fila++;
 		};
 	}
+	/**Para coger los datos de todos los articulos
+	 * de la BBDD.
+	 * @param conexion La conexion.
+	 * @param tabla La tabla a cambiar.
+	 * @param lista La lista de articulos.
+	 * @throws SQLException La conexion.
+	 * @throws ParseException Fallo en el cambio de datos.
+	 */
 	public void modificarArticuloTabla(Connection conexion,JTable tabla, ArrayList<Articulo> lista) throws SQLException, ParseException {
 	// TODO Auto-generated method stub
 		int fila=0;
@@ -239,16 +377,33 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 			fila++;
 		}
 	}
-	public void recargarStocks(Connection conexion,JTable tabla, ArrayList<Articulo> lista) throws SQLException {
+	/**Se utlizará para recarga los stocks de los
+	 * articulos de la BBDD.
+	 * @param conexion La conexion.
+	 * @param je El jefe que hace la compra.
+	 * @param tabla La tabla a cambiar.
+	 * @param lista La lista de articulos a modificar.
+	 * @throws SQLException Fallo en la conexion.
+	 */
+	public void recargarStocks(Connection conexion,Jefe je,JTable tabla, ArrayList<Articulo> lista) throws SQLException {
 		lista=ga.cargarArticulos(conexion);
 		for(Articulo ar:lista) {
 			if(Integer.parseInt((String) tabla.getModel().getValueAt(tabla.getSelectedRow(), 1))==ar.getIdArticulo()) {
 				ar.setStockActual(100);
 				ga.cambiarArticulo(mts,conexion,ar);
-				JOptionPane.showMessageDialog(null, "Este recarga de stocks costo "+(String) tabla.getModel().getValueAt(tabla.getSelectedRow(), 5));
+				JOptionPane.showMessageDialog(null, je.comprarArticulos((Float) tabla.getModel().getValueAt(tabla.getSelectedRow(), 5)));
 			}
 		}
 	}
+	/**
+	 * Para permitir una modificacion de las descripciones.
+	 * @param conexion La conexion.
+	 * @param tabla La tabla de articulos a alterar.
+	 * @param text El texto de la descripcion.
+	 * @param lista Los articulos a modificar.
+	 * @return La tabla alterada.
+	 * @throws SQLException Fallo en la conexion
+	 */
 	public JTable anadirDescripcion(Connection conexion,JTable tabla, String text, ArrayList<Articulo> lista) throws SQLException {
 		// TODO Auto-generated method stub
 		lista=ga.cargarArticulos(conexion);
@@ -256,6 +411,15 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		tabla.getModel().setValueAt(lista.get(tabla.getSelectedRow()).getDescripcion(), tabla.getSelectedRow(), 2);
 		return tabla;
 	}
+	/**Para mostrar los articulos que las personas podran
+	 * comprar.
+	 * @param lista La lista de los articulos.
+	 * @param carrito Para permitir a la persona anadir articulos para
+	 * realizar la compra.
+	 * @param verPrecio El label de precio total.
+	 * @param articulosMostrar Los articulos que se mostrarn
+	 * @return El Panel con los datos a mostar.
+	 */
 	public JPanel mostrarArticulos(ArrayList<Articulo> lista,Compra carrito,JLabel verPrecio,ArrayList<Articulo> articulosMostrar) {
 		JPanel panel_Comprar = new JPanel();
 		Color customColor = new Color(18,20,28); 
@@ -372,6 +536,13 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 		verPrecio.setText("Precio del carrito: "+carrito.getPrecioTotal());
 		return panel_Comprar;
 	}
+	/**El panel en el que se mostraran los carritos que las personas
+	 * estan utilizando.
+	 * @param muestraArticulos Articulos a mostrar en el panel.
+	 * @param carrito El carrito de la persona.
+	 * @param verPrecio Para cambiar el precio total
+	 * @return El panel con todos los datos.
+	 */
 	public JPanel mostrarCarrito(ArrayList<Articulo> muestraArticulos,Compra carrito,JLabel verPrecio) {
 		JPanel panel_Comprar = new JPanel();
 		Comida co=null;

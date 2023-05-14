@@ -1,5 +1,6 @@
 package modelo;
 
+@SuppressWarnings("javadoc")
 public abstract class Articulo {
 	protected int idArticulo;
 	protected String nombreArticulo;

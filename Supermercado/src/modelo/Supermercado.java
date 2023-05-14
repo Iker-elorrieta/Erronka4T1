@@ -3,6 +3,7 @@ package modelo;
 import java.util.ArrayList;
 import java.util.Objects;
 
+@SuppressWarnings("javadoc")
 public class Supermercado {
 	
 private String codigoSuper;

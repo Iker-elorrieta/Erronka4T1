@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
 
+@SuppressWarnings("javadoc")
 public class Compra {
 private int codigoCompra;
 private float precioFinal;
@@ -94,7 +95,7 @@ public void anadirArticulo(Articulo ar,int cantidad) {
 public void cambiarArticulo(Articulo ar,int cantidad) {
 	for(ArticuloComprado arc:listaCantidades) {
 		if(ar.getIdArticulo()==arc.getIdArticulo()) {
-			if(arc.getCantidad()==cantidad) {
+			if(arc.getCantidad()<=cantidad) {
 				listaCantidades.remove(arc);
 			}else {
 			arc.setCantidad(cantidad);

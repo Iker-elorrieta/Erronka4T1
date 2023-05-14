@@ -2,22 +2,20 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import modelo.Articulo;
 import modelo.ArticuloComprado;
 import modelo.Compra;
+import modelo.Herramienta;
 import modelo.Ropa;
 
 class CompraTest {
-	ArrayList<Articulo> arrayArticulos = new ArrayList<Articulo>();
 	LocalDateTime myObj = LocalDateTime.now();
 	String tiempo=String.valueOf(myObj);
-Compra obj = new Compra(212, 12313, myObj);
+	Compra obj = new Compra(212, 12313, myObj);
 	
 	@Test
 	void test_GettersSetters() {
@@ -72,5 +70,27 @@ Compra obj = new Compra(212, 12313, myObj);
 	void test_toString() {
 		assertEquals(obj.toString(),"Compra [codigoCompra=212, precioTotal=12313.0, fechaCompra="+tiempo+"]");
 	}
-
+	
+	@Test
+	void testAcciones() {
+		Herramienta he=new Herramienta(9, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 1, 4);
+		ArticuloComprado arc=new ArticuloComprado(17,9,3,18);
+		ArrayList<ArticuloComprado> lista=new ArrayList<ArticuloComprado>();
+		lista.add(arc);
+		int tamano=lista.size();
+		obj.setListaCantidades(lista);
+		obj.anadirArticulo(he, 1);
+		assertEquals(tamano,obj.getListaCantidades().size());
+	}
+	@Test
+	void testAccionesDos() {
+		Herramienta he=new Herramienta(9, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 1, 4);
+		ArticuloComprado arc=new ArticuloComprado(17,9,3,18);
+		ArrayList<ArticuloComprado> lista=new ArrayList<ArticuloComprado>();
+		lista.add(arc);
+		obj.setListaCantidades(lista);
+		obj.cambiarArticulo(he, 2);
+		assertEquals(obj.getListaCantidades().get(0).getCantidad(),2);
+		obj.cambiarArticulo(he,2);
+	}
 }

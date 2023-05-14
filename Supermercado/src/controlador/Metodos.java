@@ -24,28 +24,87 @@ import otros.tipoArticulo;
 import otros.tipoPersona;
 import referencias.TABLAS;
 
+/**Esta pagina de metodos es la que se utilizara para hacer diferentes operaciones sobre
+ * los datos y tablas.
+ * @author Erlantz
+ *
+ */
 public class Metodos {
 	
+	/**
+	 * Para nadirle estos datos a las secciones.
+	 */
 	//Metodos mc=new Metodos();
 	
 	private String [] Tipos= {"Comida","Herramienta","Ropa"}; 
+	/**
+	 * Para formatear las Dates.
+	 */
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	/**
+	 * Para formatear la fechas y horas antes de insertar una compra
+	 */
 	DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+	/**
+	 * El gestor de articulo que utilizaremos sobre las 
+	 * operaciones con articulos.
+	 */
 	GestorArticulo ga=new GestorArticulo();
+	/**
+	 * El gestor de persona que utilizaremos sobre las 
+	 * operaciones con las cuentas de las personas.
+	 */
 	GestorPersona gp=new GestorPersona();
+	/**
+	 * El gestor de supermercado que utilizaremos sobre las 
+	 * operaciones con los supermercados.
+	 */
 	GestorSupermercado gsm=new GestorSupermercado();
+	/**
+	 * El gestor de secciones que utilizaremos sobre las 
+	 * operaciones con las secciones y sus articulos.
+	 */
 	GestorSeccion gs=new GestorSeccion();
+	/**
+	 * El gestor de compras que utilizaremos sobre las 
+	 * operaciones con las compras.
+	 */
 	GestorCompra gc=new GestorCompra();
+	/**Metodo para recibir un string de fecha
+	 * y convertirlo en un date, para almacenarlo
+	 * en los objetos que utilizen fechas.
+	 * @param fecha El String.
+	 * @return El tipo Date que devuelve.
+	 * @throws ParseException Si no es del formato correcto.
+	 */
 	public Date deStringADate(String fecha) throws ParseException {
 		return formatter.parse(fecha);
 	}
+	/**
+	 * Para inertarlo en la base de datos
+	 * con el formato correcto.
+	 * @param fecha El Date a cambiar.
+	 * @return El String con el formato correcto.
+	 */
 	public String formatearFecha(Date fecha) {
 		return formatter.format(fecha);
 	}
+	/**Para convetir un String de fecha
+	 * en un DateTime, para cuando cogemos
+	 * las compras de la BBDD.
+	 * @param fecha La fecha a cambiar.
+	 * @return El dato correcto.
+	 * @throws ParseException El formato no es correcto.
+	 */
 	public LocalDateTime deStringALocalDateTime(String fecha) throws ParseException {
 		LocalDateTime fechaS = LocalDateTime.parse(fecha, formatter1);
 		return fechaS;
 	}
+	/**Para cuando insertamos booleans
+	 * a la BBDD.
+	 * @param statement EL boolean a cambiar.
+	 * @return El 1 o 0 a insertar.
+	 */
 	public int pasarBoolean(Boolean statement) {
 		int resul= 0;
 		if(statement) {
@@ -53,6 +112,10 @@ public class Metodos {
 		}
 		return resul;
 	}
+	/**Para coger el dato boolean de la BBDD.
+	 * @param statement El numero.
+	 * @return El boolean.
+	 */
 	public boolean pasarIntABoolean(int statement) {
 		boolean resul=true ;
 		if(statement==0) {
@@ -60,6 +123,11 @@ public class Metodos {
 		}
 		return resul;
 	}
+	/**Para guardar todos los articulos
+	 * en un txt.
+	 * @param lista Los articulos a cambiar.
+	 * @throws IOException No se pudo realizar la operacion.
+	 */
 	public void guardarInventario(ArrayList<Articulo> lista) throws IOException {
 			FileWriter fich = new FileWriter(".\\Inventario.txt");
 			BufferedWriter buf=new BufferedWriter(fich);
@@ -68,6 +136,12 @@ public class Metodos {
 			}
 			buf.close();
 	}
+	/**Cambiar las secciones que se muestran
+	 * al crear las secciones de un supermercado.
+	 * @param tipos Los tipos de secciones.
+	 * @param seleccion El tipo escogido.
+	 * @return El String sin la seleccion.
+	 */
 	public String[] modificarComboBox(String[] tipos,String seleccion) {
 		String [] nuevo=null;
 		if(seleccion==null) {
@@ -83,6 +157,11 @@ public class Metodos {
 		}
 		return nuevo;
 	}
+	/**Para cargar los nombres de los jefes
+	 * cuando creamos los supermercados.
+	 * @param lista La lista de los jefes disponibles.
+	 * @return El String [] con el dni de los jefes.
+	 */
 	public String[] cargarNombreJefe(ArrayList<Jefe> lista) {
 		String [] jefes=new String[lista.size()];
 		for(int i=0;i<lista.size();i++) {
@@ -90,6 +169,12 @@ public class Metodos {
 		}
 		return jefes;
 	}
+	/**Para cargar los nombres de las empresas,
+	 * se utiliza para seleccionar el supermercado
+	 * al que anadir articulos.
+	 * @param lista Todos los supermercados.
+	 * @return Los nombres de las empresas.
+	 */
 	public String[] cargarEmpresa(ArrayList<Supermercado> lista) {
 		String [] superm=new String[lista.size()];
 		for(int i=0;i<lista.size();i++) {
@@ -97,6 +182,12 @@ public class Metodos {
 		}
 		return superm;
 	}
+	/**Para cargar los nombres de las direcciones,
+	 * se utiliza para seleccionar el supermercado
+	 * al que anadir articulos.
+	 * @param lista Los supermercados a seleccionar.
+	 * @return Las direcciones a mostrar.
+	 */
 	public String[] cargarDireccionSuper(ArrayList<Supermercado> lista) {
 		String [] superm=new String[lista.size()];
 		for(int i=0;i<lista.size();i++) {
@@ -104,6 +195,11 @@ public class Metodos {
 		}
 		return superm;
 	}
+	/**Para cargar los nombres de las secciones
+	 * a las que anadirle articulos.
+	 * @param lista Las secciones.
+	 * @return Los Strings para la JComboBox.
+	 */
 	public String[] cargarNombreSeccion(ArrayList<Seccion> lista) {
 		String [] superm=new String[lista.size()];
 		for(int i=0;i<lista.size();i++) {
@@ -111,6 +207,12 @@ public class Metodos {
 		}
 		return superm;
 	}
+	/**Cogemos una seccion de la lista
+	 * para la insercion a la BBDD.
+	 * @param lista Las secciones a mirar.
+	 * @param campo El nombre de la seccion.
+	 * @return La seccion escogida.
+	 */
 	public Seccion cogeSeccion(ArrayList<Seccion> lista,String campo) {
 		Seccion vuelta=null;
 		for(Seccion se:lista) {
@@ -120,6 +222,12 @@ public class Metodos {
 		}
 		return vuelta;
 	}
+	/**Para cargar la tabla de articulos
+	 * @param conexion la conexion a la BBDD.
+	 * @param listaArticulos Los articulos a cargar
+	 * @return Los String [][] para poner en la tabla.
+	 * @throws SQLException Por si falla la conexion a la BBDD.
+	 */
 	public String [][] cargarArticulos(Connection conexion,ArrayList<Articulo> listaArticulos) throws SQLException {
 		listaArticulos=ga.cargarArticulos(conexion);
 		Comida co=null;
@@ -151,6 +259,14 @@ public class Metodos {
 		}
 		return datosTabla;
 	}
+	/**Para cargar las compras al historial de compras para realizar
+	 * operaciones con el.
+	 * @param conexion La conexxion a la BBDD.
+	 * @param listaCompras Las compras filtradas por el usuario.
+	 * @return El String [][] de las compras para poner en la tabla.
+	 * @throws SQLException Fallo en la conexion.
+	 * @throws ParseException  Fallo al pasar de Float a String.
+	 */
 	public String [][] cargarHistorialCompras(Connection conexion,ArrayList<Compra> listaCompras) throws SQLException, ParseException {
 		//listaCompras=gc.cargarCompras(mc,conexion);
 		String[][] datosTabla = new String[listaCompras.size()][3];
@@ -161,6 +277,12 @@ public class Metodos {
 		}
 		return datosTabla;
 	}
+	/**Para cargar los articulos comprados en base a un codigo de compra.
+	 * @param conexion La conexion.
+	 * @param listaArC La lista de articuloscomprados del codigo de compra.
+	 * @return String [][] con los nombres de articulo, cantidad y precio.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public String [][]cargarArticulosComprados(Connection conexion,ArrayList<ArticuloComprado> listaArC) throws SQLException{
 		String[][] datosTabla = new String[listaArC.size()][3];
 		ArrayList<Articulo> nombres=ga.cargarArticulos(conexion);
@@ -175,6 +297,12 @@ public class Metodos {
 		}
 		return datosTabla;
 	}
+	/**Para mostrar dar el numero de filas
+	 * que la tabla de articulos a recargar tendra.
+	 * @param conexion La conexion.
+	 * @return Los String  [][] a mostrar.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public String [][] cargarRecargaArticulos(Connection conexion) throws SQLException{
 		Statement comando = (Statement) conexion.createStatement();
 		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.ARTICULOSRECARGAR);
@@ -196,6 +324,12 @@ public class Metodos {
 	}
 	return datosTabla;
 	}
+	/**Para cargar todos los usuarios de la base de datos.
+	 * @param conexion La conexion.
+	 * @param listaUsuarios Los usuarios recogidos de la BBDD.
+	 * @return Los usuarios ordenados.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public String [][] tablaUsuarios(Connection conexion,ArrayList<Persona> listaUsuarios) throws SQLException{
 		listaUsuarios=gp.cargarPersonas(conexion);
 		Cliente prueba =null;
@@ -224,6 +358,12 @@ public class Metodos {
 		}
 		return datosTabla;
 	}
+	/**Para cargar los supermercados en la tabla.
+	 * @param conexion La conexion.
+	 * @param lista Los dstos de todos los supermercados.
+	 * @return  El String [][] con los datos de la tabla.
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public String [][] cargaSuper(Connection conexion,ArrayList<Supermercado> lista) throws SQLException{
 		lista=gsm.cargarSupermercados(conexion);
 		String[][] datosTabla = new String[lista.size()][4];
@@ -235,6 +375,12 @@ public class Metodos {
 		}
 		return datosTabla;
 	}
+	/**Para cargar las secciones en las tablas.
+	 * @param conexion La conexion.
+	 * @param lista Las lista de secciones.
+	 * @return Las secciones como String [][].
+	 * @throws SQLException Fallo en la conexion.
+	 */
 	public String [][] cargaSecciones(Connection conexion,ArrayList<Seccion> lista) throws SQLException{
 		lista=gs.cargarSecciones(conexion);
 		String[][] datosTabla = new String[lista.size()][3];

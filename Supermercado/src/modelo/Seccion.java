@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import otros.tipoArticulo;
 
+@SuppressWarnings("javadoc")
 public class Seccion {
 	private String codigoSeccion;
 	private tipoArticulo nombreSeccion;

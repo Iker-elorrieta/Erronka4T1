@@ -9,6 +9,7 @@ import java.util.Date;
 
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
+@SuppressWarnings("javadoc")
 public class DateLabelFormatter extends AbstractFormatter {
 
 	/**

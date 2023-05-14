@@ -1,5 +1,6 @@
 package excepciones;
 
+@SuppressWarnings("javadoc")
 public class ErroresDeRegistro extends Exception {
 
 	/**

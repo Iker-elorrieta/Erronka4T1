@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import controlador.Metodos;
 
+@SuppressWarnings("javadoc")
 public class Comida extends Articulo{
 	Metodos mc=new Metodos();
 	private Date fechaCaducidad;
