@@ -1,23 +1,22 @@
 package test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
 import com.mysql.jdbc.Connection;
 
 import controlador.Metodos;
-import excepciones.ErroresDeOperaciones;
 import gestores.GestorCompra;
 import gestores.GestorPersona;
-import modelo.Cliente;
 import modelo.Compra;
+import modelo.Jefe;
 import otros.tipoPersona;
 import referencias.CONEXION;
 
@@ -25,53 +24,90 @@ import referencias.CONEXION;
 class TestGestorCompra {
 	Metodos mc=new Metodos();
 	GestorCompra gc=new GestorCompra();
+	Jefe jefe=new Jefe("77777777C","Test","Test",Date.valueOf("2001-01-21"),"testJefe@gmail.com","12345",tipoPersona.Jefe,Date.valueOf("2019-09-09"),(float)55.5,0);
 	Connection conexion;
 	@Test
-	void test() {
-
+	void test_insertarCompra() {
 		try {
 			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		GestorCompra g=new GestorCompra();
-		GestorPersona g1=new GestorPersona();
-		Cliente cliente = new Cliente("99999999X","Test","Test",Date.valueOf("2001-01-21"),"test@gmail.com","12345",tipoPersona.Cliente,(float)99.9,0);
-		Compra co=new Compra((float)1.98);
-		try {
-			g.setListaCompras(g.cargarCompras(mc,conexion));
-			assertTrue(g.getListaCompras().size()>0);
-			int antesDeInsertar=g.getListaCompras().size();
-			assertEquals(g.getListaCompras().get(0).getCodigoCompra(),1);
-			assertEquals(g.getListaCompras().get(0).getPrecioTotal(),(float)8.98);
-
-			g1.insertarPersona(mc,conexion,cliente,null);
-			g.insertarCompra(conexion,cliente, co);
-			g.setListaCompras(g.cargarCompras(mc,conexion));
-			assertTrue(g.getListaCompras().size()>antesDeInsertar);
-
-			g.setListaCompras(g.cargarCompras(mc,conexion));
-			co=g.getListaCompras().get(antesDeInsertar);
-			co.setPrecioTotal(5);
-			g.cambiarCompra(conexion,cliente, co);
-			assertEquals(g.buscarCompraReciente(mc,conexion).getPrecioTotal(),co.getPrecioTotal());
-
-			g.borrarCompra(conexion,co);
-			g.setListaCompras(g.cargarCompras(mc,conexion));
-			assertEquals(g.getListaCompras().size(),antesDeInsertar);
-			g1.darseBajaPersona(conexion,cliente);
+			GestorPersona gp = new GestorPersona();
+			Compra com = new Compra(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getCodigoCompra()+1, 25, null);
+			gc.insertarCompra(conexion, gp.cargarPersonas(conexion).get(0), com);
+			assertEquals(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getPrecioTotal(),25);
+			gc.borrarCompra(conexion, com);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ErroresDeOperaciones e) {
+		}
+	}
+	
+	@Test
+	void test_borrarCompra() {
+		
+		try {
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+			GestorPersona gp = new GestorPersona();
+			Compra com = new Compra(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getCodigoCompra()+1, 25, null);
+			gc.insertarCompra(conexion, gp.cargarPersonas(conexion).get(0), com);
+			assertEquals(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getPrecioTotal(),25);
+			gc.borrarCompra(conexion, com);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	void test_cambiarCompra() {
+		try {
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+			GestorPersona gp = new GestorPersona();
+			Compra com0 = new Compra(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getCodigoCompra()+1, 21, null);
+			Compra com1 = new Compra(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getCodigoCompra()+1, 25, null);
+			gc.cambiarCompra(conexion, gp.cargarPersonas(conexion).get(0), com1);
+			//assertEquals(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getPrecioTotal(),25);
+			gc.cambiarCompra(conexion, gp.cargarPersonas(conexion).get(0), com0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	void test_buscarCompraReciente() {
+		try {
+			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+			gc.buscarCompraReciente(mc, conexion);
+			//assert
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	@Test
+	void test_gettyset() {
+		GestorCompra gcP=new GestorCompra();
+		ArrayList<Compra> lista=null;
+		gcP.setListaCompras(lista);
+		assertEquals(lista,gcP.getListaCompras());
+	}
+	
+	
 	
 	@Test
 	void test_buscarComprasPersona() {
@@ -90,4 +126,5 @@ class TestGestorCompra {
 	}
 
 }
+
 

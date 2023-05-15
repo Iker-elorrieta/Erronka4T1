@@ -277,9 +277,11 @@ AS SELECT  su.codigoSuper,se.codigoSeccion,sum(ar.stock),sum(ar.precio)
 FROM supermercados su JOIN secciones se ON su.codigoSuper=se.codigoSuper JOIN articulos ar ON se.codigoSeccion=ar.codigoSeccion
 GROUP BY codigoSuper;
 
+DROP ROLE IF EXISTS 'administradorBD';
 CREATE ROLE 'administradorBD';
 GRANT ALL PRIVILEGES ON reto4.* TO 'administradorBD';
 
+DROP ROLE IF EXISTS 'usuarioJefe';
 CREATE ROLE 'usuarioJefe';
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.personas TO 'usuarioJefe';
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.supermercados TO 'usuarioJefe';
@@ -288,6 +290,7 @@ GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.articulos TO 'usuarioJ
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.articuloscomprados TO 'usuarioJefe';
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.compras TO 'usuarioJefe';
 
+DROP ROLE IF EXISTS 'usuarioCliente';
 CREATE ROLE 'usuarioCliente';
 GRANT SELECT, UPDATE ON reto4.articulos TO 'usuarioCliente';
 GRANT SELECT, UPDATE ON reto4.articuloscomprados TO 'usuarioCliente';
@@ -297,9 +300,13 @@ GRANT SELECT ON reto4.secciones TO 'usuarioCliente';
 GRANT SELECT ON reto4.supermercados TO 'usuarioCliente';
 
 -- creacion de Usuarios
+DROP USER IF EXISTS 'Jefes';
 CREATE USER 'Jefes' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'usuarioJefe' PASSWORD EXPIRE INTERVAL 30 DAY;
+DROP USER IF EXISTS 'Administrador';
 CREATE USER 'Administrador' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'administradorBD' PASSWORD EXPIRE INTERVAL 30 DAY;
+DROP USER IF EXISTS 'Raso1';
 CREATE USER 'Raso1' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'usuarioCliente' PASSWORD EXPIRE INTERVAL 30 DAY;
+DROP USER IF EXISTS 'Raso2';
 CREATE USER 'Raso2' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'usuarioCliente' PASSWORD EXPIRE INTERVAL 30 DAY;
 
-GRANT VIEW,INDEX,CREATE VIEW ON reto4.* TO 'Raso2';
+GRANT INDEX,CREATE VIEW ON reto4.* TO 'Raso2';

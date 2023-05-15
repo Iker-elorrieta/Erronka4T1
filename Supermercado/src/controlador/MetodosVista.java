@@ -115,8 +115,12 @@ public JTable cargarHistorialCompras(Persona per,String [][] datosTabla) {
  * @param tabla La tabla de compras.
  * @param listaCompras La lista de compras.
  * @return La compra.
+ * @throws ErroresDeOperaciones Fila no seleccionada.
  */
-public Compra cogerCodigoCompra(JTable tabla,ArrayList<Compra> listaCompras) {
+public Compra cogerCodigoCompra(JTable tabla,ArrayList<Compra> listaCompras) throws ErroresDeOperaciones {
+	if(tabla.getSelectedRow()==-1) {
+		throw new ErroresDeOperaciones("No selecciono una linea");
+	}
 	return listaCompras.get(tabla.getSelectedRow());
 }
 /**Para cargar la lista de articulos comprados.

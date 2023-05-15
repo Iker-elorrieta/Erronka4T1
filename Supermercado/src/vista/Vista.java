@@ -180,7 +180,7 @@ public class Vista {
 		frame.getContentPane().setLayout(null);
 		
 		JTabbedPane paneles = new JTabbedPane(JTabbedPane.TOP);
-		paneles.setBounds(0, 0, 724, 453);
+		paneles.setBounds(0, -26, 724, 479);
 		frame.getContentPane().add(paneles);
 		
 		JPanel panel_Bienvenido = new JPanel();
@@ -2110,11 +2110,18 @@ public class Vista {
 		btnRealizarCompra.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					
 					int ultimocodigo=gp.insertarCompraYCobrar(conexion,login, carrito);
 					mc.generarTicket(login, carrito,listaArticulos);
 					gp.insertarArticulos(conexion,carrito.getListaCantidades(),ultimocodigo);
 					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
 					articulosCarrito=new ArrayList<Articulo>();
+					if(login instanceof Cliente) {
+						if(cliente.getDinero()>carrito.getPrecioTotal()) {
+						cliente.setDinero(cliente.getDinero()-carrito.getPrecioTotal());
+						textDineroActual.setText(String.valueOf(cliente.getDinero()));
+						}
+					}
 					carrito=new Compra();
 				} catch (SQLException | ParseException e1) {
 					// TODO Auto-generated catch block
@@ -2153,11 +2160,13 @@ public class Vista {
 		lblArticulosComprados.setBounds(394, 21, 200, 14);
 		panelHistorial.add(lblArticulosComprados);
 		
+		JButton btnCancelarSeleccion = new JButton("Cancelar");
 		JButton btnAtrasHis = new JButton("Atras");
 		btnAtrasHis.setForeground(new Color(192, 192, 192));
 		btnAtrasHis.setBackground(new Color(0,76,255));
 		btnAtrasHis.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				btnCancelarSeleccion.doClick();
 				paneles.setSelectedIndex(3);
 			}
 		});
@@ -2168,8 +2177,8 @@ public class Vista {
 		
 		JButton btnCancelarDevolucion = new JButton("Cancelar");
 		JButton btnSeleccionarArCom = new JButton("Modificar");
-		JButton btnCancelarSeleccion = new JButton("Cancelar");
-		JButton btnVerArticulosCom = new JButton("Seleccionar");
+		
+		JButton btnVerArticulosCom = new JButton("Analizar");
 		btnVerArticulosCom.setForeground(new Color(192, 192, 192));
 		btnVerArticulosCom.setBackground(new Color(0,76,255));
 		btnVerArticulosCom.addActionListener(new ActionListener() {
@@ -2194,7 +2203,10 @@ public class Vista {
 					}
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null, "Seleccione una de las compras disponibles para analizarlo.");
+					JOptionPane.showMessageDialog(null, "Fallo de conexion");
+				} catch (ErroresDeOperaciones e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, e1.getMessage());
 				}
 			}
 		});
@@ -2221,10 +2233,13 @@ public class Vista {
 					btnAplicar.setEnabled(false);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Fallo la conexion a la base de datos");
 				} catch (ParseException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, "No se pudo modificar la fecha");
+				} catch (ErroresDeOperaciones e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, e1.getMessage());
 				}
 			}
 		});
