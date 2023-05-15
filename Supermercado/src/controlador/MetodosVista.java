@@ -239,8 +239,9 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 	 * @param tabla La tabla de personas.
 	 * @param lista La lista de personas a cambiar.
 	 * @throws SQLException Fallo en laconexion.
+	 * @throws ErroresDeOperaciones No se puede borrar el root.
 	 */
-	public void borrarPorTabla(Connection conexion,JTable tabla,ArrayList<Persona> lista) throws SQLException {
+	public void borrarPorTabla(Connection conexion,JTable tabla,ArrayList<Persona> lista) throws SQLException, ErroresDeOperaciones {
 		if(lista.get(tabla.getSelectedRow()) instanceof Cliente){
 		gp.darseBajaPersona(conexion,lista.get(tabla.getSelectedRow()));
 		}
@@ -307,8 +308,9 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 	 * @param tabla La tabla modificada.
 	 * @param lista La lista de supermercados.
 	 * @throws SQLException Fllo en la conexion.
+	 * @throws ErroresDeOperaciones 
 	 */
-	public void modificarSupermercadoTabla(Connection conexion,JTable tabla,ArrayList<Supermercado> lista) throws SQLException {
+	public void modificarSupermercadoTabla(Connection conexion,JTable tabla,ArrayList<Supermercado> lista) throws SQLException, ErroresDeOperaciones {
 		int fila=0;
 		for(Supermercado su: lista) {
 			su.setEmpresa((String) tabla.getModel().getValueAt(fila, 1));
@@ -340,8 +342,9 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 	 * @param lista La lista de articulos.
 	 * @throws SQLException La conexion.
 	 * @throws ParseException Fallo en el cambio de datos.
+	 * @throws ErroresDeOperaciones Errores en cambios.
 	 */
-	public void modificarArticuloTabla(Connection conexion,JTable tabla, ArrayList<Articulo> lista) throws SQLException, ParseException {
+	public void modificarArticuloTabla(Connection conexion,JTable tabla, ArrayList<Articulo> lista) throws SQLException, ParseException, ErroresDeOperaciones {
 	// TODO Auto-generated method stub
 		int fila=0;
 		Ropa ro=null;
@@ -356,7 +359,7 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 				ro=(Ropa) ar;
 				ro.setTalla((String) tabla.getModel().getValueAt(fila, 4));
 				ro.setMarca((String) tabla.getModel().getValueAt(fila, 5));
-				ga.cambiarArticulo(mts,conexion,ro);
+					ga.cambiarArticulo(mts,conexion,ro);
 			}
 			if(ar instanceof Comida) {
 				co=(Comida)ar;
@@ -374,9 +377,10 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 				he.setGarantia(Integer.parseInt(((String) tabla.getModel().getValueAt(fila, 5))));
 				ga.cambiarArticulo(mts,conexion,he);
 			}
-			fila++;
 		}
-	}
+			fila++;
+}
+	
 	/**Se utlizará para recarga los stocks de los
 	 * articulos de la BBDD.
 	 * @param conexion La conexion.
@@ -384,8 +388,9 @@ public ArticuloComprado cogerArticuloComprado(JTable tabla,ArrayList<ArticuloCom
 	 * @param tabla La tabla a cambiar.
 	 * @param lista La lista de articulos a modificar.
 	 * @throws SQLException Fallo en la conexion.
+	 * @throws ErroresDeOperaciones 
 	 */
-	public void recargarStocks(Connection conexion,Jefe je,JTable tabla, ArrayList<Articulo> lista) throws SQLException {
+	public void recargarStocks(Connection conexion,Jefe je,JTable tabla, ArrayList<Articulo> lista) throws SQLException, ErroresDeOperaciones {
 		lista=ga.cargarArticulos(conexion);
 		for(Articulo ar:lista) {
 			if(Integer.parseInt((String) tabla.getModel().getValueAt(tabla.getSelectedRow(), 1))==ar.getIdArticulo()) {

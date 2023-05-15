@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.mysql.jdbc.Connection;
 
 import controlador.Metodos;
+import excepciones.ErroresDeOperaciones;
 import gestores.GestorArticulo;
 import gestores.GestorArticuloComprado;
 import gestores.GestorCompra;
@@ -47,7 +48,7 @@ class TestGestorArticuloComprado {
 			assertTrue(gac.getListaArticulosComprados().size()>0);
 			int antesDeInsertar=gac.getListaArticulosComprados().size();
 
-			g1.insertarPersona(mc,conexion,cliente);
+			g1.insertarPersona(mc,conexion,cliente,null);
 			g.insertarCompra(conexion,cliente, co);
 			g.setListaCompras(g.cargarCompras(mc,conexion));
 			co=g.buscarCompraReciente(mc,conexion);
@@ -83,10 +84,12 @@ class TestGestorArticuloComprado {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ErroresDeOperaciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
-	//
 	
 	@Test
 	void test_buscarArticuloComprado() {

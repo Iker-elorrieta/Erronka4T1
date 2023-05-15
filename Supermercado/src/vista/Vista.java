@@ -180,7 +180,7 @@ public class Vista {
 		frame.getContentPane().setLayout(null);
 		
 		JTabbedPane paneles = new JTabbedPane(JTabbedPane.TOP);
-		paneles.setBounds(0, -25, 724, 478);
+		paneles.setBounds(0, 0, 724, 453);
 		frame.getContentPane().add(paneles);
 		
 		JPanel panel_Bienvenido = new JPanel();
@@ -326,6 +326,7 @@ public class Vista {
 						}
 					}else {
 						admin=(Jefe) login;
+						if(admin.isDios()) {
 						lblCrear.setVisible(true);
 						btnCreacion.setVisible(true);
 						btnAnadirArticulo.setVisible(true);
@@ -334,6 +335,17 @@ public class Vista {
 						btnAnadirSecciones.setVisible(true);
 						btnInfo.setVisible(true);
 						lblModifica.setVisible(true);
+						}else {
+						lblModifica.setVisible(false);
+						btnAnadirSecciones.setVisible(false);
+						btnPaginaSuper.setVisible(false);
+						btnCreacion.setVisible(false);
+						
+						lblModifica.setVisible(true);
+						lblCrear.setVisible(true);
+						btnAnadirArticulo.setVisible(true);
+						btnInfo.setVisible(true);
+						}
 						paneles.setSelectedIndex(3);
 					}
 				} catch (ErroresDeLogin e1) {
@@ -420,6 +432,7 @@ public class Vista {
 		contrasenaRegi.setBackground(new Color(128, 128, 128));
 		panel_Registrarse.add(contrasenaRegi);
 		
+		JLabel lblErroresLogin = new JLabel("");
 		JButton btnAtra1 = new JButton("Atras");
 		btnAtra1.setForeground(new Color(192, 192, 192));
 		btnAtra1.setBackground(new Color(0,76,255));
@@ -432,6 +445,7 @@ public class Vista {
 				textDNI.setText("");
 				textNombre.setText("");
 				textMail.setText("");
+				lblErroresLogin.setText("");
 			}
 		});
 		btnAtra1.setBounds(10, 391, 89, 23);
@@ -449,7 +463,6 @@ public class Vista {
 		datePicker.setBackground(new Color(128, 128, 128));
 		panel_Registrarse.add(datePicker);
 
-		JLabel lblErroresLogin = new JLabel("");
 		JButton btnRegistrarse1 = new JButton("Registrarse");
 		btnRegistrarse1.setForeground(new Color(192, 192, 192));
 		btnRegistrarse1.setBackground(new Color(0,76,255));
@@ -468,23 +481,27 @@ public class Vista {
 						cli = new Cliente(textDNI.getText(),textNombre.getText(),textApellidos.getText(),
 						 mc.deStringADate(datePicker.getJFormattedTextField().getText()), textMail.getText(),
 						 String.valueOf(contrasenaRegi.getPassword()),tipoPersona.Cliente, (float)0,0);
-						gp.insertarPersona(mc,conexion,cli);
+						gp.insertarPersona(mc,conexion,cli,usuarios);
 						usuarios=gp.cargarPersonas(conexion);
 						paneles.setSelectedIndex(1);
+						contrasenaRegi.setText("");
+						textApellidos.setText("");
+						datePicker.getJFormattedTextField().setText("");
+						textDNI.setText("");
+						textNombre.setText("");
+						textMail.setText("");
+						lblErroresLogin.setText("");
 					} catch (ParseException e2) {
 						// TODO Auto-generated catch block
 						e2.printStackTrace();
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
+					} catch (ErroresDeOperaciones e1) {
+						// TODO Auto-generated catch block
+						lblErroresLogin.setText(e1.getMessage());
+						lblErroresLogin.setVisible(true);
 					}	
-					contrasenaRegi.setText("");
-					textApellidos.setText("");
-					datePicker.getJFormattedTextField().setText("");
-					textDNI.setText("");
-					textNombre.setText("");
-					textMail.setText("");
-					lblErroresLogin.setText("");
 				} catch (ErroresDeRegistro e1) {
 					// TODO Auto-generated catch block
 					lblErroresLogin.setText(e1.getMessage());
@@ -546,6 +563,9 @@ public class Vista {
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
+					} catch (ErroresDeOperaciones e1) {
+						// TODO Auto-generated catch block
+						JOptionPane.showMessageDialog(null, e1.getMessage());
 					}
 				}
 			}
@@ -569,6 +589,8 @@ public class Vista {
 			cambios=false;
 		}else {
 			try {
+				gp.comprobarNacimiento(datePicker_1.getJFormattedTextField().getText());
+				gp.comprobarEmail(textCEmail.getText());
 				cliente.setNombre(textCNombre.getText());
 				cliente.setApellidos(textCApellidos.getText());
 				cliente.setContrasena(String.valueOf(passCContrasena.getPassword()));
@@ -605,7 +627,7 @@ public class Vista {
 		
 		JLabel lblCApellidos = new JLabel("Apellidos:");
 		lblCApellidos.setForeground(new Color(255, 255, 255));
-		lblCApellidos.setBounds(10, 61, 46, 14);
+		lblCApellidos.setBounds(10, 61, 66, 14);
 		panel_PerfilUtilidades.add(lblCApellidos);
 		
 		JLabel lblCGmail = new JLabel("E-mail:");
@@ -692,7 +714,7 @@ public class Vista {
 		btnSumarDinero.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					gp.AumentarDineroCliente(conexion,cliente, Integer.valueOf(textDineroExtra.getText()));
+					gp.AumentarDineroCliente(conexion,cliente, Integer.valueOf(textDineroExtra.getText()),cliente.getDinero());
 					cliente.setDinero(cliente.getDinero()+Integer.valueOf(textDineroExtra.getText()));
 					textDineroExtra.setText("");
 					textDineroActual.setText(String.valueOf(cliente.getDinero()));
@@ -814,6 +836,8 @@ public class Vista {
 		btnComprar.setBounds(579, 391, 89, 23);
 		panel_PerfilUtilidades.add(btnComprar);
 		
+		JButton btnAplicar = new JButton("Confirmar");
+		JButton btnCancelarCompra = new JButton("Devolver");
 		JScrollPane historialCompras = new JScrollPane();
 		JButton btnVerHistorial = new JButton("Historial");
 		btnVerHistorial.setForeground(new Color(192, 192, 192));
@@ -822,9 +846,14 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					historial=gc.buscarComprasPersona(mc,conexion,login);
+					if(historial.size()==0) {
+						JOptionPane.showMessageDialog(null, "Si quiere acceder al historial realize alguna compra.");
+					}else {
 					tabla=cv.cargarHistorialCompras(login,mc.cargarHistorialCompras(conexion,historial));
 					historialCompras.setViewportView(tabla);
 					paneles.setSelectedIndex(10);
+					btnAplicar.setEnabled(false);
+					}
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -1004,6 +1033,9 @@ public class Vista {
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				} catch (ErroresDeOperaciones e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, e1.getMessage());
 				}
 			}
 		});
@@ -1066,6 +1098,9 @@ public class Vista {
 				} catch (ParseException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				} catch (ErroresDeOperaciones e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 		});
@@ -1078,6 +1113,13 @@ public class Vista {
 					btnAceptar.setVisible(true);
 					cambiaDe.setVisible(true);
 					cambiaDe.setText(cv.descripcion(tabla, listaArticulos));
+					
+					btnAtras1.setEnabled(false);
+					btnVerUsuarios.setEnabled(false);
+					btnVerSuper.setEnabled(false);
+					btnVerSecciones.setEnabled(false);
+					verArticulos.setEnabled(false);
+					btnCargarStocks.setEnabled(false);
 					tabla.setEnabled(false);
 			}
 		});
@@ -1101,7 +1143,12 @@ public class Vista {
 					cambiaDe.setText("");
 					cambiaDe.setVisible(false);
 					tabla.setEnabled(true);
-					
+					btnAtras1.setEnabled(true);
+					btnVerUsuarios.setEnabled(true);
+					btnVerSuper.setEnabled(true);
+					btnVerSecciones.setEnabled(true);
+					verArticulos.setEnabled(true);
+					btnCargarStocks.setEnabled(true);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -1253,15 +1300,20 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					cv.comprobarCampos(panel_Admin);
+							
+					gp.comprobarNacimiento(datePicker_3.getJFormattedTextField().getText());
+					gp.comprobarEmail(textGmailJefe.getText());
+					gp.comprobarDNI(textDNIJefe.getText());
 					nuevoJefe=new Jefe(textDNIJefe.getText(),textNombreJefe.getText(),textApellidos.getText(),
 					mc.deStringADate(datePicker_3.getJFormattedTextField().getText()),textGmailJefe.getText(),
 					String.valueOf(passJefe.getPassword()),tipoPersona.Jefe,
 					mc.deStringADate(datePicker_2.getJFormattedTextField().getText()),(Float)porcentajeEmpresa.getValue(),0);
-					gp.insertarPersona(mc,conexion,nuevoJefe);
+					gp.insertarPersona(mc,conexion,nuevoJefe,usuarios);
 					usuarios=gp.cargarPersonas(conexion);
 					datePicker_3.getJFormattedTextField().setText("");
 					datePicker_2.getJFormattedTextField().setText("");
 					btnCancelarJefe.doClick();
+					lblErroresASS.setText("");
 					paneles.setSelectedIndex(3);
 				} catch (NumberFormatException e1) {
 					// TODO Auto-generated catch block
@@ -1273,6 +1325,9 @@ public class Vista {
 					// TODO Auto-generated catch block
 					lblErroresASS.setText(e1.getMessage());
 				} catch (ErroresDeOperaciones e1) {
+					// TODO Auto-generated catch block
+					lblErroresASS.setText(e1.getMessage());
+				} catch (ErroresDeRegistro e1) {
 					// TODO Auto-generated catch block
 					lblErroresASS.setText(e1.getMessage());
 				}
@@ -1392,7 +1447,7 @@ public class Vista {
 					cv.comprobarCampos(panel_Supermercado);
 					supermercado=new Supermercado(textCodigoSuper.getText(),textEmpresa.getText(),textDireccion.getText(),(Integer) NumEmple.getValue(),null);
 					nuevoJefe=(Jefe) gp.buscarPersona(String.valueOf(escogeJefe.getItemAt(escogeJefe.getSelectedIndex())), usuarios);
-					gsm.insertarSupermercado(conexion,nuevoJefe, supermercado);
+					gsm.insertarSupermercado(conexion,nuevoJefe, supermercado,supermercados);
 					btnAtrasSuper.doClick();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
@@ -1902,6 +1957,9 @@ public class Vista {
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						lblErroresArti.setText("No se pudo conectar a la BBDD o hubo un fallo en la insercion");
+					} catch (ErroresDeOperaciones e1) {
+						// TODO Auto-generated catch block
+						lblErroresArti.setText(e1.getMessage());
 					}
 			}
 		});
@@ -1933,6 +1991,7 @@ public class Vista {
 		panel_Compras.setLayout(null);
 		panel_Compras.setBackground(customColor);
 		
+		JButton btnRealizarCompra = new JButton("Comprar");
 		JLabel lblPrecioTotal = new JLabel("Precio de su carrito:");
 		lblPrecioTotal.setForeground(new Color(255, 255, 255));
 		JComboBox<String> boxSeccion = new JComboBox<String>();
@@ -1950,6 +2009,7 @@ public class Vista {
 					seccionesDelSuper=supermercados.get(boxSuper.getSelectedIndex()).getArraySecciones();
 					boxSeccion.setModel(new DefaultComboBoxModel<String>(mc.cargarNombreSeccion(seccionesDelSuper)));
 					boxSeccion.setVisible(true);
+					btnRealizarCompra.setVisible(false);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -1987,6 +2047,7 @@ public class Vista {
 		panel_Compras.add(textBuscador);
 		textBuscador.setColumns(10);
 		
+		
 		JButton btnBuscar = new JButton("Buscar");
 		btnBuscar.setForeground(new Color(192, 192, 192));
 		btnBuscar.setBackground(new Color(0,76,255));
@@ -2000,6 +2061,7 @@ public class Vista {
 					listaArticulos=ga.buscarArticulosPorNombre(textBuscador.getText(),listaArticulos);
 					buscaArticulos.setViewportView(cv.mostrarArticulos(listaArticulos,carrito,lblPrecioTotal,articulosCarrito));
 					}
+					btnRealizarCompra.setVisible(false);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -2020,6 +2082,7 @@ public class Vista {
 		btnAtrasCom.setBounds(10, 383, 89, 23);
 		panel_Compras.add(btnAtrasCom);
 		
+		
 		JButton btnVerCarrito = new JButton("Carrito");
 		btnVerCarrito.setForeground(new Color(192, 192, 192));
 		btnVerCarrito.setBackground(new Color(0,76,255));
@@ -2027,8 +2090,10 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				if(articulosCarrito.size()==0) {
 				buscaArticulos.setViewportView(null);
+				btnRealizarCompra.setVisible(false);
 				}else {
 				buscaArticulos.setViewportView(cv.mostrarCarrito(articulosCarrito,carrito,lblPrecioTotal));
+				btnRealizarCompra.setVisible(true);
 				}
 			}
 		});
@@ -2039,7 +2104,7 @@ public class Vista {
 		lblPrecioTotal.setBounds(338, 385, 228, 14);
 		panel_Compras.add(lblPrecioTotal);
 		
-		JButton btnRealizarCompra = new JButton("Comprar");
+		
 		btnRealizarCompra.setForeground(new Color(192, 192, 192));
 		btnRealizarCompra.setBackground(new Color(0,76,255));
 		btnRealizarCompra.addActionListener(new ActionListener() {
@@ -2061,6 +2126,7 @@ public class Vista {
 			}
 		});
 		btnRealizarCompra.setBounds(603, 383, 89, 23);
+		btnRealizarCompra.setVisible(false);
 		panel_Compras.add(btnRealizarCompra);
 		
 		JPanel panelHistorial = new JPanel();
@@ -2098,26 +2164,44 @@ public class Vista {
 		btnAtrasHis.setBounds(10, 391, 89, 23);
 		panelHistorial.add(btnAtrasHis);
 		
+		JSpinner cantidadDevolver = new JSpinner();
+		
+		JButton btnCancelarDevolucion = new JButton("Cancelar");
+		JButton btnSeleccionarArCom = new JButton("Modificar");
+		JButton btnCancelarSeleccion = new JButton("Cancelar");
 		JButton btnVerArticulosCom = new JButton("Seleccionar");
 		btnVerArticulosCom.setForeground(new Color(192, 192, 192));
 		btnVerArticulosCom.setBackground(new Color(0,76,255));
 		btnVerArticulosCom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					if(historial==null) {
+						JOptionPane.showMessageDialog(null, "Seleccione una de las compras disponibles para analizarlo.");
+					}else {
+					if(tabla.getSelectedRow()>=0) {
 					tabla.setEnabled(false);
 					historialArticulosComprados=gac.cargarArticuloCompradoCod(conexion,cv.cogerCodigoCompra(tabla, historial).getCodigoCompra());
+					btnCancelarSeleccion.setEnabled(true);
 					tablaApoyo=cv.cargaArticulosComprados(mc.cargarArticulosComprados(conexion,historialArticulosComprados));
 					articulosComprados.setViewportView(tablaApoyo);
+					btnCancelarDevolucion.setEnabled(true);
+					btnSeleccionarArCom.setEnabled(true);
+					cantidadDevolver.setEnabled(true);
+					btnAplicar.setEnabled(false);
+					}else {
+						JOptionPane.showMessageDialog(null, "Seleccione una de las compras disponibles para analizarlo.");
+					}
+					}
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Seleccione una de las compras disponibles para analizarlo.");
 				}
 			}
 		});
 		btnVerArticulosCom.setBounds(273, 357, 103, 23);
 		panelHistorial.add(btnVerArticulosCom);
 		
-		JButton btnCancelarCompra = new JButton("Devolver");
+		
 		btnCancelarCompra.setForeground(new Color(192, 192, 192));
 		btnCancelarCompra.setBackground(new Color(0,76,255));
 		btnCancelarCompra.addActionListener(new ActionListener() {
@@ -2129,6 +2213,12 @@ public class Vista {
 					historial=gc.buscarComprasPersona(mc,conexion,login);
 					tabla=cv.cargarHistorialCompras(login,mc.cargarHistorialCompras(conexion,historial));
 					historialCompras.setViewportView(tabla);
+					articulosComprados.setViewport(null);
+					btnCancelarSeleccion.setEnabled(false);
+					btnCancelarDevolucion.setEnabled(false);
+					btnSeleccionarArCom.setEnabled(false);
+					cantidadDevolver.setEnabled(false);
+					btnAplicar.setEnabled(false);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -2141,15 +2231,17 @@ public class Vista {
 		btnCancelarCompra.setBounds(10, 357, 103, 23);
 		panelHistorial.add(btnCancelarCompra);
 		
-		JSpinner cantidadDevolver = new JSpinner();
-		JButton btnSeleccionarArCom = new JButton("Modificar");
+		cantidadDevolver.setEnabled(false);
+		
 		btnSeleccionarArCom.setForeground(new Color(192, 192, 192));
 		btnSeleccionarArCom.setBackground(new Color(0,76,255));
+		btnSeleccionarArCom.setEnabled(false);
 		btnSeleccionarArCom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				arDevolver=cv.cogerArticuloComprado(tablaApoyo, historialArticulosComprados);
 				cantidadDevolver.setModel(new SpinnerNumberModel( arDevolver.getCantidad(),0, arDevolver.getCantidad(), 1));
 				tablaApoyo.setEnabled(false);
+				btnAplicar.setEnabled(true);
 			}
 		});
 		btnSeleccionarArCom.setBounds(389, 357, 97, 23);
@@ -2160,12 +2252,13 @@ public class Vista {
 		cantidadDevolver.setBounds(534, 358, 45, 20);
 		panelHistorial.add(cantidadDevolver);
 		
-		JButton btnAplicar = new JButton("Confirmar");
+		
 		btnAplicar.setForeground(new Color(192, 192, 192));
 		btnAplicar.setBackground(new Color(0,76,255));
 		btnAplicar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					btnAplicar.setEnabled(false);
 					gp.devolverUnArticulo(conexion,login, arDevolver, (Integer)cantidadDevolver.getValue());
 					gp.compruebaDevolucionArticulo(conexion,arDevolver);
 					historialCompras.setViewportView(tabla);
@@ -2182,7 +2275,7 @@ public class Vista {
 		btnAplicar.setBounds(589, 357, 103, 23);
 		panelHistorial.add(btnAplicar);
 		
-		JButton btnCancelarSeleccion = new JButton("Cancelar");
+
 		btnCancelarSeleccion.setForeground(new Color(192, 192, 192));
 		btnCancelarSeleccion.setBackground(new Color(0,76,255));
 		btnCancelarSeleccion.addActionListener(new ActionListener() {
@@ -2191,18 +2284,26 @@ public class Vista {
 				tablaApoyo.setEnabled(true);
 				tablaApoyo=null;
 				articulosComprados.setViewportView(tablaApoyo);
+				btnCancelarSeleccion.setEnabled(false);
+				btnCancelarDevolucion.setEnabled(false);
+				btnSeleccionarArCom.setEnabled(false);
+				cantidadDevolver.setEnabled(false);
+				btnAplicar.setEnabled(false);
 			}
 		});
+		btnCancelarSeleccion.setEnabled(false);
 		btnCancelarSeleccion.setBounds(143, 357, 97, 23);
 		panelHistorial.add(btnCancelarSeleccion);
 		
-		JButton btnCancelarDevolucion = new JButton("Cancelar");
+		
 		btnCancelarDevolucion.setForeground(new Color(192, 192, 192));
 		btnCancelarDevolucion.setBackground(new Color(0,76,255));
+		btnCancelarDevolucion.setEnabled(false);
 		btnCancelarDevolucion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cantidadDevolver.setModel(new SpinnerNumberModel(0, 0, 0, 1));
 				tablaApoyo.setEnabled(true);
+				btnAplicar.setEnabled(false);
 			}
 		});
 		btnCancelarDevolucion.setBounds(387, 391, 99, 23);

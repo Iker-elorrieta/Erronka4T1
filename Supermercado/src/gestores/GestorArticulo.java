@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import controlador.Metodos;
+import excepciones.ErroresDeOperaciones;
 import modelo.Articulo;
 import modelo.Comida;
 import modelo.Herramienta;
@@ -92,8 +93,12 @@ public class GestorArticulo {
 	 * @param se La seccion del articulo.
 	 * @param ar El articulo a insertar.
 	 * @throws SQLException Fallo en la conexion.
+	 * @throws ErroresDeOperaciones Errores propios.
 	 */
-	public void insertarArticulo(Metodos mc,Connection conexion,Seccion se,Articulo ar) throws SQLException {
+	public void insertarArticulo(Metodos mc,Connection conexion,Seccion se,Articulo ar) throws SQLException, ErroresDeOperaciones {
+		if(ar.getNombreArticulo().length()>50 || ar.getRutaImagen().length()>100) {
+			throw new ErroresDeOperaciones("El nombre o la ruta son demasiado largas");
+		}
 		Statement comando = (Statement) conexion.createStatement();
 		comando.executeUpdate("INSERT INTO "+TABLAS.ARTICULO+" "
 				+ "("+TABLAS.CODIGOSECCION+","+TABLAS.NOMBREARTICULO+","
@@ -128,8 +133,12 @@ public class GestorArticulo {
 	 * @param conexion La conexion.
 	 * @param ar El articulo a cambiar.
 	 * @throws SQLException Fallo en la conexion.
+	 * @throws ErroresDeOperaciones 
 	 */
-	public void cambiarArticulo(Metodos mc,Connection conexion,Articulo ar) throws SQLException {
+	public void cambiarArticulo(Metodos mc,Connection conexion,Articulo ar) throws SQLException, ErroresDeOperaciones {
+		if(ar.getNombreArticulo().length()>50 || ar.getRutaImagen().length()>100) {
+			throw new ErroresDeOperaciones("El nombre o la ruta son demasiado largas");
+		}
 		Ropa ro=null;
 		Comida co=null;
 		Herramienta he=null;

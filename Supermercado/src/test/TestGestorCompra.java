@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.mysql.jdbc.Connection;
 
 import controlador.Metodos;
+import excepciones.ErroresDeOperaciones;
 import gestores.GestorCompra;
 import gestores.GestorPersona;
 import modelo.Cliente;
@@ -45,7 +46,7 @@ class TestGestorCompra {
 			assertEquals(g.getListaCompras().get(0).getCodigoCompra(),1);
 			assertEquals(g.getListaCompras().get(0).getPrecioTotal(),(float)8.98);
 
-			g1.insertarPersona(mc,conexion,cliente);
+			g1.insertarPersona(mc,conexion,cliente,null);
 			g.insertarCompra(conexion,cliente, co);
 			g.setListaCompras(g.cargarCompras(mc,conexion));
 			assertTrue(g.getListaCompras().size()>antesDeInsertar);
@@ -64,6 +65,9 @@ class TestGestorCompra {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ErroresDeOperaciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

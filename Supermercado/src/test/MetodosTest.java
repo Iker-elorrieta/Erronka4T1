@@ -180,9 +180,9 @@ GestorPersona gp=new GestorPersona();
 		try {
 			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
 			Statement comando = (Statement) conexion.createStatement();
-			comando.executeUpdate("INSERT INTO `articulosrecargar` (`encargado`, `idArticulo`, `nombreArticulo`, `precio`, `stockNecesario`, `precioTotal`) VALUES ('alan', '1', 'tornillo', '8', '10', '27');");
+			comando.executeUpdate("INSERT INTO `articulosrecargar` (`encargado`, `idArticulo`, `nombreArticulo`, `precio`, `stockNecesario`, `precioTotal`) VALUES ('alan', '6', 'tornillo', '8', '10', '27');");
 			
-			assertEquals(mts.cargarRecargaArticulos(conexion)[0][0],"alan");
+			assertEquals(mts.cargarRecargaArticulos(conexion)[0][4],"alan");
 			comando.executeUpdate("DELETE FROM `articulosrecargar` WHERE `articulosrecargar`.`encargado` = 'alan';");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

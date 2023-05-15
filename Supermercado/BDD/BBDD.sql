@@ -68,7 +68,7 @@ UNIQUE(codigoSeccion,nombreArticulo)
 CREATE TABLE articuloscomprados (
   codigoCompra int NOT NULL,
   idArticulo int NOT NULL,
-  cantidad int NOT NULL,
+  cantidad int,
   precioArt float NOT NULL,
 CONSTRAINT FK_codCompra FOREIGN KEY (codigoCompra) REFERENCES compras(codigoCompra)
 ON DELETE CASCADE ON UPDATE CASCADE,
