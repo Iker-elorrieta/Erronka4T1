@@ -1,11 +1,16 @@
 package test;
 
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
@@ -14,27 +19,37 @@ import com.mysql.jdbc.Connection;
 
 import controlador.Metodos;
 import gestores.GestorCompra;
-import gestores.GestorPersona;
 import modelo.Compra;
 import modelo.Jefe;
 import otros.tipoPersona;
 import referencias.CONEXION;
+import referencias.TABLAS;
 
 @SuppressWarnings("javadoc")
 class TestGestorCompra {
 	Metodos mc=new Metodos();
 	GestorCompra gc=new GestorCompra();
 	Jefe jefe=new Jefe("77777777C","Test","Test",Date.valueOf("2001-01-21"),"testJefe@gmail.com","12345",tipoPersona.Jefe,Date.valueOf("2019-09-09"),(float)55.5,0);
+	Compra compra=new Compra((float)10);
 	Connection conexion;
-	@Test
-	void test_insertarCompra() {
+	@Test 
+	void testInsertarCompra() {
+		Statement comando=null;
 		try {
-			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-			GestorPersona gp = new GestorPersona();
-			Compra com = new Compra(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getCodigoCompra()+1, 25, null);
-			gc.insertarCompra(conexion, gp.cargarPersonas(conexion).get(0), com);
-			assertEquals(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getPrecioTotal(),25);
-			gc.borrarCompra(conexion, com);
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		gc.insertarCompra(conexion, jefe, compra);
+		Compra com=null;
+		ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			com=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		assertEquals(compra.getPrecioTotal(),com.getPrecioTotal());
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.close();
+		conexion.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,17 +58,58 @@ class TestGestorCompra {
 			e.printStackTrace();
 		}
 	}
-	
 	@Test
-	void test_borrarCompra() {
+	void testCargarCompras() {
+		Statement comando=null;
+		try {
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
+				+ "('"+jefe.getDni()+"', 0, "+compra.getPrecioTotal()+", '"+LocalDateTime.now()+"')");
+		Compra com=null;
+		ArrayList<Compra> lista=gc.cargarCompras(mc, conexion);
+		assertTrue(lista.size()>1);
+		com=lista.get(lista.size()-1);
+		assertEquals(compra.getPrecioTotal(),com.getPrecioTotal());
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.close();
+		conexion.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	@Test
+	void testBorrarCompra() {
+		Statement comando=null;
+		try {
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
+				+ "('"+jefe.getDni()+"', 0, "+compra.getPrecioTotal()+", '"+LocalDateTime.now()+"')");
+		Compra com=null;
 		
-		try {
-			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-			GestorPersona gp = new GestorPersona();
-			Compra com = new Compra(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getCodigoCompra()+1, 25, null);
-			gc.insertarCompra(conexion, gp.cargarPersonas(conexion).get(0), com);
-			assertEquals(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getPrecioTotal(),25);
-			gc.borrarCompra(conexion, com);
+		ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			com=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		gc.borrarCompra(conexion, com);
+		Compra comprobar=null;
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			comprobar=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		assertNotEquals(comprobar.getPrecioTotal(),com.getPrecioTotal());
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.close();
+		conexion.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,42 +118,102 @@ class TestGestorCompra {
 			e.printStackTrace();
 		}
 	}
-	
 	@Test
-	void test_cambiarCompra() {
+	void testCambiarCompra() {
+		Statement comando=null;
 		try {
-			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-			GestorPersona gp = new GestorPersona();
-			Compra com0 = new Compra(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getCodigoCompra()+1, 21, null);
-			Compra com1 = new Compra(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getCodigoCompra()+1, 25, null);
-			gc.cambiarCompra(conexion, gp.cargarPersonas(conexion).get(0), com1);
-			//assertEquals(gc.cargarCompras(mc, conexion).get(gc.cargarCompras(mc, conexion).size()-1).getPrecioTotal(),25);
-			gc.cambiarCompra(conexion, gp.cargarPersonas(conexion).get(0), com0);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@Test
-	void test_buscarCompraReciente() {
-		try {
-			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-			gc.buscarCompraReciente(mc, conexion);
-			//assert
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
+				+ "('"+jefe.getDni()+"', 0, "+compra.getPrecioTotal()+", '"+LocalDateTime.now()+"')");
+		Compra com=null;
 		
+		ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			com=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		Compra comprobar=com;
+		comprobar.setPrecioTotal((float)8);
+		gc.cambiarCompra(conexion, jefe, comprobar);
+		
+		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			comprobar=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		assertNotEquals(comprobar.getPrecioTotal(),compra.getPrecioTotal());
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.close();
+		conexion.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
+	@Test
+	void buscarCompraReciente() {
+		Statement comando=null;
+		try {
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
+				+ "('"+jefe.getDni()+"', 0, "+compra.getPrecioTotal()+", '"+LocalDateTime.now()+"')");
+		Compra com=null;
+		
+		ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			com=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		Compra comprobar=gc.buscarCompraReciente(mc, conexion);
+		assertEquals(comprobar,com);
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.close();
+		conexion.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	@Test
+	void buscarCompraPersona() {
+		Statement comando=null;
+		try {
+		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
+		comando= (Statement) conexion.createStatement();
+		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
+		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
+		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
+				+ "('"+jefe.getDni()+"', 0, "+compra.getPrecioTotal()+", '"+LocalDateTime.now()+"')");
+		Compra com=null;
+		
+		ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		while(cargar.next()) {
+			com=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+		}
+		ArrayList<Compra> lista=gc.buscarComprasPersona(mc, conexion, jefe);
+		Compra comprobar=lista.get(0);
+		assertEquals(comprobar,com);
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.close();
+		conexion.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	
 	@Test
 	void test_gettyset() {
@@ -107,23 +223,6 @@ class TestGestorCompra {
 		assertEquals(lista,gcP.getListaCompras());
 	}
 	
-	
-	
-	@Test
-	void test_buscarComprasPersona() {
-		try {
-			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-			
-			GestorPersona gp = new GestorPersona();
-			assertEquals(gc.buscarComprasPersona(mc, conexion, gp.cargarPersonas(conexion).get(1)).get(0).getCodigoCompra(),1);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 }
 

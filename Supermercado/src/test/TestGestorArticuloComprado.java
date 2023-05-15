@@ -67,7 +67,7 @@ class TestGestorArticuloComprado {
 		while(cargar.next()) {
 			idar=cargar.getInt(TABLAS.IDARTICULO);
 		}
-		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES\r\n"
+		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
 		+ "('"+jefe.getDni()+"', 0, "+co.getPrecio()*2+", '"+LocalDateTime.now()+"')");
 		Compra compra=null;
 		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
@@ -117,7 +117,7 @@ class TestGestorArticuloComprado {
 		while(cargar.next()) {
 			idar=cargar.getInt(TABLAS.IDARTICULO);
 		}
-		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES\r\n"
+		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
 		+ "('"+jefe.getDni()+"', 0, "+co.getPrecio()*2+", '"+LocalDateTime.now()+"')");
 		Compra compra=null;
 		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
@@ -166,7 +166,7 @@ class TestGestorArticuloComprado {
 		while(cargar.next()) {
 			idar=cargar.getInt(TABLAS.IDARTICULO);
 		}
-		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES\r\n"
+		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
 		+ "('"+jefe.getDni()+"', 0, "+co.getPrecio()*2+", '"+LocalDateTime.now()+"')");
 		Compra compra=null;
 		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
@@ -214,7 +214,7 @@ class TestGestorArticuloComprado {
 		while(cargar.next()) {
 			idar=cargar.getInt(TABLAS.IDARTICULO);
 		}
-		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES\r\n"
+		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
 		+ "('"+jefe.getDni()+"', 0, "+co.getPrecio()*2+", '"+LocalDateTime.now()+"')");
 		Compra compra=null;
 		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
@@ -270,7 +270,7 @@ class TestGestorArticuloComprado {
 		while(cargar.next()) {
 			idar=cargar.getInt(TABLAS.IDARTICULO);
 		}
-		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES\r\n"
+		comando.executeUpdate("INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES "
 		+ "('"+jefe.getDni()+"', 0, "+co.getPrecio()*2+", '"+LocalDateTime.now()+"')");
 		Compra compra=null;
 		cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
