@@ -190,7 +190,6 @@ public class GestorPersona {
 		Statement comando = (Statement) conexion.createStatement();
 		float suma=(anterior+dinero);
 		cliente.setDinero(suma);
-		System.out.println("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"="+suma+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
 		comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"="+suma+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
 		comando.close();
 	}

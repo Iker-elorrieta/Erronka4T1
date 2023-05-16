@@ -133,7 +133,7 @@ dni varchar(9) not null,
     dineroDespues float ,
     cambio float,
     momento datetime not null,
-    constraint PK_primaria primary key (dni,momento)
+    constraint PK_primaria primary key (dni,cambio,momento)
 );
 DELIMITER //
 
@@ -142,10 +142,7 @@ after update on personas
 for each row begin
 DECLARE cambio float default 0;
 DECLARE porcen float default 0;
-	if NEW.dinero > OLD.dinero then
-		set porcen = ((NEW.dinero - OLD.dinero) / OLD.dinero) * 100;
-		insert into Cartera values (NEW.dni, NEW.email, OLD.dinero, NEW.dinero, porcen, current_timestamp());
-    elseif NEW.dinero < OLD.dinero THEN
+	if NEW.dinero != OLD.dinero then
 		set porcen = ((NEW.dinero - OLD.dinero) / OLD.dinero) * 100;
 		insert into Cartera values (NEW.dni, NEW.email, OLD.dinero, NEW.dinero, porcen, current_timestamp());
 	END IF;
@@ -166,9 +163,11 @@ AFTER UPDATE ON articulos
 FOR EACH ROW
 BEGIN
 	if new.stock<old.stock then
+    DELETE FROM inventarios;
     insert into inventarios 
     SELECT su.codigoSuper,sum(stock)'stockTotal',round(sum(stock*precio),2)'precioTotal',current_timestamp()'fechaCambio'
-	FROM articulos a JOIN secciones se ON a.codigoSeccion=se.codigoSeccion JOIN supermercados su ON su.codigoSuper=se.codigoSuper;
+	FROM articulos a JOIN secciones se ON a.codigoSeccion=se.codigoSeccion JOIN supermercados su ON su.codigoSuper=se.codigoSuper
+    GROUP BY codigoSuper LIMIT 1;
     END IF;
 END;//
 DELIMITER ;
