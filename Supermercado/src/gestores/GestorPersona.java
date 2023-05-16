@@ -307,32 +307,19 @@ public class GestorPersona {
 	public ArrayList<Jefe> cargarJefesSinSupermercado(Connection conexion,int numSuper) throws SQLException, ErroresDeOperaciones {
 		ArrayList<Persona> lista=cargarPersonas(conexion);
 		ArrayList<Jefe> jefeSinSuper=new ArrayList<Jefe>();
-		String [] dniJefes=new String[numSuper];
 		Statement comando = (Statement) conexion.createStatement();
-		ResultSet cuenta=comando.executeQuery("SELECT "+TABLAS.DNIJEFE+" FROM "+TABLAS.SUPERMERCADO);
-		int i=0;
+		ResultSet cuenta=comando.executeQuery("SELECT "+TABLAS.DNI+" FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.TIPO+"='"+TABLAS.JEFE+"'");
+		ArrayList<String> listaDNI=new ArrayList<String>();
 		while(cuenta.next()) {
-			dniJefes[i]=cuenta.getString(TABLAS.DNIJEFE);
+			listaDNI.add(cuenta.getString(TABLAS.DNI));
 		}
 		Jefe temporal=null;
-		if((dniJefes[numSuper-1]==null)) {
-			throw new ErroresDeOperaciones("No hay Jefes disponibles");
-		}else{
 			for(Persona per:lista) {
 				if(per instanceof Jefe) {
 					temporal=(Jefe)per;
-					boolean noRepe=true;
-					for(int x=0;x<dniJefes.length;x++) {
-						if(dniJefes[x].equals(temporal.getDni())) {
-						noRepe=false;
-						}
-					}
-					if(noRepe==true) {
 						jefeSinSuper.add(temporal);
-					}
 				}
 			}
-		}
 		comando.close();
 		return jefeSinSuper;
 	}
