@@ -123,7 +123,7 @@ public class GestorPersona {
 			c=(Cliente) persona;
 		comando.executeUpdate("INSERT INTO "+TABLAS.PERSONAS+" "
 		+ "("+TABLAS.DNI+","+TABLAS.NOMBRE+","+TABLAS.APELLIDOS+","+TABLAS.FECHANACIMIENTO+","+TABLAS.EMAIL+","+TABLAS.CONTRASENA+","+TABLAS.TIPO+","+TABLAS.DINERO+","+TABLAS.BLOQUEADO+")"
-		+ " VALUES ('"+c.getDni()+"','"+c.getNombre()+"','"+c.getApellidos()+"','"+String.valueOf(c.getFechaNacimiento())+"','"+c.getEmail()+"','"+c.getContrasena()+"','"+c.getTipo()+"','"+c.getDinero()+"','"+mc.pasarBoolean(c.isBloqueado())+"')");
+		+ " VALUES ('"+c.getDni()+"','"+c.getNombre()+"','"+c.getApellidos()+"','"+String.valueOf(c.getFechaNacimiento())+"','"+c.getEmail()+"','"+c.getContrasena()+"','"+c.getTipo()+"','"+0+"','"+mc.pasarBoolean(c.isBloqueado())+"')");
 		}else {
 			j=(Jefe) persona;
 			comando.executeUpdate("INSERT INTO "+TABLAS.PERSONAS+" "

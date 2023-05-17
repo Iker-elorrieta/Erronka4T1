@@ -591,13 +591,13 @@ public class Vista {
 			try {
 				gp.comprobarNacimiento(datePicker_1.getJFormattedTextField().getText());
 				gp.comprobarEmail(textCEmail.getText());
-				cliente.setNombre(textCNombre.getText());
-				cliente.setApellidos(textCApellidos.getText());
-				cliente.setContrasena(String.valueOf(passCContrasena.getPassword()));
-				cliente.setEmail(textCEmail.getText());
-				cliente.setFechaNacimiento(mc.deStringADate(datePicker_1.getJFormattedTextField().getText()));
-				gp.comprobarCampos(cliente.getNombre(),cliente.getApellidos() , cliente.getContrasena(),cliente.getDni(), cliente.getFechaNacimiento(), cliente.getEmail());
-				gp.cambiarPerfilCliente(mc,conexion,cliente);
+				login.setNombre(textCNombre.getText());
+				login.setApellidos(textCApellidos.getText());
+				login.setContrasena(String.valueOf(passCContrasena.getPassword()));
+				login.setEmail(textCEmail.getText());
+				login.setFechaNacimiento(mc.deStringADate(datePicker_1.getJFormattedTextField().getText()));
+				gp.comprobarCampos(login.getNombre(),login.getApellidos() , login.getContrasena(),login.getDni(), login.getFechaNacimiento(), login.getEmail());
+				gp.cambiarPerfilCliente(mc,conexion,login);
 				textCNombre.setEnabled(false);
 				textCApellidos.setEnabled(false);
 				passCContrasena.setEnabled(false);
@@ -715,7 +715,7 @@ public class Vista {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					gp.AumentarDineroCliente(conexion,cliente, Integer.valueOf(textDineroExtra.getText()),cliente.getDinero());
-					cliente.setDinero(cliente.getDinero()+Integer.valueOf(textDineroExtra.getText()));
+					cliente.setDinero(cliente.getDinero());
 					textDineroExtra.setText("");
 					textDineroActual.setText(String.valueOf(cliente.getDinero()));
 				} catch (NumberFormatException e1) {
@@ -2123,6 +2123,8 @@ public class Vista {
 						}
 					}
 					carrito=new Compra();
+					textBuscador.setText("");
+					btnBuscar.doClick();
 				} catch (SQLException | ParseException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
