@@ -48,7 +48,6 @@ class TestGestorPersona {
 	Ropa ro=new Ropa(0, "Chanclas", "chanclas.png", "", (float)5.88, 99, "XL", "Supreme");
 	Comida co=new Comida(0, "Fruta del dragon", "fdd.png", "", (float)3.49, 70, Date.valueOf("2023-12-31"),"Brasil");
 	Herramienta he=new Herramienta(0, "Desatornillador", "desatornillador.png", "", (float)8.99, 99, 1, 4);
-
 	@Test
 	void testGetterSetter() {
 		ArrayList<Persona> lista=null;
@@ -61,11 +60,41 @@ class TestGestorPersona {
 		try {
 			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
 			comando= (Statement) conexion.createStatement();
-			gp.insertarPersona(mc, conexion, cliente);
-			gp.insertarPersona(mc, conexion, jefe);
+			ArrayList<Persona> listaPersonas=new ArrayList<Persona>();
 			Cliente comprador=null;
+			Jefe jefeU=null;
+			ResultSet cuenta=comando.executeQuery("SELECT * FROM "+TABLAS.PERSONAS);
+			while(cuenta.next()) {
+				if(cuenta.getString(TABLAS.TIPO).equals("Cliente")) {
+				comprador=new Cliente(cuenta.getString(TABLAS.DNI),
+						cuenta.getString(TABLAS.NOMBRE), 
+						cuenta.getString(TABLAS.APELLIDOS),
+						cuenta.getDate(TABLAS.FECHANACIMIENTO),
+						cuenta.getString(TABLAS.EMAIL),
+						cuenta.getString(TABLAS.CONTRASENA),
+						tipoPersona.valueOf(cuenta.getString(TABLAS.TIPO)),
+						cuenta.getFloat(TABLAS.DINERO),
+						cuenta.getInt(TABLAS.BLOQUEADO));
+				listaPersonas.add(comprador);
+				}else {			
+				jefeU=new Jefe(cuenta.getString(TABLAS.DNI), 
+						cuenta.getString(TABLAS.NOMBRE), 
+						cuenta.getString(TABLAS.APELLIDOS), 
+						cuenta.getDate(TABLAS.FECHANACIMIENTO),
+						cuenta.getString(TABLAS.EMAIL),
+						cuenta.getString(TABLAS.CONTRASENA),
+						tipoPersona.valueOf(cuenta.getString(TABLAS.TIPO)) ,
+						cuenta.getDate(TABLAS.FECHAADQUISICION),
+						cuenta.getFloat(TABLAS.PORCENTAJEEMPRESA),
+						cuenta.getInt(TABLAS.DIOS));
+				listaPersonas.add(jefeU);
+				}
+			}
+			gp.insertarPersona(mc, conexion, cliente,listaPersonas);
+			gp.insertarPersona(mc, conexion, jefe,listaPersonas);
+			comprador=null;
 			Jefe admin=null;
-			ResultSet cuenta=comando.executeQuery("SELECT * FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+			cuenta=comando.executeQuery("SELECT * FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
 			while(cuenta.next()) {
 				comprador=new Cliente(cuenta.getString(TABLAS.DNI),
 						cuenta.getString(TABLAS.NOMBRE), 
@@ -112,6 +141,9 @@ class TestGestorPersona {
 			comando.close();
 			conexion.close();
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ErroresDeOperaciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
@@ -298,8 +330,12 @@ class TestGestorPersona {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ErroresDeOperaciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
+
 	@Test
 	void testAumentarDineroCliente() {
 		Statement comando=null;
@@ -309,9 +345,8 @@ class TestGestorPersona {
 		comando= (Statement) conexion.createStatement();
 		comando.executeUpdate("INSERT INTO `personas` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `dinero`, `bloqueado`) VALUES "
 		+ "('"+cliente.getDni()+"', '"+cliente.getNombre()+"', '"+cliente.getApellidos()+"', '"+cliente.getFechaNacimiento()+"', '"+cliente.getEmail()+"', '"+cliente.getContrasena()+"', '"+cliente.getTipo()+"', "+cliente.getDinero()+", "+cliente.isBloqueado()+")");
-		
 		dineroAntes=cliente.getDinero();
-		gp.AumentarDineroCliente(conexion, cliente, 100);
+		gp.AumentarDineroCliente(conexion, cliente, 100,cliente.getDinero());
 		Cliente comprador=null;
 		ResultSet cuenta=comando.executeQuery("SELECT * FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
 		while(cuenta.next()) {
@@ -334,6 +369,7 @@ class TestGestorPersona {
 			e.printStackTrace();
 		}
 	}
+
 	@Test
 	void testBloquearCliente() {
 		Statement comando=null;
@@ -365,6 +401,7 @@ class TestGestorPersona {
 			
 		}
 	}
+	
 	@Test
 	void testComprobarCampos() {
 		try {
@@ -407,6 +444,7 @@ class TestGestorPersona {
 			}
 		}
 	}
+	
 	@Test
 	void testIniciarSesion() {
 		Statement comando=null;
@@ -617,6 +655,7 @@ class TestGestorPersona {
 			}
 		}
 	}
+	
 	@Test
 	void testInsertarYCobrar() {
 		Statement comando=null;
@@ -634,31 +673,25 @@ class TestGestorPersona {
 		
 		Persona per=cliente;
 		gp.insertarCompraYCobrar(conexion, per, compra);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			try {
-				ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
+		ResultSet cargar=comando.executeQuery("SELECT * FROM "+TABLAS.COMPRAS+" ORDER BY "+TABLAS.FECHACOMPRA+" DESC LIMIT 1");
 				while(cargar.next()) {
 					compraN=new Compra(cargar.getInt(TABLAS.CODIGOCOMPRA),cargar.getFloat(TABLAS.PRECIOFINAL),mc.deStringALocalDateTime(cargar.getString(TABLAS.FECHACOMPRA)));
+					assertTrue(compraN.getCodigoCompra()>1);
 				}
-				assertTrue(compraN.getCodigoCompra()>1);
-				
-				comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
-				comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
-				comando.close();
-				conexion.close();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+					
+			comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+			comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+			comando.close();
+			conexion.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
 	@Test
 	void testInsertarArticulos() {
 		Statement comando=null;
@@ -758,12 +791,22 @@ class TestGestorPersona {
 		conexion.close();
 	} catch (SQLException e1) {
 		// TODO Auto-generated catch block
-		e1.printStackTrace();
+		try {
+			comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+			comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+		comando.close();
+		conexion.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	} catch (ParseException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
 	}
+
 	@Test
 	void testCancelarCompra() {
 		Statement comando=null;
@@ -821,7 +864,7 @@ class TestGestorPersona {
 		e.printStackTrace();
 	}
 	}
-	
+
 	@Test
 	void testDevolverUnArticulo() {
 		Statement comando=null;
@@ -873,6 +916,15 @@ class TestGestorPersona {
 		conexion.close();
 	} catch (SQLException e1) {
 		// TODO Auto-generated catch block
+		try {
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+		comando.close();
+		conexion.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	} catch (ParseException e) {
 		// TODO Auto-generated catch block
@@ -936,6 +988,7 @@ class TestGestorPersona {
 		e.printStackTrace();
 	} 
 	}
+	
 	@Test
 	void testComprobarDevolucion() {
 		Statement comando=null;
@@ -995,7 +1048,7 @@ class TestGestorPersona {
 		conexion.close();
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
-			
+			e1.printStackTrace();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 
 import controlador.Metodos;
+import excepciones.ErroresDeOperaciones;
 import gestores.GestorArticulo;
 import modelo.Articulo;
 import modelo.Comida;
@@ -103,12 +104,25 @@ class TestGestorArticulo {
 			assertEquals(ro.getStockActual(),roPrueba.getStockActual());
 			assertEquals(ro.getTalla(),roPrueba.getTalla());
 			assertEquals(ro.getMarca(),roPrueba.getMarca());
-			comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
-			comando.close();
-			conexion.close();
+			
+			Herramienta fallo=he;
+			fallo.setNombreArticulo("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			ga.insertarArticulo(mc, conexion, se, fallo);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (ErroresDeOperaciones e) {
+				// TODO Auto-generated catch block
+				assertEquals(e.getMessage(),"El nombre o la ruta son demasiado largas");
+				try {
+					comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+					comando.close();
+					conexion.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
 			}
 	}
 	@Test
@@ -265,12 +279,24 @@ class TestGestorArticulo {
 			assertEquals(roComprobar.getStockActual(),roPrueba.getStockActual());
 			assertEquals(roComprobar.getTalla(),roPrueba.getTalla());
 			assertEquals(roComprobar.getMarca(),roPrueba.getMarca());
-			comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
-			comando.close();
-			conexion.close();
+			Herramienta fallo=he;
+			fallo.setNombreArticulo("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			ga.cambiarArticulo(mc, conexion, fallo);
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ErroresDeOperaciones e) {
+			// TODO Auto-generated catch block
+			assertEquals(e.getMessage(),"El nombre o la ruta son demasiado largas");
+			try {
+				comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+				comando.close();
+				conexion.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	}
 	@Test
@@ -557,6 +583,5 @@ class TestGestorArticulo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 }

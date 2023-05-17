@@ -91,6 +91,5 @@ class CompraTest {
 		obj.setListaCantidades(lista);
 		obj.cambiarArticulo(he, 2);
 		assertEquals(obj.getListaCantidades().get(0).getCantidad(),2);
-		obj.cambiarArticulo(he,2);
 	}
 }

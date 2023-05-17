@@ -66,10 +66,21 @@ public class GestorSupermercado {
 	 * @param conexion La conexion.
 	 * @param jefe EL jefe al que pertenence.
 	 * @param su El objeto supermercado a insertar.
+	 * @param lista Lista de supermercados.
 	 * @throws SQLException Fallo en la conexion.
+	 * @throws ErroresDeOperaciones Errores.
 	 */
-	public void insertarSupermercado(Connection conexion,Jefe jefe,Supermercado su) throws SQLException {
+	public void insertarSupermercado(Connection conexion,Jefe jefe,Supermercado su,ArrayList<Supermercado> lista) throws SQLException, ErroresDeOperaciones {
 		Statement comando = (Statement) conexion.createStatement();
+		if(su.getCodigoSuper().length()>5|| su.getEmpresa().length()>25 || su.getDireccion().length()>25) {
+			throw new ErroresDeOperaciones("Alguno de los campos tiene demasiados caracteres.");
+		}
+		for(Supermercado sup:lista) {
+			if(sup.getCodigoSuper().equals(su.getCodigoSuper())) {
+				throw new ErroresDeOperaciones("No se pueden repetir los codigos de supermercados.");
+			}
+		}
+		System.out.println("Inserta");
 		comando.executeUpdate("INSERT INTO "+TABLAS.SUPERMERCADO+""
 				+ " VALUES ('"+jefe.getDni()+"',"
 				+ "'"+su.getCodigoSuper()+"',"
@@ -82,9 +93,13 @@ public class GestorSupermercado {
 	 * @param conexion La conexion.
 	 * @param su El supermercado a cambiar en la base.
 	 * @throws SQLException Fallo en la conexion.
+	 * @throws ErroresDeOperaciones 
 	 */
-	public void cambiarSupermercado(Connection conexion,Supermercado su) throws SQLException {
+	public void cambiarSupermercado(Connection conexion,Supermercado su) throws SQLException, ErroresDeOperaciones {
 		Statement comando = (Statement) conexion.createStatement();
+		if(su.getCodigoSuper().length()>5|| su.getEmpresa().length()>25 || su.getDireccion().length()>25) {
+			throw new ErroresDeOperaciones("Alguno de los campos tiene demasiados caracteres.");
+		}
 		comando.executeUpdate("UPDATE "+TABLAS.SUPERMERCADO+
 				" SET "+TABLAS.DIRECCION+"='"+su.getDireccion()+"', "+TABLAS.EMPRESA+"='"+su.getEmpresa()+"',"
 				+ " "+TABLAS.NUMEROEMPLEADOS+"='"+su.getNumEmpleados()+"' "

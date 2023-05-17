@@ -1,4 +1,4 @@
-drop database reto4;
+drop database if exists reto4;
 create database reto4;
 use reto4;
 
@@ -68,7 +68,7 @@ UNIQUE(codigoSeccion,nombreArticulo)
 CREATE TABLE articuloscomprados (
   codigoCompra int NOT NULL,
   idArticulo int NOT NULL,
-  cantidad int NOT NULL,
+  cantidad int,
   precioArt float NOT NULL,
 CONSTRAINT FK_codCompra FOREIGN KEY (codigoCompra) REFERENCES compras(codigoCompra)
 ON DELETE CASCADE ON UPDATE CASCADE,
@@ -78,27 +78,39 @@ Primary Key (codigoCompra,idArticulo)
 );
 
 INSERT INTO `personas` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES
-('00000000A', 'Administrador', 'Root', '2000-01-01', 'admin@gmail.com', 'Elorrieta00', 'Jefe', '2019-05-16', 70.5, 1);
+('00000000A', 'Administrador', 'Root', '2000-01-01', 'admin@gmail.com', 'Elorrieta00', 'Jefe', '2019-05-16', 70.5, 1),
+('02936312M', 'Manolo', '', '1978-05-19', 'manolo@gmail.com', 'Elorrieta00', 'Jefe', '2023-05-25', 63, 0),
+('55323230L', 'Pepe', '', '1983-05-11', 'pepe@gmail.com', 'Elorrieta00', 'Jefe', '2023-05-04', 60, 0);
 INSERT INTO `personas` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `dinero`, `bloqueado`) VALUES
 ('11111111A', 'Prueba', 'Test', '1999-01-01', 'prueba@gmail.com', 'Elorrieta00', 'Cliente', 200, 0);
 INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES
-('00000000A', 'AAAAA', 'Elorrieta', 'Calle Central', 10);
+('00000000A', 'AAAAA', 'Elorrieta', 'Calle Central', 10),
+('02936312M', 'KLXSA', 'Erosi', 'Calle Autonoma', 10);
 INSERT INTO `secciones` (`codigoSuper`, `codigoSeccion`, `tipo`,`numAr`) VALUES
 ('AAAAA', 'A0001', 'Comida',3),
 ('AAAAA', 'A0002', 'Herramienta',2),
-('AAAAA', 'A0003', 'Ropa',2);
+('AAAAA', 'A0003', 'Ropa',2),
+('KLXSA', 'KLXSA1', 'Herramienta', 2),
+('KLXSA', 'KLXSA2', 'Comida', 2),
+('KLXSA', 'KLXSA3', 'Ropa', 2);
 INSERT INTO `compras` (`dni`, `codigoCompra`, `precioFinal`, `fechaCompra`) VALUES
 ('11111111A', 1, 8.98, '2020-01-19 15:00:00');
 INSERT INTO `articulos` (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `fechaCaducidad`, `procedencia`) VALUES
 (1, 'A0001', 'Patatas bravas', 'patatasbravas.png', '', 3.99, 98, '2023-05-20', 'España'),
 (2, 'A0001', 'Mousse', 'mousse.png', '', 1.99, 100, '2023-05-15', 'Francia'),
-(3, 'A0001', 'Manzanas', 'manzanas.png', '', 0.99, 100, '2023-05-17', 'España');
+(3, 'A0001', 'Manzanas', 'manzanas.png', '', 0.99, 100, '2023-05-17', 'España'),
+(10, 'KLXSA2', 'Entrecot', 'entrecot.png', 'Delicioso entrecot de unas vacas criadas en libertad.', 5.99, 100, '2023-05-31', 'España'),
+(11, 'KLXSA2', 'Hamburguesa', 'hamburguesa.png', 'Jugosa hamburguesa preparada para un rapido tentenpié.', 2.99, 100, '2023-05-30', 'Estados Unidos');
 INSERT INTO `articulos` (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`,  `electrica`, `garantia`) VALUES
 (4, 'A0002', 'Martillo', 'martillo.png', '', 7.99, 100, 0, 3),
-(5, 'A0002', 'Sierra Circular', 'sierracircular.png', '', 25.99, 100, 1, 5);
+(5, 'A0002', 'Sierra Circular', 'sierracircular.png', '', 25.99, 100, 1, 5),
+(8, 'KLXSA1', 'Motosierra', 'motosierra.png', 'Una herramienta perfecta para deshacerse de arbustos y arboles.', 50.7, 100, 0, 5),
+(9, 'KLXSA1', 'Destornillador', 'destornillador.png', 'Adaptable a múltiples tipos de formas de los tornillos.', 14.49, 100, 1, 3);
 INSERT INTO `articulos` (`idArticulo`, `codigoSeccion`, `nombreArticulo`, `rutaImagen`, `descripcion`, `precio`, `stock`, `talla`, `marca`) VALUES
 (6, 'A0003', 'Pantalones', 'pantalones.png', '', 12.99, 100, 'L', 'Nike'),
-(7, 'A0003', 'Zapatillas', 'zapatillas.png', '', 17.99, 100,'40', 'Adidas');
+(7, 'A0003', 'Zapatillas', 'zapatillas.png', '', 17.99, 100,'40', 'Adidas'),
+(12, 'KLXSA3', 'Banador', 'banador.png', 'Banador para hombres, perfecto para las piscina.', 10.49, 100, 'L', 'Armani'),
+(13, 'KLXSA3', 'Gafas', 'gafas.png', 'Perfectas para los días más calurosos del verano.', 7.99, 100, '38', 'Affelou');
 INSERT INTO `articuloscomprados` (`codigoCompra`, `idArticulo`, `cantidad`, `precioArt`) VALUES
 (1, 1, 2, 3.99);
 
@@ -133,7 +145,7 @@ dni varchar(9) not null,
     dineroDespues float ,
     cambio float,
     momento datetime not null,
-    constraint PK_primaria primary key (dni,momento)
+    constraint PK_primaria primary key (dni,cambio,momento)
 );
 DELIMITER //
 
@@ -142,10 +154,7 @@ after update on personas
 for each row begin
 DECLARE cambio float default 0;
 DECLARE porcen float default 0;
-	if NEW.dinero > OLD.dinero then
-		set porcen = ((NEW.dinero - OLD.dinero) / OLD.dinero) * 100;
-		insert into Cartera values (NEW.dni, NEW.email, OLD.dinero, NEW.dinero, porcen, current_timestamp());
-    elseif NEW.dinero < OLD.dinero THEN
+	if NEW.dinero != OLD.dinero then
 		set porcen = ((NEW.dinero - OLD.dinero) / OLD.dinero) * 100;
 		insert into Cartera values (NEW.dni, NEW.email, OLD.dinero, NEW.dinero, porcen, current_timestamp());
 	END IF;
@@ -166,9 +175,11 @@ AFTER UPDATE ON articulos
 FOR EACH ROW
 BEGIN
 	if new.stock<old.stock then
+    DELETE FROM inventarios;
     insert into inventarios 
     SELECT su.codigoSuper,sum(stock)'stockTotal',round(sum(stock*precio),2)'precioTotal',current_timestamp()'fechaCambio'
-	FROM articulos a JOIN secciones se ON a.codigoSeccion=se.codigoSeccion JOIN supermercados su ON su.codigoSuper=se.codigoSuper;
+	FROM articulos a JOIN secciones se ON a.codigoSeccion=se.codigoSeccion JOIN supermercados su ON su.codigoSuper=se.codigoSuper
+    GROUP BY codigoSuper LIMIT 1;
     END IF;
 END;//
 DELIMITER ;
@@ -277,9 +288,11 @@ AS SELECT  su.codigoSuper,se.codigoSeccion,sum(ar.stock),sum(ar.precio)
 FROM supermercados su JOIN secciones se ON su.codigoSuper=se.codigoSuper JOIN articulos ar ON se.codigoSeccion=ar.codigoSeccion
 GROUP BY codigoSuper;
 
+DROP ROLE IF EXISTS 'administradorBD';
 CREATE ROLE 'administradorBD';
 GRANT ALL PRIVILEGES ON reto4.* TO 'administradorBD';
 
+DROP ROLE IF EXISTS 'usuarioJefe';
 CREATE ROLE 'usuarioJefe';
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.personas TO 'usuarioJefe';
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.supermercados TO 'usuarioJefe';
@@ -288,6 +301,7 @@ GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.articulos TO 'usuarioJ
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.articuloscomprados TO 'usuarioJefe';
 GRANT SELECT, DELETE, INSERT, UPDATE,ALTER, DROP ON reto4.compras TO 'usuarioJefe';
 
+DROP ROLE IF EXISTS 'usuarioCliente';
 CREATE ROLE 'usuarioCliente';
 GRANT SELECT, UPDATE ON reto4.articulos TO 'usuarioCliente';
 GRANT SELECT, UPDATE ON reto4.articuloscomprados TO 'usuarioCliente';
@@ -297,9 +311,13 @@ GRANT SELECT ON reto4.secciones TO 'usuarioCliente';
 GRANT SELECT ON reto4.supermercados TO 'usuarioCliente';
 
 -- creacion de Usuarios
+DROP USER IF EXISTS 'Jefes';
 CREATE USER 'Jefes' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'usuarioJefe' PASSWORD EXPIRE INTERVAL 30 DAY;
+DROP USER IF EXISTS 'Administrador';
 CREATE USER 'Administrador' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'administradorBD' PASSWORD EXPIRE INTERVAL 30 DAY;
+DROP USER IF EXISTS 'Raso1';
 CREATE USER 'Raso1' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'usuarioCliente' PASSWORD EXPIRE INTERVAL 30 DAY;
+DROP USER IF EXISTS 'Raso2';
 CREATE USER 'Raso2' IDENTIFIED BY 'Elorrieta' DEFAULT ROLE 'usuarioCliente' PASSWORD EXPIRE INTERVAL 30 DAY;
 
-GRANT VIEW,INDEX,CREATE VIEW ON reto4.* TO 'Raso2';
+GRANT INDEX,CREATE VIEW ON reto4.* TO 'Raso2';

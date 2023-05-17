@@ -102,9 +102,20 @@ public class GestorPersona {
 	 * @param mc Para cambiar el boolean a un int.
 	 * @param conexion La conexion.
 	 * @param persona La persona a insertar.
+	 * @param listaUsuarios Para evitar repeticiones.
 	 * @throws SQLException Fallo en al conexion.
+	 * @throws ErroresDeOperaciones Fallo de operaciones.
 	 */
-	public void insertarPersona(Metodos mc,Connection conexion,Persona persona ) throws SQLException {
+	public void insertarPersona(Metodos mc,Connection conexion,Persona persona,ArrayList<Persona> listaUsuarios) throws SQLException, ErroresDeOperaciones {
+		boolean repetido=false;
+		for(Persona per:listaUsuarios) {
+			if(per.getDni().equals(persona.getDni()) || per.getEmail().equals(persona.getEmail())) {
+				repetido=true;
+			}
+		}
+		if(repetido) {
+			throw new ErroresDeOperaciones("El DNI o el Email estan repetidos");
+		}
 		Statement comando = (Statement) conexion.createStatement();
 		Cliente c=null;
 		Jefe j=null;
@@ -112,7 +123,7 @@ public class GestorPersona {
 			c=(Cliente) persona;
 		comando.executeUpdate("INSERT INTO "+TABLAS.PERSONAS+" "
 		+ "("+TABLAS.DNI+","+TABLAS.NOMBRE+","+TABLAS.APELLIDOS+","+TABLAS.FECHANACIMIENTO+","+TABLAS.EMAIL+","+TABLAS.CONTRASENA+","+TABLAS.TIPO+","+TABLAS.DINERO+","+TABLAS.BLOQUEADO+")"
-		+ " VALUES ('"+c.getDni()+"','"+c.getNombre()+"','"+c.getApellidos()+"','"+String.valueOf(c.getFechaNacimiento())+"','"+c.getEmail()+"','"+c.getContrasena()+"','"+c.getTipo()+"','"+c.getDinero()+"','"+mc.pasarBoolean(c.isBloqueado())+"')");
+		+ " VALUES ('"+c.getDni()+"','"+c.getNombre()+"','"+c.getApellidos()+"','"+String.valueOf(c.getFechaNacimiento())+"','"+c.getEmail()+"','"+c.getContrasena()+"','"+c.getTipo()+"','"+0+"','"+mc.pasarBoolean(c.isBloqueado())+"')");
 		}else {
 			j=(Jefe) persona;
 			comando.executeUpdate("INSERT INTO "+TABLAS.PERSONAS+" "
@@ -125,9 +136,17 @@ public class GestorPersona {
 	 * @param conexion La conexion.
 	 * @param persona La persona a borrar.
 	 * @throws SQLException Fallo en la conexion.
+	 * @throws ErroresDeOperaciones No se puede borrar el root.
 	 */
-	public void darseBajaPersona(Connection conexion,Persona persona) throws SQLException {
+	public void darseBajaPersona(Connection conexion,Persona persona) throws SQLException, ErroresDeOperaciones {
 		Statement comando = (Statement) conexion.createStatement();
+		Jefe je=null;
+		if(persona instanceof Jefe) {
+			je=(Jefe)persona;
+			if(je.isDios()) {
+				throw new ErroresDeOperaciones("El ROOT no se puede borrar.");
+			}
+		}
 		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+persona.getDni()+"'");
 		comando.close();
 }
@@ -164,11 +183,14 @@ public class GestorPersona {
 	 * @param conexion AL coenxion.
 	 * @param cliente El cliente.
 	 * @param dinero El dinero a aumentar.
+	 * @param anterior Dinero anterior
 	 * @throws SQLException Fallo en la conexion.
 	 */
-	public void AumentarDineroCliente(Connection conexion,Cliente cliente,int dinero) throws SQLException {
+	public void AumentarDineroCliente(Connection conexion,Cliente cliente,float dinero,float anterior) throws SQLException {
 		Statement comando = (Statement) conexion.createStatement();
-		comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"=("+TABLAS.DINERO+"+"+dinero+") WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
+		float suma=(anterior+dinero);
+		cliente.setDinero(suma);
+		comando.executeUpdate("UPDATE "+TABLAS.PERSONAS+" SET "+TABLAS.DINERO+"="+suma+" WHERE "+TABLAS.DNI+"='"+cliente.getDni()+"'");
 		comando.close();
 	}
 	/**Metodo para bloquear desbloquear un usuario.
@@ -285,32 +307,19 @@ public class GestorPersona {
 	public ArrayList<Jefe> cargarJefesSinSupermercado(Connection conexion,int numSuper) throws SQLException, ErroresDeOperaciones {
 		ArrayList<Persona> lista=cargarPersonas(conexion);
 		ArrayList<Jefe> jefeSinSuper=new ArrayList<Jefe>();
-		String [] dniJefes=new String[numSuper];
 		Statement comando = (Statement) conexion.createStatement();
-		ResultSet cuenta=comando.executeQuery("SELECT "+TABLAS.DNIJEFE+" FROM "+TABLAS.SUPERMERCADO);
-		int i=0;
+		ResultSet cuenta=comando.executeQuery("SELECT "+TABLAS.DNI+" FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.TIPO+"='"+TABLAS.JEFE+"'");
+		ArrayList<String> listaDNI=new ArrayList<String>();
 		while(cuenta.next()) {
-			dniJefes[i]=cuenta.getString(TABLAS.DNIJEFE);
+			listaDNI.add(cuenta.getString(TABLAS.DNI));
 		}
 		Jefe temporal=null;
-		if((dniJefes[numSuper-1]==null)) {
-			throw new ErroresDeOperaciones("No hay Jefes disponibles");
-		}else{
 			for(Persona per:lista) {
 				if(per instanceof Jefe) {
 					temporal=(Jefe)per;
-					boolean noRepe=true;
-					for(int x=0;x<dniJefes.length;x++) {
-						if(dniJefes[x].equals(temporal.getDni())) {
-						noRepe=false;
-						}
-					}
-					if(noRepe==true) {
 						jefeSinSuper.add(temporal);
-					}
 				}
 			}
-		}
 		comando.close();
 		return jefeSinSuper;
 	}

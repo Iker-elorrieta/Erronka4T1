@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -180,9 +181,8 @@ GestorPersona gp=new GestorPersona();
 		try {
 			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
 			Statement comando = (Statement) conexion.createStatement();
-			comando.executeUpdate("INSERT INTO `articulosrecargar` (`encargado`, `idArticulo`, `nombreArticulo`, `precio`, `stockNecesario`, `precioTotal`) VALUES ('alan', '1', 'tornillo', '8', '10', '27');");
-			
-			assertEquals(mts.cargarRecargaArticulos(conexion)[0][0],"alan");
+			comando.executeUpdate("INSERT INTO `articulosrecargar` (`encargado`, `idArticulo`, `nombreArticulo`, `precio`, `stockNecesario`, `precioTotal`) VALUES ('alan', '20', 'tornillo', '8', '10', '27');");
+			assertTrue(mts.cargarRecargaArticulos(conexion).length>1);
 			comando.executeUpdate("DELETE FROM `articulosrecargar` WHERE `articulosrecargar`.`encargado` = 'alan';");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

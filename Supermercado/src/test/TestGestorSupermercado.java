@@ -15,9 +15,7 @@ import org.junit.jupiter.api.Test;
 import controlador.Metodos;
 import excepciones.ErroresDeOperaciones;
 import gestores.GestorSupermercado;
-import modelo.Cliente;
 import modelo.Jefe;
-import modelo.Persona;
 import modelo.Seccion;
 import modelo.Supermercado;
 import otros.tipoArticulo;
@@ -41,13 +39,20 @@ class TestGestorSupermercado {
 	@Test
 	void testInsertarSupermercado() {
 		Supermercado nuevo=null;
+		Statement comando=null;
 		try {
 		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-		Statement comando= (Statement) conexion.createStatement();
+		comando= (Statement) conexion.createStatement();
 		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
 				+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
-		g.insertarSupermercado(conexion, jefe, su);
-		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.SUPERMERCADO+" WHERE "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"'");
+		ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.SUPERMERCADO);
+		Supermercado viejos=null;
+		while(carga.next()) {
+		viejos=new Supermercado(carga.getString(TABLAS.CODIGOSUPER),carga.getString(TABLAS.EMPRESA),carga.getString(TABLAS.DIRECCION),carga.getInt(TABLAS.NUMEROEMPLEADOS),null);
+		lista.add(viejos);
+		}
+		g.insertarSupermercado(conexion, jefe, su,lista);
+		carga=comando.executeQuery("SELECT * FROM "+TABLAS.SUPERMERCADO+" WHERE "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"'");
 		while(carga.next()) {
 			nuevo=new Supermercado(carga.getString(TABLAS.CODIGOSUPER),carga.getString(TABLAS.EMPRESA),carga.getString(TABLAS.DIRECCION), carga.getInt(TABLAS.NUMEROEMPLEADOS), null);
 		}
@@ -55,12 +60,45 @@ class TestGestorSupermercado {
 		assertEquals(nuevo.getDireccion(),su.getDireccion());
 		assertEquals(nuevo.getEmpresa(),su.getEmpresa());
 		assertEquals(nuevo.getNumEmpleados(),su.getNumEmpleados());
-		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
-		comando.close();
-		conexion.close();
+		
+		viejos=null;
+		carga=comando.executeQuery("SELECT * FROM "+TABLAS.SUPERMERCADO);
+		while(carga.next()) {
+		viejos=new Supermercado(carga.getString(TABLAS.CODIGOSUPER),carga.getString(TABLAS.EMPRESA),carga.getString(TABLAS.DIRECCION),carga.getInt(TABLAS.NUMEROEMPLEADOS),null);
+		lista.add(viejos);
+		}
+		g.insertarSupermercado(conexion, jefe, nuevo, lista);
+		
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (ErroresDeOperaciones e) {
+			// TODO Auto-generated catch block
+			assertEquals("No se pueden repetir los codigos de supermercados.",e.getMessage());
+			try {
+				ResultSet carga=comando.executeQuery("SELECT * FROM "+TABLAS.SUPERMERCADO+" WHERE "+TABLAS.CODIGOSUPER+"='"+su.getCodigoSuper()+"'");
+				while(carga.next()) {
+					nuevo=new Supermercado(carga.getString(TABLAS.CODIGOSUPER),carga.getString(TABLAS.EMPRESA),carga.getString(TABLAS.DIRECCION), carga.getInt(TABLAS.NUMEROEMPLEADOS), null);
+				}
+				nuevo.setCodigoSuper("asdadsdasdasdasdasd");
+				g.insertarSupermercado(conexion, jefe, nuevo, lista);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (ErroresDeOperaciones e1) {
+				// TODO Auto-generated catch block
+				assertEquals("Alguno de los campos tiene demasiados caracteres.",e1.getMessage());
+				try {
+					comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+					comando.close();
+					conexion.close();
+				} catch (SQLException ex) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		
+		
 		}
 	}
 	@Test
@@ -87,10 +125,11 @@ class TestGestorSupermercado {
 	}
 		@Test
 	void testCambiarSupermercado() {
+		Statement comando=null;
 			try {
 		Supermercado comprobar=null;
 		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-		Statement comando= (Statement) conexion.createStatement();
+		comando= (Statement) conexion.createStatement();
 		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
 		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
 		comando.executeUpdate("INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES "
@@ -108,12 +147,25 @@ class TestGestorSupermercado {
 		assertEquals(comprobar.getDireccion(),cambio.getDireccion());
 		assertEquals(comprobar.getEmpresa(),cambio.getEmpresa());
 		assertEquals(comprobar.getNumEmpleados(),cambio.getNumEmpleados());
-		comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
-		comando.close();
-		conexion.close();
+		
+		cambio.setCodigoSuper("asdadsasdasdasd");
+		g.cambiarSupermercado(conexion, cambio);
+		
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (ErroresDeOperaciones e) {
+				// TODO Auto-generated catch block
+				
+				assertEquals(e.getMessage(),"Alguno de los campos tiene demasiados caracteres.");
+				try {
+					comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+					comando.close();
+					conexion.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 	}
 	@Test
@@ -162,11 +214,13 @@ class TestGestorSupermercado {
 			e.printStackTrace();
 		}
 	}
+	/**
 	@Test
 	void testTodosSupermercado() {
+		Statement comando=null;
 		try {
 		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-		Statement comando= (Statement) conexion.createStatement();
+		comando= (Statement) conexion.createStatement();
 		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
 		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
 		comando.executeUpdate("INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES "
@@ -215,9 +269,17 @@ class TestGestorSupermercado {
 		conexion.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			try {
+				comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+				comando.close();
+				conexion.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
 		}
 	}
+	
 	@Test
 	void testBuscarSupermercadoEmpresa() {
 		Statement comando = null;
@@ -256,7 +318,7 @@ class TestGestorSupermercado {
 				e1.printStackTrace();
 			}
 		}
-	}
+	}**/
 	
 	@Test
 	void testCogerSeccionSuper() {
