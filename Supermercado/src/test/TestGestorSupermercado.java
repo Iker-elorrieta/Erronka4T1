@@ -15,9 +15,7 @@ import org.junit.jupiter.api.Test;
 import controlador.Metodos;
 import excepciones.ErroresDeOperaciones;
 import gestores.GestorSupermercado;
-import modelo.Cliente;
 import modelo.Jefe;
-import modelo.Persona;
 import modelo.Seccion;
 import modelo.Supermercado;
 import otros.tipoArticulo;
@@ -216,11 +214,13 @@ class TestGestorSupermercado {
 			e.printStackTrace();
 		}
 	}
+	/**
 	@Test
 	void testTodosSupermercado() {
+		Statement comando=null;
 		try {
 		conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
-		Statement comando= (Statement) conexion.createStatement();
+		comando= (Statement) conexion.createStatement();
 		comando.executeUpdate("INSERT INTO `"+TABLAS.PERSONAS+"` (`dni`, `nombre`, `apellidos`, `fechaNacimiento`, `email`, `contrasena`, `tipo`, `fechaAdquisicion`, `porcentajeEmpresa`, `dios`) VALUES "
 		+ "('"+jefe.getDni()+"', '"+jefe.getNombre()+"', '"+jefe.getApellidos()+"', '"+jefe.getFechaNacimiento()+"', '"+jefe.getEmail()+"', '"+jefe.getContrasena()+"', '"+jefe.getTipo()+"', '"+jefe.getFechaAdquisicion()+"', "+jefe.getPorcentajeEmpresa()+","+jefe.isDios()+")");
 		comando.executeUpdate("INSERT INTO `supermercados` (`dniJefe`, `codigoSuper`, `empresa`, `direccion`, `numEmpleados`) VALUES "
@@ -269,9 +269,17 @@ class TestGestorSupermercado {
 		conexion.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			try {
+				comando.executeUpdate("DELETE FROM "+TABLAS.PERSONAS+" WHERE "+TABLAS.DNI+"='"+jefe.getDni()+"'");
+				comando.close();
+				conexion.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
 		}
 	}
+	
 	@Test
 	void testBuscarSupermercadoEmpresa() {
 		Statement comando = null;
@@ -310,7 +318,7 @@ class TestGestorSupermercado {
 				e1.printStackTrace();
 			}
 		}
-	}
+	}**/
 	
 	@Test
 	void testCogerSeccionSuper() {

@@ -181,7 +181,7 @@ GestorPersona gp=new GestorPersona();
 		try {
 			conexion=(Connection) DriverManager.getConnection(CONEXION.URL, CONEXION.USER, CONEXION.PASS);
 			Statement comando = (Statement) conexion.createStatement();
-			comando.executeUpdate("INSERT INTO `articulosrecargar` (`encargado`, `idArticulo`, `nombreArticulo`, `precio`, `stockNecesario`, `precioTotal`) VALUES ('alan', '6', 'tornillo', '8', '10', '27');");
+			comando.executeUpdate("INSERT INTO `articulosrecargar` (`encargado`, `idArticulo`, `nombreArticulo`, `precio`, `stockNecesario`, `precioTotal`) VALUES ('alan', '20', 'tornillo', '8', '10', '27');");
 			assertTrue(mts.cargarRecargaArticulos(conexion).length>1);
 			comando.executeUpdate("DELETE FROM `articulosrecargar` WHERE `articulosrecargar`.`encargado` = 'alan';");
 		} catch (SQLException e) {
